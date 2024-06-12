@@ -1,5 +1,6 @@
 # from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import ChatOllama
+from langchain_core.messages.base import BaseMessage
 
 
 class QuizGenerator:
@@ -21,17 +22,13 @@ class QuizGenerator:
             top_k=10,
             top_p=0.05,
             verbose=True,
-
-            num_thread=12,
         )
 
     def generate_quiz(
         self,
         text: str,  # choose a data format
-    ) -> str:
-        question = self.llm.invoke(
-            text
-        )
+    ) -> BaseMessage:
+        question = self.llm.invoke(text)
         return question
 
 
