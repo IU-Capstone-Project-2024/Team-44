@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app1', 
 ]
 
 MIDDLEWARE = [
@@ -74,13 +75,14 @@ WSGI_APPLICATION = 'rag_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 import os 
 from dotenv import load_dotenv
+load_dotenv()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'), 
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'), 
-        'HOST': 'pgdb', 
+        'HOST': 'localhost', 
         'PORT': '5432', 
     }
 }
