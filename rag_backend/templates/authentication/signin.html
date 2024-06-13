@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activate Your Account</title>
+    <title>Sign Up</title>
 </head>
 <body>
-    <p>Hi {{ user.username }},</p>
-    <p>Thanks for registering on our site. Please click the link below to activate your account:</p>
-    <p><a href="{{ link }}">Activate your account</a></p>
-    <p>If you did not make this request, please ignore this email.</p>
-</body>
+
+    <h3>Sign up</h3>
+    <form action = "{% url 'signin'%}", method = "post">
+        {% csrf_token %}
+        <label for = "">Username</label>
+        <input type = "text" id = "username" name = "username" placeholder = "Enter your username" Required>
+        <br>
+        
+        <label for = "">Password</label>
+        <input type = "password" id = "pass1" name = "pass1" placeholder = "Enter your password" Required>
+        <br>
+
+        <button type = "submit">Sign in </button> 
+    </body>
 </html>
