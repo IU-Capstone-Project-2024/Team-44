@@ -1,26 +1,25 @@
 # from langchain.prompts import PromptTemplate
+from langchain.schema import HumanMessage, SystemMessage
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages.base import BaseMessage
 
 
 class QuizGenerator:
-    def __init__(self) -> None:
+    def __init__(self, model_name: str = "llama3:8b") -> None:
         self.system_msg = """
             Create several multiple choice questions based on provided text.
             Send questions in order of importance and quality.
-            Strictly follow python-like format:
-            ["Which of the following subjects could fly?", ["Cat", "Airplane", "Coffee", ""], ["Airplane"]]
-            ["Which component(s) do(es) not exists in physical world?", ["Network Interphace Cart", "Router", "Quick Sort", "Ghost"], ["Quick Sort", "Ghost"]]
+            Strictly follow python-like format as your answer:
+            ["Which of the following subjects could fly?", ["Cat", "Airplane", "Coffee"], ["Airplane"]]
+            ["Which component(s) do(es) not exists in physical world?", ["Network Interphace Cart", "Router", "Quick Sort", "Apple"], ["Quick Sort"]]
             """
 
         self.llm = ChatOllama(
-            model="nous-hermes2:latest",
-            format="json",
+            model=model_name,
             keep_alive=0,
             temperature=0.0,
-            system=self.system_msg,
-            top_k=10,
-            top_p=0.05,
+            top_k=30,
+            top_p=0.25,
             verbose=True,
         )
 
@@ -28,7 +27,7 @@ class QuizGenerator:
         self,
         text: str,  # choose a data format
     ) -> BaseMessage:
-        question = self.llm.invoke(text)
+        question = self.llm.invoke([SystemMessage(self.system_msg), HumanMessage(text)])
         return question
 
 
