@@ -1,6 +1,6 @@
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages.base import BaseMessage
-from transformers import T5ForConditionalGeneration
+from transformers import T5ForConditionalGeneration, AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer
 from transformers import pipeline
 from langchain_huggingface import HuggingFacePipeline
@@ -11,27 +11,26 @@ class SummaryGenerator:
         self.system_msg = """
         Make a summary of provided text. Find key points and build a summary around these key points.
         """
-        model_id = "Falconsai/text_summarization"
+        model_id = "slauw87/bart_summarisation"  # Limitation of 1024 tokens
         tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-        model = T5ForConditionalGeneration.from_pretrained(
-            pretrained_model_name_or_path=model_id
-        )
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
         pipe = pipeline(
             task="summarization",
             model=model,
             tokenizer=tokenizer,
-            max_new_tokens=100,
+            max_new_tokens=5000,
             top_k=50,
             temperature=0.1,
             do_sample=True,
-        )
-        self.llm = HuggingFacePipeline(
-            pipeline=pipe,
+            num_beams=20,  # increase comp. load + better quality
+            # length_penalty=3.0
         )
 
-        # self.llm = ChatOllama(
+        self.llm = HuggingFacePipeline(pipeline=pipe)
+
+        # self.llm = ChatOllama( # High quality, but need more computation power
         #     model="llama3:8b",
         #     keep_alive=0,
         #     temperature=0.0,
