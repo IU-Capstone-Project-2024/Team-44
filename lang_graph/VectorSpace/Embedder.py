@@ -1,4 +1,5 @@
 from langchain_community.embeddings import OllamaEmbeddings
+from torch import Tensor
 
 
 class Embedder:
