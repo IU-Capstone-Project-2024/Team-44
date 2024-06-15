@@ -147,3 +147,7 @@ EMAIL_ADMIN = ['notedeveloper@bk.ru']
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
+AUTH_USER_MODEL = 'authentication.User'
