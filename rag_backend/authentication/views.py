@@ -109,11 +109,17 @@ def signin(request):
     
     return render(request, 'authentication/signin.html')
 
+def signout(request):
+    if request.user.is_authenticated:
+        user = request.user
+        user.is_active = False
+        user.save()
+        logout(request)
+        messages.success(request, "Successfully logged out")
+    else:
+        messages.error(request, "You are not logged in")
 
-def signout (request): 
-    logout(request) 
-    messages.success(request, "Successfully logged out")
-    return render (request, 'authentication/signout.html')
+    return render(request, 'authentication/signout.html')
 
 def activate(request, uidb64, token): 
     print("before") 
