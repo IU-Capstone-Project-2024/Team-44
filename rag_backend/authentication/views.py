@@ -4,7 +4,8 @@ from .models import User
 from django.contrib import messages 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password, check_password
-
+from rag_backend import settings 
+from django.core.mail import send_mail
 # Create your views here.
 def index(request): 
     return render(request, 'authentication/index.html')
@@ -35,7 +36,15 @@ def signup(request):
                                              password = pass1, first_name=fname, last_name = lname, telegram_id = telegram_id)
                 
                 myuser.save()
-                messages.success(request, 'Your account has been successfully created.')
+                messages.success(request, 'Your account has been successfully created.We have send you confirmation email, please confirm your email in order to activate your account')
+                
+                #Welcome message using email 
+                subject = "Welcome to Quiz generator"
+                message = "Hello" + myuser.first_name + "!! \n" + "Welcome to Quiz generator \n We have also sent you a confirmation email, please confirm your email ";
+                from_email = settings.EMAIL_HOST_USER   
+                to_list = [myuser.email]
+                send_mail(subject, message, from_email, to_list, fail_silently=True)
+                
                 return redirect('index')
         else:
             messages.info(request, 'Passwords do not match')
