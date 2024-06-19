@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from dotenv import load_dotenv
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-b+tj)b)63=2b+ababpbqr!_xr1rhf@sc9-r#8)(0tp!da#a&w&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -37,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app1', 
-    'authentication'
+    'app1',
+    'authentication',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +56,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'rag_backend.urls'
-import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,17 +77,15 @@ WSGI_APPLICATION = 'rag_backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-import os 
-from dotenv import load_dotenv
 load_dotenv()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'), 
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'), 
-        'HOST': 'localhost', 
-        'PORT': '5432', 
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -138,8 +139,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = f'{os.getenv('EMAIL_HOST_USER')}'
-EMAIL_HOST_PASSWORD = f'{os.getenv('EMAIL_HOST_PASSWORD')}'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_SERVER = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
