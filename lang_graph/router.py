@@ -1,5 +1,4 @@
-import select
-from uu import Error
+import errno
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
 from numpy import ndarray
@@ -62,7 +61,7 @@ class Router:
                         query=query
                     )
                 )
-            except Error as e:
+            except errno as e:
                 print(e.with_traceback())
                 return None
         try:
@@ -71,7 +70,7 @@ class Router:
             )
             query_results = retriver.invoke(query)
 
-        except Error as e:
+        except errno as e:
             print(e.with_traceback())
             return None
 
@@ -88,7 +87,7 @@ class Router:
         """
         try:
             self.vector_store.add_docs(documents)
-        except Error as e:
+        except errno as e:
             print(e.with_traceback())
             return False
         return True
@@ -101,7 +100,7 @@ class Router:
         """
         return self.embedder.embed
 
-    async def generate_quiz(self, documents: Document | List[Document]):
+    def generate_quiz(self, documents: Document | List[Document]):
         """generate_quiz _summary_
 
         Args:
@@ -118,7 +117,7 @@ class Router:
 
         return quiz
 
-    async def generate_summary(self, documents: Document | List[Document]):
+    def generate_summary(self, documents: Document | List[Document]):
         """generate_summary _summary_
 
         Args:
