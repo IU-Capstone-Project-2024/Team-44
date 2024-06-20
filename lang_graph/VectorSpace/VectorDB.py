@@ -2,6 +2,7 @@ from langchain.vectorstores import Chroma
 from langchain.storage import InMemoryStore
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import TextSplitter
 
 from langchain_core.documents import Document
 
@@ -72,11 +73,14 @@ class VectorStore:
 
     """
 
-    def __init__(self) -> None:
-        self.embedder = Embedder()
-        self.recursice_splitter = RecursiveCharacterTextSplitter(
+    def __init__(
+        self,
+        text_splitter: TextSplitter = RecursiveCharacterTextSplitter(
             chunk_size=1000, chunk_overlap=100
-        )
+        ),
+    ) -> None:
+        self.embedder = Embedder()
+        self.recursice_splitter = text_splitter
 
         self.vector_store = Chroma(
             embedding_function=self.embedder,
