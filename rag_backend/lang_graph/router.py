@@ -1,9 +1,10 @@
 from uu import Error
-from agents import SummaryGenerator
-from agents import QuizGenerator
+from .agents import SummaryGenerator
+from .agents import QuizGenerator
 
-from VectorSpace import Embedder
-from VectorSpace import VectorStore
+from .VectorSpace.Embedder import Embedder
+
+from .VectorSpace.VectorDB import VectorStore
 
 from langchain_core.documents import Document
 
@@ -17,7 +18,7 @@ class Router:
         self.summary_generator = SummaryGenerator()
         self.quiz_generator = QuizGenerator()
 
-    def retrive(
+    def retrieve(
         self,
         query: str,
         search_type: str | None = None,

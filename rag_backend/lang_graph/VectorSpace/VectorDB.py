@@ -8,7 +8,7 @@ from langchain_core.documents import Document
 
 from typing import List
 
-from . import Embedder
+from .Embedder import Embedder
 
 
 class VectorStore:
