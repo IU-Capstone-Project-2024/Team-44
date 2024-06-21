@@ -85,6 +85,8 @@ class Router:
         Returns:
             bool: True for success, False for error raised
         """
+
+        # check the
         try:
             self.vector_store.add_docs(documents)
         except errno as e:
@@ -153,3 +155,9 @@ class Router:
             NotImplementedError: _description_
         """
         raise NotImplementedError("Will be implemented later")
+
+
+if __name__ == "__main__":
+    q = Embedder(embedding_size=64)
+    a = q.embed("asdasd")
+    print(a)
