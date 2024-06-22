@@ -3,8 +3,8 @@ import errno
 from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
 from numpy import ndarray
 from torch import Tensor
-from agents import SummaryGenerator
-from agents import QuizGenerator
+from .agents import SummaryGenerator
+from .agents import QuizGenerator
 
 from .VectorSpace.Embedder import Embedder
 
@@ -56,24 +56,24 @@ class Router:
             None | List[Document]: None for raised error, retrived documents if successd
         """
         if search_type is None and search_kwargs is None:
-            try:
-                query_results = (
-                    self.vector_store.retriever.vectorstore.similarity_search(
-                        query=query
-                    )
+            # try:
+            query_results = (
+                self.vector_store.retriever.vectorstore.similarity_search(
+                    query=query
                 )
-            except errno as e:
-                print(e.with_traceback())
-                return None
-        try:
-            retriver = self.vector_store.retriever.vectorstore.as_retriever(
-                search_type=search_type, search_kwargs=search_kwargs
             )
-            query_results = retriver.invoke(query)
+            # except errno as e:
+            #     print(e.with_traceback())
+            #     return None
+        # try:
+        # retriver = self.vector_store.retriever.vectorstore.as_retriever(
+        #     search_type=search_type, search_kwargs=search_kwargs
+        # )
+        # query_results = retriver.invoke(query)
 
-        except errno as e:
-            print(e.with_traceback())
-            return None
+        # except errno as e:
+        #     print(e.with_traceback())
+        #     return None
 
         return query_results
 
@@ -88,11 +88,11 @@ class Router:
         """
 
         # check the
-        try:
-            self.vector_store.add_docs(documents)
-        except errno as e:
-            print(e.with_traceback())
-            return False
+        # try:
+        self.vector_store.add_docs(documents)
+        # except errno as e:
+        #     print(e.with_traceback())
+        #     return False
         return True
 
     def embed(self) -> Callable[..., Tensor | ndarray | list]:

@@ -18,6 +18,18 @@ from django.core.mail import EmailMessage, send_mail
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from langchain_core.documents import Document
+from langchain.document_loaders import TextLoader
+
+
+def document_to_dict(document):
+    """
+    Convert a Document object to a dictionary that can be serialized to JSON.
+    """
+    return {
+        'page_content': document.page_content,
+        'metadata': document.metadata,
+    }
+
 
 @csrf_exempt
 def ml_view(request):
@@ -30,27 +42,36 @@ def ml_view(request):
 
         print(query)
         router = Router()
-        #error : page_content method is not in tuple 
-        doc = Document(page_content="This is the content of the document.", metadata={"source": "example.com"}) 
-        documents = [doc]
+        # error : page_content method is not in tuple
+        # doc = Document(page_content="This is the content of the document.", metadata={
+        #                "source": "example.com"})
+        # documents = [doc]
+        loader = TextLoader("test_txt.txt")
+        documents = loader.load()
+        print(documents)
         verdict = router.add_docs(documents)
-        result = router.retrieve(query, 'similarity', {'k': 1})
-        results = [
-            {'result': result}, 
-            {'document_isAdded': verdict}, 
-        ]
+        result = router.retrieve(query)
+        # result_dict = document_to_dict(result)
+        print(result)
+        # print(result_dict)
+        results = {
+            'result-1': result[0].page_content,
+            'result-2': result[1].page_content,
+            'result-3': result[2].page_content,
+            'result-4': result[3].page_content,
+            'document_isAdded': verdict,
+        }
         return JsonResponse(results)
 
-@csrf_exempt
-def add_docs(request):
-    router = Router() 
-    doc = Document(page_content="This is the content of the document.", metadata={"source": "example.com"}) 
-    documents = [doc]
-    verdict = router.add_docs(documents)
-    result = [{'result': verdict}]
-    return JsonResponse(result) 
+# @csrf_exempt
+# def add_docs(request):
+#     router = Router()
+#     doc = Document(page_content="This is the content of the document.", metadata={"source": "example.com"})
+#     documents = [doc]
+#     verdict = router.add_docs(documents)
+#     result = [{'result': verdict}]
+#     return JsonResponse(result)
+
 
 def main(request):
     return render(request, 'main.html')
-
-

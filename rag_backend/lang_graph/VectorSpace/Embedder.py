@@ -10,7 +10,7 @@ from langchain_core.embeddings import Embeddings
 
 
 class Embedder(Embeddings):
-    def __init__(self, embedding_size: int = 768) -> None:
+    def __init__(self, embedding_size: int = 1) -> None:
         self.embedding_size = embedding_size
 
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -36,7 +36,8 @@ class Embedder(Embeddings):
     def __mean_pooling(self, model_output, attention_mask) -> Tensor:
         token_embeddings = model_output[0]
         input_mask_expanded = (
-            attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+            attention_mask.unsqueeze(-1).expand(
+                token_embeddings.size()).float()
         )
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(
             input_mask_expanded.sum(1), min=1e-9
@@ -63,8 +64,10 @@ class Embedder(Embeddings):
         with torch.no_grad():
             model_output = self.model(**encoded_input)
 
-        embeddings = self.__mean_pooling(model_output, encoded_input["attention_mask"])
-        embeddings = F.layer_norm(embeddings, normalized_shape=(embeddings.shape[1],))
+        embeddings = self.__mean_pooling(
+            model_output, encoded_input["attention_mask"])
+        embeddings = F.layer_norm(
+            embeddings, normalized_shape=(embeddings.shape[1],))
         embeddings = embeddings[:, : self.embedding_size]
         embeddings = F.normalize(embeddings, p=2, dim=1)
 

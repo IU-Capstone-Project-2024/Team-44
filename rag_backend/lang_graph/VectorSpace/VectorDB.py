@@ -107,10 +107,10 @@ class VectorStore:
         vector_store.add_docs(documents)
 
         """
-        docs = []
-        for doc in documents:
-            docs.extend(doc)
+        # docs = []
+        # for doc in documents:
+        #     docs.extend(doc)
 
-        texts = self.recursice_splitter.split_documents(docs)
+        texts = self.recursice_splitter.split_documents(documents)
 
         self.retriever.vectorstore.add_documents(texts)
