@@ -9,7 +9,7 @@ from pydantic_models.models import Question, Quiz
 
 
 class QuizGenerator:
-    def __init__(self):
+    def __init__(self, model_name="llama3:instruct"):
         self.parser = PydanticOutputParser(pydantic_object=Quiz)
         self.prompt_template = PromptTemplate(
             template="Generate a quiz from the following notes. Use only material from notes.\nEach question should have four options, and one correct answer which must be included in the options.\n{format_instructions}\nNotes:\n{text}\n",
@@ -25,7 +25,7 @@ class QuizGenerator:
         )
 
         self.llm = ChatOllama(
-            model="llama3:instruct",
+            model=model_name,
             keep_alive=0,
             temperature=0.0,
             top_k=50,
