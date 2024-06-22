@@ -55,4 +55,4 @@ if __name__ == "__main__":
 		"""
     s = SummaryGenerator()
     ans = s.generate_summary(text=text)
-    print(ans)
+    print(type(ans), ans)

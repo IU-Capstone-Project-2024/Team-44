@@ -26,7 +26,7 @@ class Router:
         ),
         quiz_model_name="llama3:8b",
     ) -> None:
-        """__init__ _summary_
+        """__init__ Router for managing action/data flow in the app
 
         Args:
             embedding_size (int, optional): embeddings size to use
@@ -58,57 +58,47 @@ class Router:
             None | List[Document]: None for raised error, retrived documents if successd
         """
         if search_type is None and search_kwargs is None:
-            # try:
             query_results = self.vector_store.retriever.vectorstore.similarity_search(
                 query=query
             )
-            # except errno as e:
-            #     print(e.with_traceback())
-            #     return None
-        # else:
-        #   try:
-        #   retriver = self.vector_store.retriever.vectorstore.as_retriever(
-        #     search_type=search_type, search_kwargs=search_kwargs
-        # )
-        #   query_results = retriver.invoke(query)
-
-        #   except errno as e:
-        #       print(e.with_traceback())
-        #       return None
+        else:
+            retriver = self.vector_store.retriever.vectorstore.as_retriever(
+                search_type=search_type, search_kwargs=search_kwargs
+            )
+            query_results = retriver.invoke(query)
 
         return query_results
 
-    def add_docs(self, documents: Document | List[Document]) -> bool:
+    def add_docs(self, documents: List[Document]) -> bool:
         """add_docs _summary_
 
         Args:
-            documents (Document | List[Document]): LangChain Documents
+            documents (List[Document]): LangChain Documents
 
         Returns:
             bool: True for success, False for error raised
         """
 
-        # check the
-        # try:
+        # TODO: Consider case of uploading identical documnets multiple times
+
         self.vector_store.add_docs(documents)
-        # except errno as e:
-        #     print(e.with_traceback())
-        #     return False
+
         return True
 
     def embed(self) -> Callable[..., Tensor | ndarray | list]:
-        """Retruns fucntion used for embeddings
+        """Retruns fucntion used for embeddings.
+            Function exists only for testing reasons!
 
         Returns:
             Callable[..., Tensor | ndarray | list]: embedding function
         """
         return self.embedder.embed
 
-    def generate_quiz(self, documents: Document | List[Document]):
+    def generate_quiz(self, documents: List[Document]):
         """generate_quiz _summary_
 
         Args:
-            documents (Document | List[Document]): LangChain Documents
+            documents (List[Document]): LangChain Documents
 
         Returns:
             _type_: _description_
@@ -121,37 +111,40 @@ class Router:
 
         return quiz
 
-    def generate_summary(self, documents: Document | List[Document]):
+    def generate_summary(self, documents: List[Document]):
         """generate_summary _summary_
 
         Args:
-            documents (Document | List[Document]): LangChain Documents
+            documents (List[Document]): LangChain Documents
 
         Returns:
             _type_: _description_
         """
-        # Actions:
-        # documents -> str -> invoke
-        summary = self.summary_generator.generate_summary(text="")
-        # parse
+        splitted_docs = self.text_splitter.split_documents(documents)
+
+        summary = [
+            self.summary_generator.generate_summary(text=doc.page_content)
+            for doc in splitted_docs
+        ]
+        # parse?
         return summary
 
-    async def agenerate_quiz(self, documents: Document | List[Document]):
+    async def agenerate_quiz(self, documents: List[Document]):
         """agenerate_quiz: async version of generate_quiz
 
         Args:
-            documents (Document | List[Document]): LangChain Documents
+            documents (List[Document]): LangChain Documents
 
         Raises:
             NotImplementedError: _description_
         """
         raise NotImplementedError("Will be implemented later")
 
-    async def agenerate_summary(self, documents: Document | List[Document]):
+    async def agenerate_summary(self, documents: List[Document]):
         """agenerate_summary: async version of generate_summary
 
         Args:
-            documents (Document | List[Document]): LangChain Documents
+            documents (List[Document]): LangChain Documents
 
         Raises:
             NotImplementedError: _description_
