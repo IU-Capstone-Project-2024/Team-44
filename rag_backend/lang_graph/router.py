@@ -34,7 +34,9 @@ class Router:
             quiz_model_name (str, optional): model name from Ollama (currently using Ollama)
         """
         self.embedder = Embedder(embedding_size=embedding_size)
-        self.vector_store = VectorStore(text_splitter=text_splitter)
+        self.vector_store = VectorStore(
+            text_splitter=text_splitter, embedder=self.embedder
+        )
         self.summary_generator = SummaryGenerator()
         self.quiz_generator = QuizGenerator(model_name=quiz_model_name)
 
@@ -57,23 +59,22 @@ class Router:
         """
         if search_type is None and search_kwargs is None:
             # try:
-            query_results = (
-                self.vector_store.retriever.vectorstore.similarity_search(
-                    query=query
-                )
+            query_results = self.vector_store.retriever.vectorstore.similarity_search(
+                query=query
             )
             # except errno as e:
             #     print(e.with_traceback())
             #     return None
-        # try:
-        # retriver = self.vector_store.retriever.vectorstore.as_retriever(
+        # else:
+        #   try:
+        #   retriver = self.vector_store.retriever.vectorstore.as_retriever(
         #     search_type=search_type, search_kwargs=search_kwargs
         # )
-        # query_results = retriver.invoke(query)
+        #   query_results = retriver.invoke(query)
 
-        # except errno as e:
-        #     print(e.with_traceback())
-        #     return None
+        #   except errno as e:
+        #       print(e.with_traceback())
+        #       return None
 
         return query_results
 

@@ -1,4 +1,4 @@
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.storage import InMemoryStore
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -78,8 +78,9 @@ class VectorStore:
         text_splitter: TextSplitter = RecursiveCharacterTextSplitter(
             chunk_size=1000, chunk_overlap=100
         ),
+        embedder: Embedder = Embedder(),
     ) -> None:
-        self.embedder = Embedder()
+        self.embedder = embedder
         self.recursice_splitter = text_splitter
 
         self.vector_store = Chroma(
