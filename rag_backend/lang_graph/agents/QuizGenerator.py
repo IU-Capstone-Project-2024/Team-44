@@ -1,11 +1,11 @@
-from langchain import PromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import LLMChain
 from langchain_community.chat_models import ChatOllama
 from langchain_core.runnables import RunnablePassthrough
 
-from pydantic_models.models import Question, Quiz
+from .ValidationModels import Quiz, Question
 
 
 class QuizGenerator:

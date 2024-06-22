@@ -33,9 +33,11 @@ class Router:
             text_splitter (TextSplitter, optional): text splitter instance to use
             quiz_model_name (str, optional): model name from Ollama (currently using Ollama)
         """
+        self.text_splitter = text_splitter
+
         self.embedder = Embedder(embedding_size=embedding_size)
         self.vector_store = VectorStore(
-            text_splitter=text_splitter, embedder=self.embedder
+            text_splitter=self.text_splitter, embedder=self.embedder
         )
         self.summary_generator = SummaryGenerator()
         self.quiz_generator = QuizGenerator(model_name=quiz_model_name)
@@ -79,11 +81,20 @@ class Router:
             bool: True for success, False for error raised
         """
 
-        # TODO: Consider case of uploading identical documnets multiple times
+        # TODO: Consider case of uploading identical documnets multiple times -- Need to check
 
-        self.vector_store.add_docs(documents)
+        docs = []
+        threshold_retriver = self.vector_store.retriever.vectorstore.as_retriever(
+            search_type="similarity_score_threshold",
+            search_kwargs={"score_threshold": 0.95},
+        )
+        for doc in documents:
+            if len(threshold_retriver.invoke(doc.page_content)) == 0:
+                docs.append(doc)
 
-        return True
+        self.vector_store.add_docs(docs)
+
+        return float(len(docs) / len(documents))
 
     def embed(self) -> Callable[..., Tensor | ndarray | list]:
         """Retruns fucntion used for embeddings.
