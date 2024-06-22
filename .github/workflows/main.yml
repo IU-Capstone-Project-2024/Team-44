@@ -34,10 +34,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Running server
         run: |
-          pip install -r requirements.txt
-          cd rag_backend
-          python manage.py migrate
-          python manage.py runserver & sleep 5
+          docker-compose up -d --build
       - name: Save Primes
         id: cache-primes-save
         uses: actions/cache/save@v4

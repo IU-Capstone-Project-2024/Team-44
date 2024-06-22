@@ -1,12 +1,23 @@
-FROM python:3.11
+# syntax=docker/dockerfile:1
 
-WORKDIR /usr/src/rag_backend
+ARG PYTHON_VERSION=3.11.7
+FROM python:${PYTHON_VERSION}-slim as base
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
 
-RUN pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /rag_backend
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=./rag_backend/requirements.txt,target=./rag_backend/requirements.txt \
+    python -m pip install -r ./rag_backend/requirements.txt
 
 COPY . .
+
+EXPOSE 8000
+
+CMD python "./rag_backend/manage.py" runserver 0.0.0.0:8000
