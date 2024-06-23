@@ -85,7 +85,10 @@ class QuizView(APIView):
             # })
             # print(quiz_serializer.data)
             # print(quiz_serializer)
-            return Response(quiz_serializer.data)
+            if quiz_serializer.is_valid():
+                return Response(quiz_serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
