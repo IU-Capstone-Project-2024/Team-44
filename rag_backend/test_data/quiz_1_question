@@ -1,0 +1,9 @@
+{
+    "questions": [
+        Question(
+            question="What is the process used by plants to convert light energy into chemical energy?",
+            options=["Respiration", "Photosynthesis", "Decomposition", "Evaporation"],
+            correct_answers=["Photosynthesis"],
+        )
+    ]
+}

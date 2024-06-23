@@ -1,4 +1,4 @@
-from langchain_community.chat_models import ChatOllama
+# from langchain_community.chat_models import ChatOllama
 from langchain_core.messages.base import BaseMessage
 from transformers import T5ForConditionalGeneration, AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer
@@ -55,4 +55,4 @@ if __name__ == "__main__":
 		"""
     s = SummaryGenerator()
     ans = s.generate_summary(text=text)
-    print(ans)
+    print(type(ans), ans)

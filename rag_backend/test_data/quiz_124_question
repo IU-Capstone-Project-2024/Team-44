@@ -1,0 +1,1120 @@
+{
+    "questions": [
+        Question(
+            question="What is the text?",
+            options=["Earth", "Mars", "Jupiter", "World"],
+            correct_answers=["World"],
+        ),
+        Question(
+            question="What is the correct answer?",
+            options=["Yes", "No", "Maybe", "World"],
+            correct_answers=["World"],
+        ),
+        Question(
+            question="What is the native name for the planet on which The Stormlight Archive is set?",
+            options=["Roshar", "Shinovar", "Honor", "Cultivation"],
+            correct_answers=["Roshar"],
+        ),
+        Question(
+            question="Who settled Roshar?",
+            options=[
+                "Odium",
+                "Honor and Cultivation",
+                "The Shards",
+                "The Stormlight Archive Authors",
+            ],
+            correct_answers=["Honor and Cultivation"],
+        ),
+        Question(
+            question="What are people from Roshar called?",
+            options=["Rosharians", "Shinovarians", "Highstormers", "Stormsurvivors"],
+            correct_answers=["Rosharians"],
+        ),
+        Question(
+            question="How many moons does Roshar have?",
+            options=["One", "Two", "Three", "Four"],
+            correct_answers=["Three"],
+        ),
+        Question(
+            question="What is characterized by a very violent storm front traveling from east to west on Roshar?",
+            options=["Highstorms", "Lowstorms", "Rainstorms", "Windstorms"],
+            correct_answers=["Highstorms"],
+        ),
+        Question(
+            question="What is the frequency of highstorms on Roshar?",
+            options=["Rarely", "Frequently", "Never", "Always"],
+            correct_answers=["Frequently"],
+        ),
+        Question(
+            question="Do storm wardens have an easy time predicting highstorm schedules?",
+            options=[
+                "Yes",
+                "No",
+                "It depends",
+                "They are able to accurately predict their schedule through complex mathematics",
+            ],
+            correct_answers=[
+                "They are able to accurately predict their schedule through complex mathematics"
+            ],
+        ),
+        Question(
+            question="How do flora and fauna on Roshar cope with the highstorms?",
+            options=[
+                "By moving away from the storms",
+                "Through complex mathematics",
+                "By evolving to adapt to the condition",
+                "None of the above",
+            ],
+            correct_answers=["By evolving to adapt to the condition"],
+        ),
+        Question(
+            question="What were the Roshar nations known as during the Heraldic Epochs?",
+            options=[
+                "Silver Kingdoms",
+                "Golden Cities",
+                "Makabaki States",
+                "Heraldic Realms",
+            ],
+            correct_answers=["Silver Kingdoms"],
+        ),
+        Question(
+            question="What happened to the Silver Kingdoms after the departure of the Heralds and the demise of the Orders of Knights Radiant?",
+            options=[
+                "They merged into a single nation",
+                "They split into smaller kingdoms",
+                "They disappeared completely",
+                "They remained unchanged",
+            ],
+            correct_answers=["They split into smaller kingdoms"],
+        ),
+        Question(
+            question="Which city is mentioned as being part of the Frostlands in the notes?",
+            options=["Kharbranth", "Natani", "Shinovar", "Rira"],
+            correct_answers=["Kharbranth", "Natani"],
+        ),
+        Question(
+            question="What was Azir, according to the notes?",
+            options=[
+                "A prominent Makabaki country",
+                "The capital of Roshar",
+                "A nation that existed before the Heraldic Epochs",
+                "A city in the Frostlands",
+            ],
+            correct_answers=["A prominent Makabaki country"],
+        ),
+        Question(
+            question="What was Shinovar, according to the notes?",
+            options=[
+                "A nation that existed during the Heraldic Epochs",
+                "A prominent Makabaki country",
+                "A city in the Frostlands",
+                "One of the Silver Kingdoms",
+            ],
+            correct_answers=["A prominent Makabaki country"],
+        ),
+        Question(
+            question="What are some of the races featured in The Stormlight Archive?",
+            options=["Humans", "Partly Human", "Various Ethnicities", "Alien Species"],
+            correct_answers=["Various Ethnicities"],
+        ),
+        Question(
+            question="Which race is renowned for their trading and merchant skills?",
+            options=["Alethi", "Veden", "Thaylens", "Natan"],
+            correct_answers=["Thaylens"],
+        ),
+        Question(
+            question="What is a distinctive feature of the Alethi people?",
+            options=["Pale Skin", "Dark Hair", "Tan Skin", "Long Eyebrows"],
+            correct_answers=["Tan Skin", "Dark Hair"],
+        ),
+        Question(
+            question="Which race has pale skin and black hair, with some having red hair?",
+            options=["Veden", "Natan", "Thaylens", "Alethi"],
+            correct_answers=["Veden"],
+        ),
+        Question(
+            question="What is a notable feature of the Natan people?",
+            options=["Faintly Bluish Skin", "Gloves", "Tan Skin", "Dark Hair"],
+            correct_answers=["Faintly Bluish Skin", "Gloves"],
+        ),
+        Question(
+            question="What do the Horneaters consider a delicacy?",
+            options=[
+                "Animal horns",
+                "Shells and claws",
+                "Fruits and vegetables",
+                "Meat",
+            ],
+            correct_answers=["Animal horns", "Shells and claws"],
+        ),
+        Question(
+            question="What is the average height of the Unkalaki?",
+            options=[
+                "Under 5 feet (1.5 m)",
+                "Over 7 feet (2.1 m)",
+                "Between 5-6 feet (1.5-1.8 m)",
+                "Exactly 6 feet (1.8 m)",
+            ],
+            correct_answers=["Over 7 feet (2.1 m)"],
+        ),
+        Question(
+            question="Where is the Unkalaki homeland located?",
+            options=[
+                "The mountains of Jah Keved",
+                "The plains of Jah Keved",
+                "The forests of Jah Keved",
+                "The cities of Jah Keved",
+            ],
+            correct_answers=["The mountains of Jah Keved"],
+        ),
+        Question(
+            question="What is the physical appearance of the Parshendi?",
+            options=[
+                "Marbled red and white or red and black skin",
+                "Smooth gray skin",
+                "Scaly green skin",
+                "Furry brown skin",
+            ],
+            correct_answers=["Marbled red and white or red and black skin"],
+        ),
+        Question(
+            question="What is the purpose of the Parshendi's exoskeleton?",
+            options=[
+                "To protect them from harm",
+                "To make them look more intimidating",
+                "To help them breathe underwater",
+                "To act as natural armor",
+            ],
+            correct_answers=["To act as natural armor"],
+        ),
+        Question(
+            question="How do the Parshendi communicate with each other",
+            options=[
+                "Through spoken language",
+                "Through songs and rhythms in their heads",
+                "Through written messages",
+                "Through hand gestures",
+            ],
+            correct_answers=["Through songs and rhythms in their heads"],
+        ),
+        Question(
+            question="What is the name of the mentally limited form of the Parshendi species?",
+            options=["Parshmen", "Singers", "Listeners", "Warriors"],
+            correct_answers=["Parshmen"],
+        ),
+        Question(
+            question="What is unique about the Shin race?",
+            options=[
+                "They have dark skin",
+                "They stand taller than most others",
+                "They lack epicanthic folds and have white skin",
+                "They have bigger and rounder eyes",
+            ],
+            correct_answers=["They lack epicanthic folds and have white skin"],
+        ),
+        Question(
+            question="What is unique about the Makabaki race?",
+            options=[
+                "They stand shorter than most others",
+                "They have bigger and rounder eyes",
+                "They have dark skin and hair",
+                "They are made of many small creatures with exoskeletons",
+            ],
+            correct_answers=["They have dark skin and hair"],
+        ),
+        Question(
+            question="What is unique about the Dysian Aimians (Sleepless)?",
+            options=[
+                "They can change their bodies slightly",
+                "They have white-blue skin and shadows that point the wrong way",
+                "They are made of many small creatures with exoskeletons called hordelings",
+                "They stand taller than most others",
+            ],
+            correct_answers=[
+                "They are made of many small creatures with exoskeletons called hordelings"
+            ],
+        ),
+        Question(
+            question="What is unique about the Siah Aimians?",
+            options=[
+                "They have dark skin and hair",
+                "They can change their bodies slightly",
+                "They have white-blue skin and shadows that point the wrong way",
+                "They are made of many small creatures with exoskeletons",
+            ],
+            correct_answers=[
+                "They have white-blue skin and shadows that point the wrong way"
+            ],
+        ),
+        Question(
+            question="What is the class structure?",
+            options=[
+                "Class diagram",
+                "Object-oriented programming",
+                "Data structures",
+                "Algorithm",
+            ],
+            correct_answers=["Class diagram"],
+        ),
+        Question(
+            question="What are the primary factors that determine a person's class in Alethkar and Jah Keved?",
+            options=["Eye color", "Birthright", "Social status", "Occupation"],
+            correct_answers=["Eye color"],
+        ),
+        Question(
+            question="What is the typical social standing of people with dark eye colors (brown, dark green, charcoal grey) in these nations?",
+            options=[
+                "Nobles and ruling class",
+                "Peasants and slaves",
+                "Middle-class merchants",
+                "Artisans",
+            ],
+            correct_answers=["Peasants and slaves"],
+        ),
+        Question(
+            question="What is the term for the further class distinctions within the nahn (darkeyes) and dahn (lighteyes) systems?",
+            options=[
+                "Nahn and Dahn",
+                "Shah and Rahl",
+                "Khan and Khaness",
+                "Sultan and Sultaness",
+            ],
+            correct_answers=["Nahn and Dahn"],
+        ),
+        Question(
+            question="What is the highest level of social standing in the dahn system, exclusive to the king?",
+            options=["10th dahn", "1st dahn", "5th dahn", "9th dahn"],
+            correct_answers=["1st dahn"],
+        ),
+        Question(
+            question="What is the composition of the first dahn?",
+            options=[
+                "The king and queen",
+                "The king alone",
+                "The queen alone",
+                "The entire royal family",
+            ],
+            correct_answers=["The king alone"],
+        ),
+        Question(
+            question="What can cause a dark-eyed individual to obtain light eyes?",
+            options=[
+                "Obtaining Shardblades",
+                "Eating certain foods",
+                "Practicing magic",
+                "Inheriting from parents",
+            ],
+            correct_answers=["Obtaining Shardblades"],
+        ),
+        Question(
+            question="What is Spren?",
+            options=[
+                "A god",
+                "A being of pure energy",
+                "A mythical creature",
+                "A type of magic",
+            ],
+            correct_answers=["A being of pure energy"],
+        ),
+        Question(
+            question="What is the nature of Spren?",
+            options=[
+                "They are gods",
+                "They are beings of pure energy",
+                "They are mythical creatures",
+                "They are a type of magic",
+            ],
+            correct_answers=["They are beings of pure energy"],
+        ),
+        Question(
+            question="What are Spren in the land of Roshar?",
+            options=[
+                "Spirits drawn to different conditions or emotions",
+                "Intelligent beings that can communicate with humans",
+                "Forces of nature/emotion having little to no intelligence",
+                "Beings that only appear when something changes",
+            ],
+            correct_answers=["Spirits drawn to different conditions or emotions"],
+        ),
+        Question(
+            question="What is the primary characteristic of Cryptics (also known as liespren)?",
+            options=[
+                "They are highly intelligent and can communicate with humans",
+                "They have little to no intelligence and are seen as forces of nature/emotion",
+                "They are the most common type of spren",
+                "They dislike being referred to as 'liespren'",
+            ],
+            correct_answers=[
+                "They have little to no intelligence and are seen as forces of nature/emotion"
+            ],
+        ),
+        Question(
+            question="What is a notable characteristic of Honorspren?",
+            options=[
+                "They are the most intelligent type of spren",
+                "They have little to no intelligence and are seen as forces of nature/emotion",
+                "They can bond with humans and grant surgebinding powers",
+                "They only appear when something changes",
+            ],
+            correct_answers=["They can bond with humans and grant surgebinding powers"],
+        ),
+        Question(
+            question="What is the primary source of power for the 10 orders of the Knights Radiant?",
+            options=[
+                "The Radiants themselves",
+                "Their bond with spren",
+                "Their connection to the natural world",
+                "Their ability to communicate with other Radiants",
+            ],
+            correct_answers=["Their bond with spren"],
+        ),
+        Question(
+            question="Who bonded with the thief Lift, allowing her to surgebind?",
+            options=["Wyndle", "Dalinar Kholin", "Jasnah", "The Stormfather"],
+            correct_answers=["Wyndle"],
+        ),
+        Question(
+            question="Who bonded a spren in an unconventional manner?",
+            options=["Lift", "Dalinar Kholin", "Jasnah", "The Stormfather"],
+            correct_answers=["Dalinar Kholin"],
+        ),
+        Question(
+            question="What type of spren did Jasnah bond?",
+            options=["Stormspren", "Inkspren", "Windspren", "Skyblinder"],
+            correct_answers=["Inkspren"],
+        ),
+        Question(
+            question="What do some spren share characteristics with?",
+            options=["Quantum mechanics", "Gravity", "Electricity", "Chemistry"],
+            correct_answers=["Quantum mechanics"],
+        ),
+        Question(
+            question="What happens to the recorded state of a spren when it is tested more thoroughly?",
+            options=[
+                "It remains stable",
+                "It changes at random",
+                "It disappears",
+                "It becomes intelligent",
+            ],
+            correct_answers=["It changes at random"],
+        ),
+        Question(
+            question="What are Spren according to the second book?",
+            options=[
+                "Physical forms of humans",
+                "Concepts and ideas given physical form by the human collective subconscious",
+                "Intelligent beings from another realm",
+                "Creatures that can only be seen in Shadesmar",
+            ],
+            correct_answers=[
+                "Concepts and ideas given physical form by the human collective subconscious"
+            ],
+        ),
+        Question(
+            question="What is the cost of most self-awareness for higher spren when they cross over into the physical realm?",
+            options=[
+                "They lose their intelligence",
+                "They forget their past",
+                "They become less intelligent",
+                "Most of their self-awareness",
+            ],
+            correct_answers=["Most of their self-awareness"],
+        ),
+        Question(
+            question="What do black beads in Shadesmar represent?",
+            options=[
+                "A type of flora",
+                "Cities and buildings",
+                "Physical forms on Roshar",
+                "The collective subconscious",
+            ],
+            correct_answers=["Physical forms on Roshar"],
+        ),
+        Question(
+            question="What is the topic of this quiz?",
+            options=["Religion:", "History", "Science", "Math"],
+            correct_answers=["Religion:"],
+        ),
+        Question(
+            question="What is the format of the output?",
+            options=["JSON", "XML", "HTML", "Text"],
+            correct_answers=["JSON"],
+        ),
+        Question(
+            question="What is the main theme of Vorinism?",
+            options=[
+                "The struggle between forces of the Voidbringers and humanity",
+                "The importance of warrior culture",
+                "The concept of the Tranquiline Halls",
+                "The role of the Lost Radiants",
+            ],
+            correct_answers=[
+                "The struggle between forces of the Voidbringers and humanity"
+            ],
+        ),
+        Question(
+            question="What is the purpose of a person's soul in Vorinism?",
+            options=[
+                "To continue in its past role towards regaining the Tranquiline Halls",
+                "To become one with the Voidbringers",
+                "To assist people in advancing their Callings",
+                "To remain a warrior in the afterlife",
+            ],
+            correct_answers=[
+                "To continue in its past role towards regaining the Tranquiline Halls"
+            ],
+        ),
+        Question(
+            question="What is the name given to the Knights Radiant by Vorinism?",
+            options=[
+                "The Lost Radiants",
+                "The Voidbringers",
+                "The Radiant Warriors",
+                "The Celestial Guardians",
+            ],
+            correct_answers=["The Lost Radiants"],
+        ),
+        Question(
+            question="How are people organized in Vorinism?",
+            options=[
+                "By devotaries based on variances in beliefs, talents or personality traits",
+                "By warrior clans",
+                "By city-states",
+                "By nation-states",
+            ],
+            correct_answers=[
+                "By devotaries based on variances in beliefs, talents or personality traits"
+            ],
+        ),
+        Question(
+            question="How does a person select their devotary?",
+            options=[
+                "based on variances in beliefs",
+                "based on talents or personality traits",
+                "randomly",
+                "by asking for guidance",
+            ],
+            correct_answers=[
+                "based on variances in beliefs, talents or personality traits"
+            ],
+        ),
+        Question(
+            question="What is the purpose of a Devotary of Sincerity?",
+            options=[
+                "to learn and ask questions",
+                "to deny others' existence",
+                "to duel with others",
+                "to become an ardent",
+            ],
+            correct_answers=["to learn and ask questions"],
+        ),
+        Question(
+            question="What is Adolin Kholin's calling?",
+            options=["Dueling", "Learning", "Healing", "Teaching"],
+            correct_answers=["Dueling"],
+        ),
+        Question(
+            question="What are the priesthood of the Vorin religion referred to as?",
+            options=["devotaries", "ardents", "duelists", "learners"],
+            correct_answers=["ardents"],
+        ),
+        Question(
+            question="What is a term used to refer to those who reject the existence of the Almighty?",
+            options=["Heresy", "Atheism", "Polytheism", "Monotheism"],
+            correct_answers=["Heresy"],
+        ),
+        Question(
+            question="Which religions are mentioned in The Way of Kings?",
+            options=[
+                "Stone Shamans, Ysperists and Maakians",
+                "Jasnah Kholin's Faith",
+                "The Almighty's Church",
+                "All the above",
+            ],
+            correct_answers=["Stone Shamans, Ysperists and Maakians"],
+        ),
+        Question(
+            question="What is a Shardblade's ability against non-living matter?",
+            options=[
+                "Cut through with ease",
+                "Be unable to cut through",
+                "Have no effect",
+                "Destroy completely",
+            ],
+            correct_answers=["Cut through with ease"],
+        ),
+        Question(
+            question="What happens when a Shardblade cuts through living creatures?",
+            options=[
+                "Heals the wound",
+                "Maims or kills",
+                "Has no effect",
+                "Creates a shield",
+            ],
+            correct_answers=["Maims or kills"],
+        ),
+        Question(
+            question="What are some known defenses against a Shardblade?",
+            options=[
+                "Shardplate, shields called 'half-shards', another Shardblade, or an aluminum blade",
+                "Only Shardplate and shields",
+                "Only Shardplate and another Shardblade",
+                "None",
+            ],
+            correct_answers=[
+                "Shardplate, shields called 'half-shards', another Shardblade, or an aluminum blade"
+            ],
+        ),
+        Question(
+            question="How long does it take to summon a Shardblade from thin air?",
+            options=[
+                "One heartbeat",
+                "Ten heartbeats",
+                "Twenty heartbeats",
+                "Thirty heartbeats",
+            ],
+            correct_answers=["Ten heartbeats"],
+        ),
+        Question(
+            question="What is the estimated number of known Shardblades in the world?",
+            options=[
+                "Fewer than one hundred",
+                "More than one hundred",
+                "Exactly one hundred",
+                "Unknown",
+            ],
+            correct_answers=["Fewer than one hundred"],
+        ),
+        Question(
+            question="What is Shardplate?",
+            options=[
+                "Full plate armor that only protects the wearer",
+                "Plate armor that provides protection against Surgebinding",
+                "A type of Shardblade",
+                "A type of regular weapon",
+            ],
+            correct_answers=[
+                "Plate armor that provides protection against Surgebinding"
+            ],
+        ),
+        Question(
+            question="What happens to Shardplate if it is repeatedly struck at the same spot by regular weapons or Shardblades?",
+            options=[
+                "It becomes stronger and more durable",
+                "It can be repaired quickly",
+                "It cracks and breaks",
+                "It turns into a different type of armor",
+            ],
+            correct_answers=["It cracks and breaks"],
+        ),
+        Question(
+            question="How does one repair or 'regrow' Shardplate?",
+            options=[
+                "By using magic",
+                "By using regular weapons",
+                "By taking a long time",
+                "By using Shardblades",
+            ],
+            correct_answers=["By taking a long time"],
+        ),
+        Question(
+            question="What is a full shardbearer capable of?",
+            options=[
+                "Turning the tide of battle on its own",
+                "Wielding only Shardplate",
+                "Attuning themselves to their owner's heartbeat",
+                "Wearing only Shardblades",
+            ],
+            correct_answers=["Turning the tide of battle on its own"],
+        ),
+        Question(
+            question="How do Kaladin and Syl react to the Shardblades wielded by the Alethi?",
+            options=[
+                "With excitement",
+                "With revulsion",
+                "With indifference",
+                "With curiosity",
+            ],
+            correct_answers=["With revulsion"],
+        ),
+        Question(
+            question="What is notable about the Shardplate worn by the Knights Radiant in Dalinar's visions?",
+            options=[
+                "It does not glow",
+                "It glows",
+                "It is made of a different material",
+                "It is only worn by one person",
+            ],
+            correct_answers=["It glows"],
+        ),
+        Question(
+            question="What are most Shardblades actually dead?",
+            options=[
+                "Spren that come alive for a period of time by attuning themselves to their owner's heartbeat",
+                "Shardplate that can be worn by multiple people",
+                "Alethi who wield the blades",
+                "Radiants who wear the plate",
+            ],
+            correct_answers=[
+                "Spren that come alive for a period of time by attuning themselves to their owner's heartbeat"
+            ],
+        ),
+        Question(
+            question="What is a Shardblade?",
+            options=[
+                "A physical manifestation of a living spren",
+                "A magical sword that can only be wielded by Knights Radiant",
+                "A type of shield used by the Knights Radiant",
+                "A weapon that requires a summoning period of ten heartbeats",
+            ],
+            correct_answers=["A physical manifestation of a living spren"],
+        ),
+        Question(
+            question="What is an Honorblade?",
+            options=[
+                "A physical manifestation of a dead spren",
+                "A magical sword that can only be wielded by The Heralds",
+                "A type of shield used by the Knights Radiant",
+                "A weapon that grants the powers of one order of Radiants",
+            ],
+            correct_answers=[
+                "A weapon that grants the powers of one order of Radiants"
+            ],
+        ),
+        Question(
+            question="What is unique about 'living' Shardblades?",
+            options=[
+                "They require a summoning period of ten heartbeats",
+                "They can only be wielded by The Heralds",
+                "They can be summoned instantly",
+                "They are physical manifestations of dead spren",
+            ],
+            correct_answers=["They can be summoned instantly"],
+        ),
+        Question(
+            question="What is Surgebinding?",
+            options=[
+                "A type of magic that stems from Honor",
+                "A group of ten magic systems that stem from Honor and Cultivation",
+                "A form of magic that only works on Roshar",
+                "A type of elemental spirit native to Roshar",
+            ],
+            correct_answers=["B"],
+        ),
+        Question(
+            question="What is the source of power for Surgebinding?",
+            options=[
+                "Stormlight",
+                "Honor",
+                "Cultivation",
+                "The three Shards of Adonalsium",
+            ],
+            correct_answers=["A"],
+        ),
+        Question(
+            question="How are humans granted the ability to use Surgebinding?",
+            options=[
+                "Through bonding with a Spren, a type of elemental spirit native to Roshar",
+                "By using Honor and Cultivation",
+                "By channeling the three Shards of Adonalsium",
+                "Through a magical ritual",
+            ],
+            correct_answers=["A"],
+        ),
+        Question(
+            question="How many branches are there in Surgebinding?",
+            options=["Five", "Ten", "Twenty", "Thirty"],
+            correct_answers=["B"],
+        ),
+        Question(
+            question="What is Windrunning?",
+            options=[
+                "An ability to manipulate fire",
+                "An ability to affect gravity and adhesion",
+                "A method of teleportation",
+                "A form of magic",
+            ],
+            correct_answers=["An ability to affect gravity and adhesion"],
+        ),
+        Question(
+            question="How many methods are there for Windrunning?",
+            options=["Two", "Three", "Four", "Five"],
+            correct_answers=["Three"],
+        ),
+        Question(
+            question="What is the effect of a Basic Lashing in Windrunning?",
+            options=[
+                "Creates an unbreakable bond between two objects",
+                "Changes the direction of gravitational pull for an individual",
+                "Increases the strength of gravity on one object",
+                "Decreases the strength of gravity on all objects",
+            ],
+            correct_answers=[
+                "Changes the direction of gravitational pull for an individual"
+            ],
+        ),
+        Question(
+            question="What is the effect of a Full Lashing in Windrunning?",
+            options=[
+                "Creates a weak bond between two objects",
+                "Increases the strength of gravity on one object",
+                "Decreases the strength of gravity on all objects",
+                "Creates an almost unbreakable bond between two objects",
+            ],
+            correct_answers=["Creates an almost unbreakable bond between two objects"],
+        ),
+        Question(
+            question="What is the effect of a Reverse Lashing in Windrunning?",
+            options=[
+                "Causes an object to have a weaker gravitational pull",
+                "Causes other objects to be repelled from it",
+                "Causes an object to have a much stronger gravitational pull, causing other objects to be pulled towards it",
+                "Causes an object to float",
+            ],
+            correct_answers=[
+                "Causes an object to have a much stronger gravitational pull, causing other objects to be pulled towards it"
+            ],
+        ),
+        Question(
+            question="What is the origin of the Knights Radiant?",
+            options=[
+                "The Knights Radiant originated through their own abilities",
+                "The Knights Radiant originated through spren copying the abilities which the Heralds obtained through their Honorblades",
+                "The Knights Radiant were created by the Almighty",
+                "The Knights Radiant are a group of immortal beings",
+            ],
+            correct_answers=[
+                "The Knights Radiant originated through spren copying the abilities which the Heralds obtained through their Honorblades"
+            ],
+        ),
+        Question(
+            question="What is the bond between humans and spren called?",
+            options=["Nahel bond", "Honorbond", "Surgebinding", "Bond of Sentience"],
+            correct_answers=["Nahel bond"],
+        ),
+        Question(
+            question="What abilities does Kaladin gain through his Nahel bond with Sylphrena?",
+            options=[
+                "The power to Surgebind and Soulcast",
+                "Only the power to Surgebind",
+                "The ability to create Illusions",
+                "No special abilities",
+            ],
+            correct_answers=["Only the power to Surgebind"],
+        ),
+        Question(
+            question="What type of spren does Pattern share a bond with Shallan?",
+            options=["Honorspren", "Liespren (Cryptic)", "Truthspren", "Orderspren"],
+            correct_answers=["Liespren (Cryptic)"],
+        ),
+        Question(
+            question="What is the First Ideal for every order of the Knights Radiant?",
+            options=[
+                "Life before death, strength before weakness",
+                "I will protect those who cannot protect themselves",
+                "I accept that there will be those I cannot protect",
+                "Journey before destination",
+            ],
+            correct_answers=["Life before death, strength before weakness"],
+        ),
+        Question(
+            question="What is the Second Ideal for the Order of Windrunners?",
+            options=[
+                "I will protect even those I hate, so long as it is right",
+                "I accept that there will be those I cannot protect",
+                "Manipulate the Surges of Adhesion and Gravitation",
+                "Bonded to Honorspren",
+            ],
+            correct_answers=["I will protect those who cannot protect themselves"],
+        ),
+        Question(
+            question="What is the Third Ideal for the Order of Windrunners?",
+            options=[
+                "I accept that there will be those I cannot protect",
+                "Manipulate the Surges of Adhesion and Gravitation",
+                "Bonded to Honorspren",
+                "I will protect even those I hate, so long as it is right",
+            ],
+            correct_answers=[
+                "I will protect even those I hate, so long as it is right"
+            ],
+        ),
+        Question(
+            question="What is the Fourth Ideal for the Order of Windrunners?",
+            options=[
+                "Life before death, strength before weakness",
+                "Journey before destination",
+                "Manipulate the Surges of Adhesion and Gravitation",
+                "I accept that there will be those I cannot protect",
+            ],
+            correct_answers=["I accept that there will be those I cannot protect"],
+        ),
+        Question(
+            question="What is unique about the Order of the Lightweavers?",
+            options=[
+                "They have only one Ideal",
+                "They are bonded to Honorspren",
+                "They manipulate the Surges of Adhesion and Gravitation",
+                "They must admit truths to themselves in order to progress",
+            ],
+            correct_answers=[
+                "They must admit truths to themselves in order to progress"
+            ],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Windrunners?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Honorspren",
+            ],
+            correct_answers=["Manipulate the Surges of Adhesion and Gravitation"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Skybreakers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Highspren",
+            ],
+            correct_answers=["Manipulate the Surges of Gravitation and Division"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Dustbringers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Ashspren",
+            ],
+            correct_answers=["Manipulate the Surges of Division and Abrasion"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Edgedancers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Cultivationspren",
+            ],
+            correct_answers=["Manipulate the Surges of Abrasion and Progression"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Truthwatchers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Mistspren",
+            ],
+            correct_answers=["Manipulate the Surges of Progression and Illumination"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Lightweavers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Liespren (Cryptic)",
+            ],
+            correct_answers=[
+                "Manipulate the Surges of Illumination and Transformation"
+            ],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Elsecallers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Inkspren",
+            ],
+            correct_answers=[
+                "Manipulate the Surges of Transformation and Transportation"
+            ],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Willshapers?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Lightspren (Reachers)",
+            ],
+            correct_answers=["Manipulate the Surges of Transportation and Cohesion"],
+        ),
+        Question(
+            question="What is the Surge manipulation ability for Stonewards?",
+            options=[
+                "Manipulate the Surges of Adhesion",
+                "Manipulate the Surges of Gravitation",
+                "Manipulate the Surges of Division",
+                "Bonded to Peakspren",
+            ],
+            correct_answers=["Manipulate the Surges of Cohesion and Tension"],
+        ),
+        Question(
+            question="What is the role of Stonewards?",
+            options=[
+                "Manipulate the Surges of Cohesion",
+                "Manipulate the Surges of Tension",
+                "Bonded to Peakspren",
+                "None of the above",
+            ],
+            correct_answers=[
+                "Manipulate the Surges of Cohesion and Tension. Bonded to Peakspren."
+            ],
+        ),
+        Question(
+            question="What is the role of Bondsmiths?",
+            options=[
+                "Manipulate the Surges of Cohesion and Adhesion",
+                "Bonded to three unique spren (the Nightwatcher, the Stormfather, and the Sibling)",
+                "There can be more than three Bondsmiths",
+                "None of the above",
+            ],
+            correct_answers=[
+                "Manipulate the Surges of Tension and Adhesion. Bonded to three unique spren (the Nightwatcher, the Stormfather, and the Sibling). Therefore, there can only be three Bondsmiths."
+            ],
+        ),
+        Question(
+            question="What is Soulcasting?",
+            options=[
+                "A practice that turns objects into other forms",
+                "A method of purifying blood",
+                "A way to create food",
+                "A device powered by gems",
+            ],
+            correct_answers=["A practice that turns objects into other forms"],
+        ),
+        Question(
+            question="What powers a soulcaster?",
+            options=[
+                "Gems imbued with Stormlight",
+                "Magic from the Vorin religion",
+                "The power of the Ardents",
+                "The strength of the user's will",
+            ],
+            correct_answers=["Gems imbued with Stormlight"],
+        ),
+        Question(
+            question="Who are the main practitioners of Soulcasting?",
+            options=[
+                "Ardents of the Vorin religion",
+                "Shallan's father's steward",
+                "The Vorin priests",
+                "The Knights Radiant",
+            ],
+            correct_answers=["Ardents of the Vorin religion"],
+        ),
+        Question(
+            question="What kind of magic do Jasnah Kholin and Shallan learn by the end of The Way of Kings?",
+            options=[
+                "Soulcasting",
+                "Surgebinding",
+                "Investiture",
+                "Shadesmar manipulation",
+            ],
+            correct_answers=["Shadesmar manipulation"],
+        ),
+        Question(
+            question="What is required for the magic learned by Jasnah Kholin and Shallan to be used?",
+            options=[
+                "Physical contact with the object",
+                "A soulcaster to be used",
+                "Mental communication with an unknown source",
+                "Stormlight-infused gem",
+            ],
+            correct_answers=["Mental communication with an unknown source"],
+        ),
+        Question(
+            question="What is Shadesmar described as being made of in the book?",
+            options=["Tiny glass beads", "Water", "Fire", "Earth"],
+            correct_answers=["Tiny glass beads"],
+        ),
+        Question(
+            question="According to Brandon Sanderson, what is Shadesmar?",
+            options=[
+                "A Cognitive Realm connecting all the worlds",
+                "A physical realm between worlds",
+                "A magical portal system",
+                "A mystical connection",
+            ],
+            correct_answers=["A Cognitive Realm connecting all the worlds"],
+        ),
+        Question(
+            question="How does Hoid move between worlds according to Brandon Sanderson?",
+            options=[
+                "Using a magical portal",
+                "Through Shadesmar",
+                "By teleportation",
+                "Very good at using Shadesmar",
+            ],
+            correct_answers=["Very good at using Shadesmar"],
+        ),
+        Question(
+            question="What is the purpose of Shadesmar in the Cosmere, according to Brandon Sanderson?",
+            options=[
+                "To connect all the worlds",
+                "To separate the worlds",
+                "To create a magical barrier",
+                "To facilitate inter-world travel",
+            ],
+            correct_answers=["To connect all the worlds"],
+        ),
+        Question(
+            question="What is Voidbinding similar to?",
+            options=["Surgebinding", "Stormlight", "Bonding", "Magic"],
+            correct_answers=["Surgebinding"],
+        ),
+        Question(
+            question="Who makes Voidbinding surges available to his selected servants?",
+            options=["Odium", "Honor", "Taravari", "Nalein"],
+            correct_answers=["Odium"],
+        ),
+        Question(
+            question="How many surges can each Fused access in Voidbinding?",
+            options=["One", "Nine", "Three", "Seven"],
+            correct_answers=["One"],
+        ),
+        Question(
+            question="Which surge is considered exclusive to Honor by the Fused?",
+            options=["Adhesion", "Gravitation", "Division", "Tension"],
+            correct_answers=["Adhesion"],
+        ),
+        Question(
+            question="What are the most common effects of Old Magic?",
+            options=[
+                "Boons and curses granted by the Nightwatcher",
+                "Only boons are granted, no curses",
+                "Curses only, no boons",
+                "No effects at all",
+            ],
+            correct_answers=["Boons and curses granted by the Nightwatcher"],
+        ),
+        Question(
+            question="What happens when a supplicant's request is not well-worded?",
+            options=[
+                "The Nightwatcher grants the boon as expected",
+                "A curse is applied, but the boon is still granted",
+                "The Nightwatcher does not understand human desires and customs",
+                "No effect at all",
+            ],
+            correct_answers=[
+                "The Nightwatcher does not understand human desires and customs"
+            ],
+        ),
+        Question(
+            question="What is offset by a mandatory applied curse when a boon is granted?",
+            options=[
+                "A different boon",
+                "A different curse",
+                "The supplicant's request",
+                "The Old Magic itself",
+            ],
+            correct_answers=["The supplicant's request"],
+        ),
+    ]
+}
