@@ -37,6 +37,7 @@ class Router:
         self.vector_store = VectorStore(
             text_splitter=text_splitter, embedder=self.embedder
         )
+        self.text_splitter = text_splitter
         self.summary_generator = SummaryGenerator()
         self.quiz_generator = QuizGenerator(model_name=quiz_model_name)
 
