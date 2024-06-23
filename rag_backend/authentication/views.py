@@ -13,7 +13,57 @@ from django.utils.encoding import force_bytes, force_str
 from . tokens import generate_token
 from django.core.mail import EmailMessage, send_mail
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserSerializer
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.authentication import get_authorization_header
+from rest_framework.authtoken.models import Token
+from .serializers import SignInSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
+class SignUpView(APIView):
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # Create your views here.
+
+
+class SignInView(APIView):
+    def post(self, request, format=None):
+        serializer = SignInSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.data['username']
+            password = serializer.data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    token, _ = Token.objects.get_or_create(user=user)
+                    return Response({'token': token.key}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'User is not active'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignOutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def index(request):
