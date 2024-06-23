@@ -26,6 +26,7 @@ from langchain.document_loaders import TextLoader
 from langchain.text_splitter import TextSplitter
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from lang_graph.agents.ValidationModels import Question
 router = Router()
 
 
@@ -67,12 +68,26 @@ class QuizView(APIView):
 
             text = text_splitter.create_documents([query])
 
+            # Working with real model
             quiz_json = router.generate_quiz(text)
-            serializer = QuizSerializer(data=quiz_json)
-            if serializer.is_valid():
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            quiz_serializer = QuizSerializer(data=quiz_json)
+
+            # For testing:
+            # quiz_serializer = QuizSerializer({
+            #     "questions": [
+            #         Question(
+            #             question="What is the process used by plants to convert light energy into chemical energy?",
+            #             options=["Respiration", "Photosynthesis",
+            #                      "Decomposition", "Evaporation"],
+            #             correct_answers=["Photosynthesis"],
+            #         )
+            #     ]
+            # })
+            # print(quiz_serializer.data)
+            # print(quiz_serializer)
+            return Response(quiz_serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
