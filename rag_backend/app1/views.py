@@ -1,4 +1,4 @@
-from .serializers import QuerySerializer
+from .serializers import SummarySerializer, QuizSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,9 +29,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 router = Router()
 
 
-class QueryView(APIView):
+class SummaryView(APIView):
     def post(self, request, format=None):
-        serializer = QuerySerializer(data=request.data)
+        serializer = SummarySerializer(data=request.data)
         if serializer.is_valid():
             query = serializer.validated_data['query']
 
@@ -55,6 +55,17 @@ class QueryView(APIView):
                 # 'retrieved_results': [doc.page_content for doc in result]
             }
             return Response(response_data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuizView(APIView):
+    def post(self, request, format=None):
+        text = request.data['text']
+        quiz_json = router.generate_quiz(text)
+        serializer = QuizSerializer(data=quiz_json)
+        if serializer.is_valid():
+            return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
