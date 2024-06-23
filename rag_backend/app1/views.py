@@ -1,4 +1,4 @@
-from .serializers import SummarySerializer, QuizSerializer
+from .serializers import SummarySerializer, QuizSerializer, TextSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,9 +35,7 @@ class SummaryView(APIView):
         if serializer.is_valid():
             query = serializer.validated_data['query']
 
-            text_splitter = RecursiveCharacterTextSplitter(
-                # Set a really small chunk size, just to show.
-            )
+            text_splitter = RecursiveCharacterTextSplitter()
 
             texts = text_splitter.create_documents([query])
 
@@ -61,13 +59,20 @@ class SummaryView(APIView):
 
 class QuizView(APIView):
     def post(self, request, format=None):
-        text = request.data['text']
-        quiz_json = router.generate_quiz(text)
-        serializer = QuizSerializer(data=quiz_json)
+        serializer = TextSerializer(data=request.data)
         if serializer.is_valid():
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            query = serializer.validated_data['text']
+
+            text_splitter = RecursiveCharacterTextSplitter()
+
+            text = text_splitter.create_documents([query])
+
+            quiz_json = router.generate_quiz(text)
+            serializer = QuizSerializer(data=quiz_json)
+            if serializer.is_valid():
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt

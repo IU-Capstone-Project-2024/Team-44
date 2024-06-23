@@ -13,3 +13,7 @@ class QuestionSerializer(serializers.Serializer):
 
 class QuizSerializer(serializers.Serializer):
     questions = QuestionSerializer(many=True)
+
+
+class TextSerializer(serializers.Serializer):
+    text = serializers.CharField()

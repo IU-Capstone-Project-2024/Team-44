@@ -6,13 +6,13 @@ from langchain_text_splitters import (
 from numpy import ndarray
 from torch import Tensor
 
-from agents.SummaryGenerator import SummaryGenerator
-from agents.QuizGenerator import QuizGenerator
-from agents.ValidationModels import Quiz, Question
+from .agents.SummaryGenerator import SummaryGenerator
+from .agents.QuizGenerator import QuizGenerator
+from .agents.ValidationModels import Quiz, Question
 
-from VectorSpace.Embedder import Embedder
+from .VectorSpace.Embedder import Embedder
 
-from VectorSpace.VectorDB import VectorStore
+from .VectorSpace.VectorDB import VectorStore
 
 from langchain_core.documents import Document
 
