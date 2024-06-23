@@ -1,14 +1,18 @@
-import errno
-
-from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
+from langchain_text_splitters import (
+    RecursiveCharacterTextSplitter,
+    TextSplitter,
+    CharacterTextSplitter,
+)
 from numpy import ndarray
 from torch import Tensor
-from .agents import SummaryGenerator
-from .agents import QuizGenerator
 
-from .VectorSpace.Embedder import Embedder
+from agents.SummaryGenerator import SummaryGenerator
+from agents.QuizGenerator import QuizGenerator
+from agents.ValidationModels import Quiz, Question
 
-from .VectorSpace.VectorDB import VectorStore
+from VectorSpace.Embedder import Embedder
+
+from VectorSpace.VectorDB import VectorStore
 
 from langchain_core.documents import Document
 
@@ -24,7 +28,7 @@ class Router:
         text_splitter: TextSplitter = RecursiveCharacterTextSplitter(
             chunk_size=2000, chunk_overlap=100
         ),
-        quiz_model_name="llama3:8b",
+        quiz_model_name="llama3:instruct",
     ) -> None:
         """__init__ Router for managing action/data flow in the app
 
@@ -105,8 +109,9 @@ class Router:
         """
         return self.embedder.embed
 
-    def generate_quiz(self, documents: List[Document]):
-        """generate_quiz _summary_
+    def generate_quiz(self, documents: List[Document]) -> Quiz:
+        """generate_quiz generate quiz based on provided documents.
+            Generation is sequantial for all provied documents
 
         Args:
             documents (List[Document]): LangChain Documents
@@ -114,11 +119,11 @@ class Router:
         Returns:
             _type_: _description_
         """
-        # Actions:
-        # documents -> str -> invoke
-        quiz = self.quiz_generator.generate_quiz(text="")
+        str_text = ""
+        for doc in documents:
+            str_text += doc.page_content
 
-        # parse a quiz?
+        quiz = self.quiz_generator.generate_quiz(notes=str_text)
 
         return quiz
 
@@ -164,6 +169,15 @@ class Router:
 
 
 if __name__ == "__main__":
-    q = Embedder(embedding_size=64)
-    a = q.embed("asdasd")
-    print(a)
+
+    def main():
+        text_small = "Photosynthesis is the process used by plants to convert light energy into chemical energy."
+
+        doc_creator = RecursiveCharacterTextSplitter()
+
+        document = doc_creator.create_documents(texts=[text_small])
+        router = Router()
+        quiz = router.generate_quiz(documents=document)
+        print(quiz)
+
+    main()
