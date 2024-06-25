@@ -1,6 +1,8 @@
 <script lang="ts">
-    import Header from "../static/Header.svelte";
+    import Navbar from "../static/Navbar.svelte";
 </script>
 
-<Header></Header>
-<slot></slot>
+<Navbar></Navbar>
+<div class="mainbody">
+    <slot />
+</div>

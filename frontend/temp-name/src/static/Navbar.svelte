@@ -1,10 +1,11 @@
 <script lang="ts">
-    let links = [{text: "Home", link: "/home"}, {text: "About", link: "/about"}, {text: "Contacts", link: "/contacts"}]
+    import { AuthStore } from "../data-store";
+    let links = [{text: "Home", link: "/home"}, {text: "Sign up", link: "/signup"}, {text: "Sign out", link: "/signout"}]
 </script>
 
 
 
-<header>
+<nav>
     <div class="title">
         <p class="title-text">Title</p>
     </div>
@@ -12,14 +13,14 @@
         {#each links as {text, link}, index(text)}
         <a href="{link}"><p>{text}</p></a>
         {/each}
-        <div class="sign-in">
-            <a href="/signup">Sign up</a>
+        <div class="sign-up">
+            <a href="/signup"><p>Sign up</p></a>
         </div>
     </div>
-</header>
+</nav>
 
 <style>
-    header {
+    nav {
         height: min(10vh, 100);
         display: flex;
         flex-direction: row;
@@ -46,15 +47,6 @@
         flex: 75;
     }
     a {
-        flex: 25;
-        justify-content: center;
-        align-items: center;
-        min-width: 10vw;
-        background-color: aquamarine;
-        color: white;
-        border: 1 dotted red;
-    }
-    .sign-in {
         flex: 25;
         justify-content: center;
         align-items: center;
