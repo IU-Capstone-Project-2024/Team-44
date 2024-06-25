@@ -4,7 +4,7 @@
 	import { goto } from "$app/navigation";
 
     onMount(() => {
-        const endpoint = "http://localhost:8000/api/signout/"
+        const endpoint = "http://localhost:8000/authentication/api/signout/"
         let nulldata = new FormData()
         nulldata.append("null", "null")
         fetch(endpoint, {method: 'POST', body: nulldata}).then(response => {
