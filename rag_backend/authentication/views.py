@@ -10,7 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from base64 import urlsafe_b64encode
 from django.utils.encoding import force_bytes, force_str
-from . tokens import generate_token
+from .tokens import generate_token
 from django.core.mail import EmailMessage, send_mail
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from urllib.parse import urlencode
@@ -60,8 +60,9 @@ def send_confirmation_mail(user, request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = generate_token.make_token(user)
     confirmation_url = f'{
-        settings.FRONTEND_URL}/confirm-email?{urlencode({"uid": uid, "token": token})}'
-
+        settings.FRONTEND_URL}confirm-email?{urlencode({"uid": uid, "token": token})}'
+    user.email_verification_token = token
+    user.save()
     # Send the confirmation URL in the email
     subject = 'Confirm your email'
     message = f'Hello {user.first_name},\n\nPlease confirm your email by clicking the link below:\n{
@@ -69,7 +70,7 @@ def send_confirmation_mail(user, request):
     from_email = settings.EMAIL_HOST_USER
     to_email = user.email
     send_mail(subject, message, from_email, [to_email], fail_silently=True)
-    return redirect(settings.FRONTEND_URL + '/home')
+    # return redirect(settings.FRONTEND_URL + '/home')
 
 
 class SignUpView(APIView):
@@ -96,10 +97,12 @@ class SignInView(APIView):
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
-                    token, _ = Token.objects.get_or_create(user=user)
-                    return Response({'token': token.key}, status=status.HTTP_200_OK)
+                    login(request, user)
+                    # token, _ = Token.objects.get_or_create(user=user)
+                    # token = RefreshToken.for_user(user)
+                    return Response({'message': 'You are logged in'}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'error': 'User is not active'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'User is not active, please verify email'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -107,11 +110,35 @@ class SignInView(APIView):
 
 
 class SignOutView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.is_authenticated:
+            logout(request)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ConfirmEmailAPIView(APIView):
+    def get(self, request, format=None):
+        uid = request.GET.get('uid')
+        token = request.GET.get('token')
+
+        try:
+            user_id = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=user_id)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({'detail': 'Invalid confirmation link'}, status=status.HTTP_400_BAD_REQUEST)
+
+        stored_token = user.email_verification_token
+
+        if stored_token != token:
+            return Response({'detail': 'Invalid confirmation link'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.is_active = True
+        user.save()
+
+        login(request, user)
+        return Response({'detail': 'Email confirmed successfully'}, status=status.HTTP_200_OK)
 
 
 def index(request):

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import SignUpView, SignInView, SignOutView
+from .views import SignUpView, SignInView, SignOutView, ConfirmEmailAPIView
 
 urlpatterns = [
     path('', views.index, name="index"),
@@ -11,5 +11,5 @@ urlpatterns = [
     path('api/signup/', SignUpView.as_view(), name='api-signup'),
     path('api/signin/', SignInView.as_view(), name='api-signin'),
     path('api/signout/', SignOutView.as_view(), name='api-signout'),
-
+    path('api/email-verify', ConfirmEmailAPIView.as_view(), name='email-verify')
 ]

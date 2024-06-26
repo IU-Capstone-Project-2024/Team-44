@@ -32,6 +32,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     telegram_id = models.CharField(max_length=20, unique=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    email_verification_token = models.CharField(
+        max_length=255, null=True, blank=True)
 
     objects = CustomUserManager()
 
