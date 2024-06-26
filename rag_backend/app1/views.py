@@ -63,6 +63,8 @@ class SummaryView(APIView):
 class QuizView(APIView):
     def post(self, request, format=None):
         serializer = TextSerializer(data=request.data)
+        if not request.user.is_authenticated:
+            return Response({'detail': 'You are not logged in'}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             query = serializer.validated_data['text']
 
