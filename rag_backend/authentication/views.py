@@ -60,7 +60,7 @@ def send_confirmation_mail(user, request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = generate_token.make_token(user)
     confirmation_url = f'{
-        settings.FRONTEND_URL}email-verify?{urlencode({"uid": uid, "token": token})}'
+        settings.FRONTEND_URL}/authentication/api/email-verify?{urlencode({"uid": uid, "token": token})}'
     user.email_verification_token = token
     user.save()
     # Send the confirmation URL in the email

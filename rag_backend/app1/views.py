@@ -22,7 +22,7 @@ from django.core.mail import EmailMessage, send_mail
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from langchain_core.documents import Document
-from langchain.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import TextSplitter
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -74,7 +74,7 @@ class QuizView(APIView):
 
             # Working with real model
             quiz_json = router.generate_quiz(text)
-            quiz_serializer = QuizSerializer(data=quiz_json)
+            quiz_serializer = QuizSerializer(quiz_json)
 
             # For testing:
             # quiz_serializer = QuizSerializer({
