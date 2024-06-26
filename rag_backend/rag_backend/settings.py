@@ -152,3 +152,5 @@ LOGOUT_REDIRECT_URL = 'home'
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 AUTH_USER_MODEL = 'authentication.User'
+
+FRONTEND_URL = 'http://localhost:5173/'

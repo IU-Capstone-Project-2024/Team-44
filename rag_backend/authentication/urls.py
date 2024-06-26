@@ -8,8 +8,8 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('signout/', views.signout, name='signout'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
-    path('api/signup/', SignUpView.as_view(), name='signup'),
-    path('api/signin/', SignInView.as_view(), name='signin'),
-    path('api/signout/', SignOutView.as_view(), name='signout'),
+    path('api/signup/', SignUpView.as_view(), name='api-signup'),
+    path('api/signin/', SignInView.as_view(), name='api-signin'),
+    path('api/signout/', SignOutView.as_view(), name='api-signout'),
 
 ]

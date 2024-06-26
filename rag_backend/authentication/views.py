@@ -13,7 +13,7 @@ from django.utils.encoding import force_bytes, force_str
 from . tokens import generate_token
 from django.core.mail import EmailMessage, send_mail
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
+from urllib.parse import urlencode
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -25,13 +25,61 @@ from rest_framework.authentication import get_authorization_header
 from rest_framework.authtoken.models import Token
 from .serializers import SignInSerializer
 from rest_framework.permissions import IsAuthenticated
+from rag_backend import settings
+
+
+def send_confirmation_mail(user, request):
+    messages.success(
+        request, 'Your account has been successfully created.We have send you confirmation email, please confirm your email in order to activate your account')
+    # Welcome message using email
+    subject = "Welcome to Quiz generator"
+    message = "Hello " + \
+        f"{user.first_name} ! \n Welcome to Quiz generator \n We have also sent you a confirmation email, please confirm your email "
+    from_email = settings.EMAIL_HOST_USER
+    to_list = [user.email]
+    send_mail(subject, message, from_email,
+              to_list, fail_silently=True)
+
+    # # Confirmation email
+    # current_site = settings.FRONTEND_URL
+    # email_subject = "Confirm your email @Quiz Generator"
+    # message2 = render_to_string(
+    #     {'name': user.first_name,
+    #      'domain': 5173,
+    #      'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+    #      'token': generate_token.make_token(user), })
+    # email = EmailMessage(
+    #     email_subject,
+    #     message2,
+    #     settings.EMAIL_HOST_USER,
+    #     [user.email],
+    # )
+    # email.fail_silently = True
+    # email.send()
+
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = generate_token.make_token(user)
+    confirmation_url = f'{
+        settings.FRONTEND_URL}/confirm-email?{urlencode({"uid": uid, "token": token})}'
+
+    # Send the confirmation URL in the email
+    subject = 'Confirm your email'
+    message = f'Hello {user.first_name},\n\nPlease confirm your email by clicking the link below:\n{
+        confirmation_url}'
+    from_email = settings.EMAIL_HOST_USER
+    to_email = user.email
+    send_mail(subject, message, from_email, [to_email], fail_silently=True)
+    return redirect(settings.FRONTEND_URL + '/home')
 
 
 class SignUpView(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            # serializer.save()
+            user = serializer.create(serializer.validated_data)
+            # latest_user = User.objects.latest('date_joined')
+            send_confirmation_mail(user, request)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
