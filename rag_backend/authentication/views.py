@@ -77,15 +77,11 @@ class SignUpView(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.save()
             user = serializer.create(serializer.validated_data)
-            # latest_user = User.objects.latest('date_joined')
             send_confirmation_mail(user, request)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# Create your views here.
 
 
 class SignInView(APIView):
@@ -98,8 +94,6 @@ class SignInView(APIView):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    # token, _ = Token.objects.get_or_create(user=user)
-                    # token = RefreshToken.for_user(user)
                     return Response({'message': 'You are logged in'}, status=status.HTTP_200_OK)
                 else:
                     return Response({'error': 'User is not active, please verify email'}, status=status.HTTP_400_BAD_REQUEST)
@@ -110,9 +104,7 @@ class SignInView(APIView):
 
 
 class SignOutView(APIView):
-    # permission_classes = [IsAuthenticated]
-
-    def post(self, request, format=None):
+    def get(self, request, format=None):
         if request.user.is_authenticated:
             logout(request)
             return Response(status=status.HTTP_204_NO_CONTENT)
