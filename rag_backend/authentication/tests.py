@@ -60,5 +60,5 @@ class TestConfirmEmalAPIView(APITestCase):
         user.save()
 
         response = self.client.get(
-            f"/authentication/api/email-verify?{urlencode({"uid": uid, "token": token})}")
+            f"/authentication/api/email-verify?{urlencode({'uid': uid, 'token': token})}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
