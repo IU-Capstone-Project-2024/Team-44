@@ -62,14 +62,18 @@ def send_confirmation_mail(user, request):
 
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = generate_token.make_token(user)
-    confirmation_url = f'{
-        settings.FRONTEND_URL}/authentication/api/email-verify?{urlencode({"uid": uid, "token": token})}'
+    confirmation_url = (
+        f"{settings.FRONTEND_URL}/authentication/api/email-verify?"
+        f"{urlencode({'uid': uid, 'token': token})}"
+    )
     user.email_verification_token = token
     user.save()
     # Send the confirmation URL in the email
     subject = 'Confirm your email'
-    message = f'Hello {user.first_name},\n\nPlease confirm your email by clicking the link below:\n{
-        confirmation_url}'
+    message = (
+        f"Hello {user.first_name},\n\nPlease confirm your email by clicking the link "
+        f"below:\n{confirmation_url}"
+    )
     from_email = settings.EMAIL_HOST_USER
     to_email = user.email
     send_mail(subject, message, from_email, [to_email], fail_silently=True)
