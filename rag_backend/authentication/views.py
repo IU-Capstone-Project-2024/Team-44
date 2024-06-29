@@ -19,6 +19,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserSerializer
 
+from rest_framework import status, permissions
+from rest_framework.authentication import SessionAuthentication
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authentication import get_authorization_header
@@ -74,6 +77,9 @@ def send_confirmation_mail(user, request):
 
 
 class SignUpView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = (SessionAuthentication,)
+
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -85,6 +91,9 @@ class SignUpView(APIView):
 
 
 class SignInView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = (SessionAuthentication,)
+
     def post(self, request, format=None):
         serializer = SignInSerializer(data=request.data)
         if serializer.is_valid():
@@ -104,6 +113,8 @@ class SignInView(APIView):
 
 
 class SignOutView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, format=None):
         if request.user.is_authenticated:
             logout(request)
@@ -113,6 +124,9 @@ class SignOutView(APIView):
 
 
 class ConfirmEmailAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = (SessionAuthentication,)
+
     def get(self, request, format=None):
         uid = request.GET.get('uid')
         token = request.GET.get('token')
