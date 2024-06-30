@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: ./rag_backend/Dockerfile
     container_name: server_container
+    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py test app1 authentication && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
+
     ports:
       - 8000:8000
     env_file:
@@ -15,12 +17,15 @@ services:
         condition: service_healthy
     volumes:
       # still need changes in CreateSummary
-      - ~/.cache/huggingface/hub/:/root/huggingface/hub
+      - ~/.cache/huggingface/hub/:/root/.cache/huggingface/hub
     deploy:
       resources:
         limits:
           cpus: '4'
-          memory: 12G
+          memory: 10G
+    networks:
+      - postgres
+      - llm
 
   ollama:
     image: ollama/ollama
@@ -33,11 +38,13 @@ services:
     command: serve
     volumes:
       - ~/.ollama:/root/.ollama
+    networks:
+      - llm
     deploy:
       resources:
         limits:
           cpus: '4'
-          memory: 12G
+          memory: 10G
     #     reservations:
     #       devices:
     #         - driver: nvidia
@@ -154,3 +161,4 @@ volumes:
 networks:
   postgres:
     driver: bridge
+  llm:
