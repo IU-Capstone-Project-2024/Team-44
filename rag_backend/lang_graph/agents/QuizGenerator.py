@@ -26,13 +26,16 @@ class QuizGenerator:
 
         self.llm = ChatOllama(
             model=model_name,
-            keep_alive=0,
+            keep_alive="5m",
             temperature=0.0,
-            top_k=50,
-            top_p=0.5,
+            top_k=30,
+            top_p=0.3,
             verbose=True,
             format="json",
+            base_url="http://host.docker.internal:11434",
         )
+
+        print(self.llm, "\n", self.llm.invoke("Testing invoke"))
 
         self.llm_chain = (
             {"text": RunnablePassthrough()}

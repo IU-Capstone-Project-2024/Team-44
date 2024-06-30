@@ -160,7 +160,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 AUTH_USER_MODEL = 'authentication.User'
 
-FRONTEND_URL = 'http://localhost:5173/'
+FRONTEND_URL = 'http://95.174.92.166:8000/'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

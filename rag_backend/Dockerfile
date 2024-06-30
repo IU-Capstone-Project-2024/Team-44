@@ -26,6 +26,3 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 EXPOSE 8000
-
-RUN python "./rag_backend/manage.py" migrate
-CMD python "./rag_backend/manage.py" runserver 0.0.0.0:8000
