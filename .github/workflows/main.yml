@@ -34,6 +34,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Running server
         run: |
+          echo "${{ secrets.ENV_FILE }}" > ./rag_backend/.env
           docker-compose up -d --build
       - name: Save Primes
         id: cache-primes-save

@@ -4,11 +4,53 @@ services:
       context: .
       dockerfile: ./rag_backend/Dockerfile
     container_name: server_container
+    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py test app1 authentication && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
+
     ports:
       - 8000:8000
+    env_file:
+      - ./rag_backend/.env
     depends_on:
+      ollama:
+        condition: service_healthy
       postgres:
         condition: service_healthy
+    volumes:
+      # still need changes in CreateSummary
+      - ~/.cache/huggingface/hub/:/root/.cache/huggingface/hub
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+    networks:
+      - postgres
+      - llm
+
+  ollama:
+    image: ollama/ollama
+    expose:
+      - 11434/tcp
+    ports:
+      - 11434:11434/tcp
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      - ~/.ollama:/root/.ollama
+    networks:
+      - llm
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 10G
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['all']
+    #           capabilities: [gpu]
+
 
   postgres:
     container_name: postgres_container
@@ -44,9 +86,9 @@ services:
       - "-c"
       - "pg_stat_statements.track=all"
     environment:
-      POSTGRES_DB: "db"
-      POSTGRES_USER: "postgres_user"
-      POSTGRES_PASSWORD: "postgres_password"
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
       GDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - ../2. Init Database:/docker-entrypoint-initdb.d
@@ -54,11 +96,7 @@ services:
     ports:
       - "6432:5432"
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U postgres_user -d postgres_password"
-        ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -96,9 +134,9 @@ services:
     container_name: exporter_container
     image: prometheuscommunity/postgres-exporter:v0.15.0
     environment:
-      DATA_SOURCE_URI: "postgres:5432/db?sslmode=disable"
-      DATA_SOURCE_USER: "postgres_user"
-      DATA_SOURCE_PASS: "postgres_password"
+      DATA_SOURCE_URI: "postgres:5432/postgres?sslmode=disable"
+      DATA_SOURCE_USER: "postgres"
+      DATA_SOURCE_PASS: "postgres"
       PG_EXPORTER_EXTEND_QUERY_PATH: "/etc/postgres_exporter/queries.yaml"
     volumes:
       - ./queries.yaml:/etc/postgres_exporter/queries.yaml:ro
@@ -116,8 +154,11 @@ services:
 volumes:
   db-data:
   pgadmin-data:
+  ollama:
+  transformers:
 
 
 networks:
   postgres:
     driver: bridge
+  llm:
