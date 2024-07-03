@@ -32,7 +32,7 @@ class QuizGenerator:
             top_p=0.3,
             verbose=True,
             format="json",
-            base_url="http://host.docker.internal:11434",
+            base_url="http://ollama:11434",
         )
 
         print(self.llm, "\n", self.llm.invoke("Testing invoke"))

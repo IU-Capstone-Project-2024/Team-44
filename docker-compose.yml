@@ -162,3 +162,4 @@ networks:
   postgres:
     driver: bridge
   llm:
+    external: true
