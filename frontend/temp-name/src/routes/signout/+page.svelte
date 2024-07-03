@@ -7,7 +7,7 @@
         const endpoint = "http://localhost:8000/authentication/api/signout/"
         let nulldata = new FormData()
         nulldata.append("null", "null")
-        fetch(endpoint, {method: 'POST', body: nulldata}).then(response => {
+        fetch(endpoint, {method: 'GET', body: nulldata}).then(response => {
             AuthStore.set({})
             console.log("signout complete")
             goto("/signin")

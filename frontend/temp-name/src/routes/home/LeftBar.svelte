@@ -1,11 +1,16 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
+
     let options = ["Notes and Summaries", "Planner", "Quizzes"]
+    let handleAdd = (() => {
+        goto("/send")
+    })
 </script>
 
 <div class="leftBar">
 
     <div class="open-file">
-        <button class="open-file-button">+ Open...</button>
+        <button class="open-file-button" on:click={handleAdd}>+ Add</button>
     </div>
     <div class="options">
         {#each options as optText}
