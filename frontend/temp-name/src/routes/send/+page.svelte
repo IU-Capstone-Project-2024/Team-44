@@ -39,13 +39,13 @@
 		bind:value={docText}></Textfield>
 		<br />
 		<FormField>
-			<Checkbox bind:checked={doQuiz} /> <span>quiz</span>
+			<Checkbox bind:checked={doQuiz} /><span>quiz</span>
 		</FormField>
 		<FormField>
-			<Checkbox bind:checked={doSum} /> <span>summary</span> 
+			<Checkbox bind:checked={doSum} /><span>summary</span> 
 		</FormField>
 		<FormField>
-			<Checkbox bind:checked={useRAG} /> <span>Use RAG?</span> 
+			<Checkbox bind:checked={useRAG} /><span>Use RAG?</span> 
 		</FormField>
 		<br>	
 		<Button variant="raised" on:click={handleSend}>Send to summarize!</Button>

@@ -5,7 +5,6 @@
     import { Icon } from '@smui/common';
     import TopAppBar, {Row, Section, Title, } from "@smui/top-app-bar"
     import Paper from '@smui/paper';
-	import { goto } from '$app/navigation';
     let links = [{text: "Sign up", link: "/signup"}, {text: "Sign out", link: "/signout"}]
     let prominent = false
     let dense = false
@@ -19,6 +18,7 @@
     }
     function doSearch() {
         alert('Search for ' + value)
+        value = ""
     }
 </script>
 
