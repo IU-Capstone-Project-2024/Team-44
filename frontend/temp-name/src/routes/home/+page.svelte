@@ -13,28 +13,25 @@
 
 <div class="mainArea" style="display: flex;">
     <Drawer>
+        <Item></Item>
+        <Button variant="raised" on:click={handleAdd} ripple={false}>
+            <Label>Add a file</Label>
+            <Icon class="material-icons">add_circle</Icon>
+        </Button>
         <Content>
           <List>
-            <Item>
-                <Button on:click={handleAdd}>
-                    <Label>Add a file</Label>
-                    <Icon class="material-icons">add_circle</Icon>
-                </Button>
-            </Item>
             {#each options as option}
             <Item
             href="javascript:void(0)"
             on:click={() => (currentTab = option)}
             >
             <Text>
-
                 {#if option == "Planner"}
                 <s>{option}</s>
                 {:else}
                 {option}
                 {/if}
             </Text>
-            
             </Item>
             {/each}
           </List>

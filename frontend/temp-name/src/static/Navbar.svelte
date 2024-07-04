@@ -58,7 +58,7 @@
         </Section>
         <Section align="end">
             {#each links as {text, link}}
-            <Title><a href="{link}"><p>{text}</p></a></Title>
+            <Title><a href="{link}" style="text-decoration: none;"><p>{text}</p></a></Title>
             {/each}
         </Section>
     </Row>
@@ -76,6 +76,7 @@
     }
     
     .solo-container {
+        flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;

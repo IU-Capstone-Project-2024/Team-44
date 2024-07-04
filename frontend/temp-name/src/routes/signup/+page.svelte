@@ -3,6 +3,7 @@
     import Paper, {Title} from "@smui/paper";
 	import FormField from '@smui/form-field';
 	import Button from "@smui/button";
+    import HelperText from "@smui/textfield/helper-text";
 	import Textfield from "@smui/textfield";
     let username = ""
     let email = ""
