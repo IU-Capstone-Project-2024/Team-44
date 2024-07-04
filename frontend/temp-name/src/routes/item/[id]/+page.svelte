@@ -3,7 +3,7 @@
     import Tab, { Label } from '@smui/tab';
     import Paper, { Content } from '@smui/paper';
 	import { goto } from '$app/navigation';
-    export let data
+    export let data;
     let active = "Text"
     let text = "lorem ipsum dolor res"
     let summary = "lorem dolor"

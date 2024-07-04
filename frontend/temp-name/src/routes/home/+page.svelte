@@ -61,7 +61,7 @@
         height: 90vh;
         display: flex;
         flex-direction: row;
-        background-color: #202020;
+
     }
    
 </style>
