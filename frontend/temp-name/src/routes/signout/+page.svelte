@@ -14,6 +14,7 @@
         }).catch(
             error => {
 			console.log(error)
+            goto("/home")
 		})
         
     })

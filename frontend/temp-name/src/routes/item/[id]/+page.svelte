@@ -8,16 +8,13 @@
     let text = "lorem ipsum dolor res"
     let summary = "lorem dolor"
     let quiz = ""
-    // if (data.id != "1") goto("/home")
 </script>
 <div>
     <TabBar tabs={["Text", "Summary", "Quiz"]} let:tab bind:active>
         <Tab {tab}>
             <Label>{tab}</Label>
         </Tab>  
-    </TabBar>
-
-    
+    </TabBar>    
     {#if active == "Text"}
     <Paper variant="unelevated">
         <Content>

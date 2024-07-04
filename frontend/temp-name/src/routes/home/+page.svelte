@@ -1,13 +1,62 @@
 <script lang="ts">
-    import LeftBar from "./LeftBar.svelte";
+    import { goto } from "$app/navigation";
+    import Drawer, { AppContent, Content, Title } from '@smui/drawer';
+    import List, { Item, Text } from '@smui/list';
+	import Paper from "@smui/paper";
+    import Button, { Icon, Label } from '@smui/button';
+    let currentTab = "Welcome!"
+    let options = ["Your files", "Planner", "Quizzes"]
+    let handleAdd = (() => {
+        goto("/send")
+    })
 </script>
 
 <div class="mainArea" style="display: flex;">
-    <LeftBar />
-    <div class="dragFiles">
-        <p>Drag over your notes...</p>
-    </div>
+    <Drawer>
+        <Content>
+          <List>
+            <Item>
+                <Button on:click={handleAdd}>
+                    <Label>Add a file</Label>
+                    <Icon class="material-icons">add_circle</Icon>
+                </Button>
+            </Item>
+            {#each options as option}
+            <Item
+            href="javascript:void(0)"
+            on:click={() => (currentTab = option)}
+            >
+            <Text>
+
+                {#if option == "Planner"}
+                <s>{option}</s>
+                {:else}
+                {option}
+                {/if}
+            </Text>
+            
+            </Item>
+            {/each}
+          </List>
+        </Content>
+      </Drawer>
+     
+      <AppContent class="app-content" >
+        <Paper square variant="unelevated" >
+            <Title>
+                <Text>Homepage</Text>
+            </Title>
+            <br />
+            <Content>
+                <pre class="status">{currentTab}</pre>
+            </Content>
+
+        </Paper>
+        
+    </AppContent>
 </div>
+
+
 
 
 <style>
@@ -15,16 +64,7 @@
         height: 90vh;
         display: flex;
         flex-direction: row;
-        flex: 100;
-        background-color: white;
+        background-color: #202020;
     }
-
-    .dragFiles {
-        display: flex;
-        flex: 75;
-        justify-content: center;
-        align-items: center;
-        background-color: white;
-        border: 2 solid red;
-    }
+   
 </style>

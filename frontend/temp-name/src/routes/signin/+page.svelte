@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { AuthStore } from "../../data-store";
+    import Paper, {Title} from "@smui/paper";
+	import Checkbox from '@smui/checkbox';
+	import FormField from '@smui/form-field';
+	import Button from "@smui/button";
+	import Textfield from "@smui/textfield";
+    import HelperText from '@smui/textfield/helper-text';
     let username = ""
     let password = ""
 	let showInvalidForm = false
@@ -34,23 +40,31 @@
     }
 </script>
 
-{#if showInvalidForm}
-    <h4 class="color:red">Form data is not valid!</h4>
-{/if}
-{#if signinError}
-    <h4 class="background-color:#F00">Server error</h4>
-{/if}
-<form class="login-card" on:submit={handleSubmit}>
-    <div class="fieldiv">
-        <input type="text" bind:value={username} placeholder="username">
-    </div>
-    <div class="fieldiv">
-        <input type="password" bind:value={password} placeholder="password">
-    </div>
-    <button type="submit">Log in</button>
-</form>
-<p>Don't have an account? <a href="/signup">Sign up</a></p>
-{#if signinSuccess && !signinError}
-    <h4 class="color: green">Sign up successful!</h4>
-    <p>Go to <a href="/signin">sign in</a>. </p>
-{/if}
+<Paper square >
+    
+    <Title>Sign up</Title>
+    <form class="signup-card" on:submit={handleSubmit}>
+        <FormField>
+            <Textfield bind:value={username} label="username">
+                <!-- <HelperText slot="helper">username</HelperText> -->
+            </Textfield>
+        </FormField>
+        <br>
+        <FormField>
+            <Textfield bind:value={password} label="password">
+            </Textfield>
+        </FormField>
+        <br>
+        <br>
+        <Button variant="raised">Sign up</Button>
+        <br>
+    </form>
+    <span>Don't have an account? <a href="/signup">Sign up</a></span>
+    {#if showInvalidForm}
+        <h4 class="color:red">Form data is not valid!</h4>
+    {/if}
+    {#if signinSuccess && !signinError}
+        <h4 class="color: green">Sign up successful!</h4>
+        <p>Go to <a href="/signin">sign in</a>. </p>
+    {/if}
+</Paper>
