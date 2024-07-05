@@ -1,3 +1,5 @@
+gunicorn==22.0.0
+
 asgiref==3.8.1
 Django==5.0.6
 django-cors-headers==4.4.0
@@ -7,6 +9,7 @@ python-dotenv==1.0.1
 six==1.16.0
 sqlparse==0.5.0
 tzdata==2024.1
+
 accelerate==0.31.0
 langchain-core==0.2.9
 langchain-community==0.2.5
@@ -14,5 +17,5 @@ langchain-huggingface==0.0.3
 sentence-transformers==3.0.1
 einops==0.8.0
 chromadb==0.5.0
-#semantic-chunkers==0.0.6
+semantic-chunkers==0.0.6
 #semantic-router==0.0.46
