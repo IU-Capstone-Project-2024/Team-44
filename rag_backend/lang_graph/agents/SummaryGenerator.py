@@ -1,9 +1,11 @@
 # from langchain_community.chat_models import ChatOllama
 from langchain_core.messages.base import BaseMessage
-from transformers import T5ForConditionalGeneration, AutoModelForSeq2SeqLM
-from transformers import AutoTokenizer
-from transformers import pipeline
 from langchain_huggingface import HuggingFacePipeline
+from semantic_chunkers import StatisticalChunker
+from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
+                          T5ForConditionalGeneration, pipeline)
+
+from rag_backend.lang_graph.VectorSpace.Embedder import Embedder
 
 
 class SummaryGenerator:
@@ -24,11 +26,24 @@ class SummaryGenerator:
             top_k=50,
             temperature=0.1,
             do_sample=True,
-            num_beams=20,  # increase comp. load + better quality
+            num_beams=2,  # increase comp. load + better quality
             # length_penalty=3.0
         )
 
         self.llm = HuggingFacePipeline(pipeline=pipe)
+
+        self.text_splitter = StatisticalChunker(
+            encoder=Embedder(),
+            name="statistical_chunker",
+            threshold_adjustment=0.01,
+            dynamic_threshold=True,
+            window_size=5,
+            min_split_tokens=100,
+            max_split_tokens=500,
+            split_tokens_tolerance=10,
+            plot_chunks=False,
+            enable_statistics=False,
+        )
 
         # self.llm = ChatOllama( # High quality, but need more computation power
         #     model="llama3:8b",
@@ -44,9 +59,7 @@ class SummaryGenerator:
         self,
         text: str,  # choose a data format
     ) -> BaseMessage:
-        question = self.llm.invoke(text)
-        return question
-
+        return "\n".join([self.llm.invoke(chunk) for chunk in self.text_splitter(docs=[text])[0]])
 
 if __name__ == "__main__":
     text = """
