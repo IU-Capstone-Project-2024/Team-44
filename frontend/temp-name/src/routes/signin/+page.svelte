@@ -23,7 +23,7 @@
             showInvalidForm = true;
             return
         }
-        const endpoint = "http://localhost:8000/authentication/api/signin/"
+        const endpoint = "https://study-boost.ru/authentication/api/signin/"
         let sendData = new FormData()
         sendData.append("username", username)
 		sendData.append("password", password)

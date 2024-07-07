@@ -7,6 +7,7 @@
 	import Textfield, { Textarea } from "@smui/textfield";
 	import { AuthStore, DataStore } from "../../data-store";
 	import { get } from "svelte/store"
+	import CharacterCounter from '@smui/textfield/character-counter';
 
 	let token = $AuthStore
     let doQuiz = false
@@ -20,7 +21,7 @@
         let options = [docText]
         useRAG ? options.push("RAG") : options.push("noRAG")
 
-        let endpoint = ""
+        let endpoint = "https://study-boost.ru/quiz/"
         // console.log(docText)
         // console.log(`doQuiz = ${doQuiz}`);
         // console.log(`doSum = ${doSum}`);
@@ -29,18 +30,18 @@
         sendData.append("type", JSON.stringify(types))
         sendData.append("options", JSON.stringify(options))
         fetch(endpoint, {
-			headers: {Authorization: `Bearer ${token}`},
+			// headers: {Authorization: `Bearer ${token}`},
 			method: "POST",
 			body: sendData
 		})
         .then(response => response.json())
         .then(data => {
+			console.log(data)
 			DataStore.set(data)
 			goto("/item/1")
 		})
 		.catch(error => {
 			console.log("error:", error)
-			goto("/item/1")
 		})
     })
 
@@ -52,7 +53,9 @@
 		<Textfield textarea
 		label="Enter your text..." 
 		input$maxlength={1000}
-		bind:value={docText}></Textfield>
+		bind:value={docText}>
+		<CharacterCounter slot="helper">0 / 1000</CharacterCounter>
+		</Textfield>
 		<br />
 		<FormField>
 			<Checkbox bind:checked={doQuiz} /><span>quiz</span>

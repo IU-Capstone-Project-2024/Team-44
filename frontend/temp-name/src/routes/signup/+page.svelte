@@ -15,7 +15,7 @@
     let showInvalidForm = false
     let signupError = false
     let signupSuccess = false
-
+    
     let validFields = () => {
         return username.length > 0 
         && email.length > 0 
@@ -31,7 +31,7 @@
             showInvalidForm = true;
             return
         }
-        const endpoint = "http://localhost:8000/authentication/api/signup/"
+        const endpoint = "https://study-boost.ru/authentication/api/signup/"
         let sendData = new FormData()
         sendData.append("username", username)
         sendData.append("email", email)

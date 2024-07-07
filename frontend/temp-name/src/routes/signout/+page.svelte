@@ -4,10 +4,10 @@
 	import { goto } from "$app/navigation";
 
     onMount(() => {
-        const endpoint = "http://localhost:8000/authentication/api/signout/"
+        const endpoint = "https://study-boost.ru/authentication/api/signout/"
         let nulldata = new FormData()
         nulldata.append("null", "null")
-        fetch(endpoint, {method: 'GET', body: nulldata}).then(response => {
+        fetch(endpoint, {method: 'GET'}).then(response => {
             AuthStore.set({})
             console.log("signout complete")
             goto("/signin")

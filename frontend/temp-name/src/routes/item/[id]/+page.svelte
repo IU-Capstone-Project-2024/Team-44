@@ -2,7 +2,6 @@
 	import TabBar from '@smui/tab-bar';
     import Tab, { Label } from '@smui/tab';
     import Paper, { Content } from '@smui/paper';
-	import { get } from 'svelte/store';
 	import { DataStore } from '../../../data-store.js';
 	import QuizPage from '../../../static/QuizPage.svelte';
     export let data;
