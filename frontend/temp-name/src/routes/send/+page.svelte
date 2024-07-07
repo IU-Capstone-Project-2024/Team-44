@@ -4,8 +4,11 @@
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button from "@smui/button";
-	
 	import Textfield, { Textarea } from "@smui/textfield";
+	import { AuthStore, DataStore } from "../../data-store";
+	import { get } from "svelte/store"
+
+	let token = $AuthStore
     let doQuiz = false
     let doSum = false
     let useRAG = false
@@ -24,9 +27,16 @@
         let sendData = new FormData()
         sendData.append("type", JSON.stringify(types))
         sendData.append("options", JSON.stringify(options))
-        fetch(endpoint, {method: "POST", body: sendData})
+        fetch(endpoint, {
+			headers: {Authorization: `Bearer ${token}`},
+			method: "POST",
+			body: sendData
+		})
         .then(response => response.json())
-        .then(data => goto("/item/1"))
+        .then(data => {
+			DataStore.set(data)
+			goto("/item/1")
+		})
     })
 
 </script>
@@ -35,7 +45,8 @@
 	<Paper square variant="unelevated">
 		<Title>Add a text to summarize:</Title>
 		<Textfield textarea
-		label="Enter your text..."
+		label="Enter your text..." 
+		input$maxlength={1000}
 		bind:value={docText}></Textfield>
 		<br />
 		<FormField>

@@ -2,12 +2,17 @@
 	import TabBar from '@smui/tab-bar';
     import Tab, { Label } from '@smui/tab';
     import Paper, { Content } from '@smui/paper';
-	import { goto } from '$app/navigation';
+	import { get } from 'svelte/store';
+	import { DataStore } from '../../../data-store.js';
+	import QuizPage from '../../../static/QuizPage.svelte';
     export let data;
     let active = "Text"
+
     let text = "lorem ipsum dolor res"
-    let summary = "lorem dolor"
-    let quiz = ""
+    let stored : any = $DataStore
+    let summary = stored.summary
+    let quiz = stored.quiz
+    let questNum = 0
 </script>
 <div>
     <TabBar tabs={["Text", "Summary", "Quiz"]} let:tab bind:active>
@@ -28,7 +33,11 @@
         </Content>
     </Paper>
     {:else if active == "Quiz"}
-    <h1>There could be a quiz...</h1>
+    <QuizPage
+    question={quiz.quests[questNum].question} 
+    options={quiz.quests[questNum].options} 
+    answer={quiz.quests[questNum].answer} 
+    />
     {/if}
 
 

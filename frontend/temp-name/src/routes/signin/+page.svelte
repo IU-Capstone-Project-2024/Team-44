@@ -28,9 +28,10 @@
         sendData.append("username", username)
 		sendData.append("password", password)
         fetch(endpoint, {method: 'POST', body: sendData}).then(response => response.json()).then(data => {
-			AuthStore.update(prev => [{"username": username}, data])
+            console.log(data)
+			AuthStore.update(prev => [data])
 		}).catch(error => {
-			signinError = true
+            alert(error)
 			console.log(error)
 		})
         if (!signinError) {
