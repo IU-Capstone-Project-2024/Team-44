@@ -19,11 +19,12 @@
         if (doSum) types.push("sum")
         let options = [docText]
         useRAG ? options.push("RAG") : options.push("noRAG")
+
         let endpoint = ""
-        console.log(docText)
-        console.log(`doQuiz = ${doQuiz}`);
-        console.log(`doSum = ${doSum}`);
-        console.log(`useRAG = ${useRAG}`);
+        // console.log(docText)
+        // console.log(`doQuiz = ${doQuiz}`);
+        // console.log(`doSum = ${doSum}`);
+        // console.log(`useRAG = ${useRAG}`);
         let sendData = new FormData()
         sendData.append("type", JSON.stringify(types))
         sendData.append("options", JSON.stringify(options))
@@ -35,6 +36,10 @@
         .then(response => response.json())
         .then(data => {
 			DataStore.set(data)
+			goto("/item/1")
+		})
+		.catch(error => {
+			console.log("error:", error)
 			goto("/item/1")
 		})
     })

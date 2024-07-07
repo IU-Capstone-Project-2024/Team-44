@@ -7,12 +7,12 @@
 	import QuizPage from '../../../static/QuizPage.svelte';
     export let data;
     let active = "Text"
-
-    let text = "lorem ipsum dolor res"
     let stored : any = $DataStore
+    let text = stored.text
     let summary = stored.summary
     let quiz = stored.quiz
     let questNum = 0
+    console.log("Stored object:", stored)
 </script>
 <div>
     <TabBar tabs={["Text", "Summary", "Quiz"]} let:tab bind:active>
