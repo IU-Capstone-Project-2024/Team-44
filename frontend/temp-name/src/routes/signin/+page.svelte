@@ -57,7 +57,7 @@
         </FormField>
         <br>
         <br>
-        <Button variant="raised">Sign up</Button>
+        <Button variant="raised">Sign in</Button>
         <br>
     </form>
     <span>Don't have an account? <a href="/signup">Sign up</a></span>
@@ -66,6 +66,6 @@
     {/if}
     {#if signinSuccess && !signinError}
         <h4 class="color: green">Sign up successful!</h4>
-        <p>Go to <a href="/signin">sign in</a>. </p>
+        <p>Go to <a href="/home">home</a>. </p>
     {/if}
 </Paper>

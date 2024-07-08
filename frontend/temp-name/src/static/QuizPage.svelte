@@ -7,10 +7,15 @@
     import { Text } from "@smui/list";
 	import Textfield from "@smui/textfield";
     import HelperText from '@smui/textfield/helper-text';
-    export let questNum : number = 0
-    export let question : string = ""
-    export let options : Array<string> = []
-    export let answer : Array<string> = []
+    export let quiz : any = {}
+    console.log(quiz)
+    let questNum : number = 0
+    let question : string = quiz.questions[questNum].question
+    let options : Array<string> = quiz.questions[questNum].options
+    let answer : Array<string> = quiz.questions[questNum].correct_answers
+    console.log(question)
+    console.log(options)
+    console.log(answer)
     let selected : Array<string> = []
     let result : string = "nothing yet"
     let checkAnswers = (() => {
@@ -26,14 +31,15 @@
                 return
             }
         }
+        selected = []
         result = "answer is correct"
     })
     let nextQuest = (()=>{
-        if (result != "answer is correct"){
-            result = "Please answer properly before proceding!"
-            return
-        }
         questNum = questNum+1
+        question = quiz.questions[questNum].question
+        options = quiz.questions[questNum].options
+        answer = quiz.questions[questNum].correct_answers
+        result = "nothing yet"
     })
 </script>
 
@@ -52,7 +58,7 @@
             <br>
         {/if}
         <Title>{question}</Title>
-        {#each options as opt, i}
+        {#each options as opt}
         <FormField>
             <Checkbox bind:group={selected} value={opt} />
             <Subtitle>  
@@ -69,10 +75,12 @@
         <Button on:click={checkAnswers} >
             <Label>Check</Label>
         </Button>
-        <Button on:click={()=>0} >
+        {#if questNum < quiz.questions.length - 1}
+        <Button on:click={nextQuest} >
             <Label >Next Question</Label>
         </Button>
         <br>
+        {/if}
         <Text>
             {result}
         </Text>

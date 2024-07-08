@@ -36,21 +36,22 @@
             {/each}
           </List>
         </Content>
-      </Drawer>
-     
-      <AppContent class="app-content" >
-        <Paper square variant="unelevated" >
-            <Title>
-                <Text>Homepage</Text>
-            </Title>
-            <br />
-            <Content>
-                <pre class="status">{currentTab}</pre>
-            </Content>
+    </Drawer>
+    <div style="height: 100%; width:100%;align-items:stretch">
+        <AppContent class="app-content" >
+            <Paper square variant="unelevated" >
+                <Title>
+                    <Text>Homepage</Text>
+                </Title>
+                <br />
+                <Content>
+                    <pre class="status">{currentTab}</pre>
+                </Content>
 
-        </Paper>
+            </Paper>
         
-    </AppContent>
+        </AppContent>
+    </div>
 </div>
 
 
