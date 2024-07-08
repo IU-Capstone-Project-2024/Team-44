@@ -1,12 +1,12 @@
 <script lang="ts">
 	import TabBar from '@smui/tab-bar';
     import Tab, { Label } from '@smui/tab';
-    import Paper, { Content } from '@smui/paper';
+    import Paper, { Content, Subtitle, Title } from '@smui/paper';
 	import { QuizStore, SummaryStore, TextStore } from '../../../data-store.js';
 	import QuizPage from '../../../static/QuizPage.svelte';
     let active = "Text"
-
-    let text = $TextStore
+    let title = $TextStore[0]
+    let text = $TextStore[1]
     let summary = $SummaryStore.summary[0]
     let quiz = $QuizStore
     let questNum = 0
@@ -22,13 +22,15 @@
         {#if active == "Text"}
         <Paper variant="unelevated">
             <Content>
-                <h1>{text}</h1>
+                <Title>{title}</Title>
+                <Subtitle>{text}</Subtitle>
             </Content>
         </Paper>
         {:else if active == "Summary"}
         <Paper variant="unelevated">
             <Content>
-                <h1>{summary}</h1>
+                <Title>{title}</Title>
+                <Subtitle>{summary}</Subtitle>
             </Content>
         </Paper>
         {:else if active == "Quiz"}

@@ -16,7 +16,7 @@ export const QuizStore = writable({
     ]
 })
 
-export const TextStore = writable("test text")
+export const TextStore = writable(["test title", "test text"])
 export const SummaryStore = writable({summary: ["test summary tewxt"]})
 
 export const AuthStore = writable({

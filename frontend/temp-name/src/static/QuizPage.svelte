@@ -17,29 +17,32 @@
     console.log(options)
     console.log(answer)
     let selected : Array<string> = []
-    let result : string = "nothing yet"
+    let result : string = ""
+    let checked = false
     let checkAnswers = (() => {
         if (answer.length != selected.length){
-            result = "answer is not correct: differrent sizes"
+            result = "Incorrect amount of answers!"
             return
         }
+        checked = true
         const ans = answer.concat().sort()
         const sel = selected.concat().sort()
         for (let i = 0; i < ans.length; i++){
             if (ans[i] != sel[i]) {
-                result = `answer is not correct: ${ans} vs ${sel}`
+                result = `The answer is not correct, the correct answer is: ${ans}`
                 return
             }
         }
         selected = []
-        result = "answer is correct"
+        result = "The answer is correct!"
     })
     let nextQuest = (()=>{
+        checked = false
         questNum = questNum+1
         question = quiz.questions[questNum].question
         options = quiz.questions[questNum].options
         answer = quiz.questions[questNum].correct_answers
-        result = "nothing yet"
+        result = ""
     })
 </script>
 
@@ -68,11 +71,7 @@
         <br />
         {/each}
         <br>
-        <Text>
-            Now selected: {selected}
-        </Text>
-        <br>
-        <Button on:click={checkAnswers} >
+        <Button disabled={checked} on:click={checkAnswers} >
             <Label>Check</Label>
         </Button>
         {#if questNum < quiz.questions.length - 1}

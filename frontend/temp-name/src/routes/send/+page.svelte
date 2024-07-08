@@ -11,6 +11,7 @@
 	let token = $AuthStore
     let doQuiz = true
     let doSum = true
+	let docTitle = ""
     let docText = ""
 	let errors = false
 	let sent = false
@@ -19,7 +20,7 @@
     let handleSend = (() => {
 		sent = true
 
-		TextStore.set(docText)
+		TextStore.set([docTitle, docText])
 		if (doQuiz) {
 			let sendQuizData = new FormData()
 			sendQuizData.append("text", docText)
@@ -70,6 +71,9 @@
 	<Paper square variant="unelevated">
 		<div style="display:flex; flex-direction:column; justify-content:center">
 			<Title>Add a text to summarize:</Title>
+			<Textfield textarea
+			label="Enter the title..." 
+			bind:value={docTitle} />
 			<Textfield textarea
 			label="Enter your text..." 
 			input$maxlength={1000}
