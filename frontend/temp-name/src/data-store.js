@@ -1,6 +1,5 @@
 import { writable } from "svelte/store";
 
-// figure this out ASAP!
 export const QuizStore = writable({
     questions: [
         {

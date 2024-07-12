@@ -19,6 +19,7 @@
 	let sent = false
 	let quizLoaded = false
 	let summLoaded = false
+	console.log(token)
     let handleSend = (() => {
 		sent = true
 
@@ -37,6 +38,7 @@
 				quizLoaded = true
 				console.log(data)
 				QuizStore.set(data)
+				goto("/item/1")
 			})
 			.catch(error => {
 				console.log("error:", error)
@@ -78,9 +80,9 @@
 			bind:value={docTitle} />
 			<Textfield textarea
 			label="Enter your text..." 
-			input$maxlength={1000}
+			input$maxlength={10000}
 			bind:value={docText}>
-			<CharacterCounter slot="helper">0 / 1000</CharacterCounter>
+			<CharacterCounter slot="helper">0 / 10000</CharacterCounter>
 			</Textfield>
 			<br />
 			<FormField>

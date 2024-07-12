@@ -12,13 +12,22 @@
 </script>
 
 
-<div class="homepage">
-    <Paper unelevated>
+<Paper unelevated>
+        <div class="homepage">
         <Title>
             <h1>Welcome to StudyBoost!</h1>
         </Title>
         <Subtitle>
             <p><a href="/signup">Create an account</a> or <a href="/signin">sign in</a> to proceed.</p>
         </Subtitle>
+    </div>
     </Paper>
-</div>
+
+<style>
+    .homepage {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>

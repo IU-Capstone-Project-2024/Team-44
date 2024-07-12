@@ -8,5 +8,7 @@
 </script>
 
 <Navbar></Navbar>
-<slot />
+<div style="display: contents; align-items:center">
+    <slot />
+</div>
 
