@@ -8,7 +8,14 @@
 </script>
 
 <Navbar></Navbar>
-<div style="display: contents; align-items:center">
+<div class="slotter">
     <slot />
 </div>
+
+<style>
+    .slotter {
+        align-items: center;
+        height:100%
+    }
+</style>
 

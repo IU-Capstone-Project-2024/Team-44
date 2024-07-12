@@ -2,18 +2,30 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
     import { AuthStore } from '../../../data-store.js';
-	import TabBar from '@smui/tab-bar';
-    import Tab, { Label } from '@smui/tab';
     import Paper, { Content, Subtitle, Title } from '@smui/paper';
 	import { QuizStore, SummaryStore, TextStore } from '../../../data-store.js';
-	import QuizPage from '../../../static/QuizPage.svelte';
-    let active = "Text"
+	import Fab, {Icon, Label} from '@smui/fab';
+    export let data;
+    let active: string = "Text"
+    let inactive: string = "Summary";
     let title = $TextStore[0]
     let text = $TextStore[1]
     let summary = $SummaryStore.summary[0]
+    let density = new Map ([["Text", "auto_stories"], ["Summary", "article"]])
     let quiz = $QuizStore
-    let questNum = 0
     console.log("Stored object:", $QuizStore)
+
+    let switchText = (()=>{
+        if (active == "Summary") {
+            active = "Text"
+            inactive = "Summary"
+        }
+        else {
+            active = "Summary"
+            inactive = "Text"
+        }
+            
+    })
 
     onMount(()=>{
         let authdata = $AuthStore
@@ -22,35 +34,37 @@
         }
     })
 </script>
-<div>
-    <TabBar tabs={["Text", "Summary", "Quiz"]} let:tab bind:active>
-        <Tab {tab}>
-            <Label>{tab}</Label>
-        </Tab>  
-    </TabBar>
-    <div class="center-content">
-        {#if active == "Text"}
-        <Paper variant="unelevated">
-            <Content>
-                <Title>{title}</Title>
-                <Subtitle>{text}</Subtitle>
-            </Content>
-        </Paper>
-        {:else if active == "Summary"}
-        <Paper variant="unelevated">
-            <Content>
-                <Title>{title}</Title>
-                <Subtitle>{summary}</Subtitle>
-            </Content>
-        </Paper>
-        {:else if active == "Quiz"}
-        <QuizPage quiz={quiz} />
-        {/if}
+<div class="flexy">
+    <Paper variant="unelevated">
+    {#if active == "Text"}
+        <Content>
+            <Title>{title}</Title>
+            <Subtitle>{text}</Subtitle>
+        </Content>
+
+    {:else if active == "Summary"}
+        <Content>
+            <Title>{title}</Title>
+            <Subtitle>{summary}</Subtitle>
+        </Content>
+    {/if}
+    <div class="margins">
+        <Fab color="secondary" on:click={switchText} extended ripple={false}>
+            <Label>Show {inactive}</Label>
+            <Icon class="material-icons">{density.get(inactive)}</Icon>
+        </Fab>
+        <Fab color="primary" on:click={()=>{goto(`/item/${data.id}/quiz`)}} extended ripple={false}>
+            <Label>Go to quiz</Label>
+            <Icon class="material-icons">checklist</Icon>
+        </Fab>
     </div>
+    </Paper>
 </div>
 
 <style>
-    /* .center-content {
-        position: fixed;
-    } */
+    .margins {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 </style>
