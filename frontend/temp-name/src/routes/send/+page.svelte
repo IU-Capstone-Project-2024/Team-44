@@ -9,11 +9,13 @@
 	import CircularProgress from '@smui/circular-progress'; 
 	import CharacterCounter from '@smui/textfield/character-counter';
 	let token = $AuthStore
+	let myHeader = new Headers();
+    myHeader.append("Authorization", `Token ${token}`)
+
     let doQuiz = true
     let doSum = true
 	let docTitle = ""
     let docText = ""
-	let errors = false
 	let sent = false
 	let quizLoaded = false
 	let summLoaded = false
@@ -26,9 +28,9 @@
 			sendQuizData.append("text", docText)
 			let endpoint = "https://study-boost.ru/quiz/"
 			fetch(endpoint, {
-				// headers: {Authorization: `Bearer ${token}`},
 				method: "POST",
-				body: sendQuizData
+				body: sendQuizData,
+				headers: myHeader
 			})
 			.then(response => response.json())
 			.then(data => {
@@ -37,8 +39,8 @@
 				QuizStore.set(data)
 			})
 			.catch(error => {
-				errors = true
 				console.log("error:", error)
+				alert(error)
 			})
 		}
 		if (doSum) {
@@ -46,9 +48,9 @@
 			sendSummData.append("query", docText)
 			let endpoint = "https://study-boost.ru/summary/"
 			fetch(endpoint, {
-				// headers: {Authorization: `Bearer ${token}`},
 				method: "POST",
-				body: sendSummData
+				body: sendSummData,
+				headers: myHeader
 			})
 			.then(response => response.json())
 			.then(data => {
@@ -57,8 +59,8 @@
 				SummaryStore.set(data)
 			})
 			.catch(error => {
-				errors = true
 				console.log("error:", error)
+				alert(error)
 			})
 		}
 		

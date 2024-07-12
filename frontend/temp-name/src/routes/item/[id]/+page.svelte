@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+    import { AuthStore } from '../../../data-store.js';
 	import TabBar from '@smui/tab-bar';
     import Tab, { Label } from '@smui/tab';
     import Paper, { Content, Subtitle, Title } from '@smui/paper';
@@ -11,6 +14,13 @@
     let quiz = $QuizStore
     let questNum = 0
     console.log("Stored object:", $QuizStore)
+
+    onMount(()=>{
+        let authdata = $AuthStore
+        if (authdata != "no-token" && authdata != null){
+            goto("/home")
+        }
+    })
 </script>
 <div>
     <TabBar tabs={["Text", "Summary", "Quiz"]} let:tab bind:active>

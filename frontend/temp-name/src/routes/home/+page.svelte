@@ -1,5 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+	import { onMount } from "svelte";
+    import { AuthStore } from "../../data-store";
     import Drawer, { AppContent, Content, Title } from '@smui/drawer';
     import List, { Item, Text } from '@smui/list';
 	import Paper from "@smui/paper";
@@ -8,6 +10,13 @@
     let options = ["Your files", "Planner", "Quizzes"]
     let handleAdd = (() => {
         goto("/send")
+    })
+
+    onMount(()=>{
+        let authdata = $AuthStore
+        if (authdata == "no-token" || authdata == null){
+            goto("/")
+        }
     })
 </script>
 

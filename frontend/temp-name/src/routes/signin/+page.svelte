@@ -2,16 +2,14 @@
 	import { goto } from "$app/navigation";
 	import { AuthStore } from "../../data-store";
     import Paper, {Title} from "@smui/paper";
-	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button from "@smui/button";
 	import Textfield from "@smui/textfield";
-    import HelperText from '@smui/textfield/helper-text';
     let username = ""
     let password = ""
 	let showInvalidForm = false
-	let signinError = false
 	let signinSuccess = false
+    let clicked = false
 
     let validFields = () => {
         return username.length > 0 
@@ -19,6 +17,7 @@
     }
 
     let handleSubmit = () => {
+        clicked = true
         if (!validFields()){
             showInvalidForm = true;
             return
@@ -28,23 +27,26 @@
         sendData.append("username", username)
 		sendData.append("password", password)
         fetch(endpoint, {method: 'POST', body: sendData}).then(response => response.json()).then(data => {
+            if (data.error != null){
+                alert(data.error)
+            }
             console.log(data)
-			AuthStore.update(prev => [data])
+			AuthStore.update(prev => data.token)
+            signinSuccess = true
+			goto("/home")
 		}).catch(error => {
             alert(error)
 			console.log(error)
+            clicked = false
 		})
-        if (!signinError) {
-			signinSuccess = true
-			goto("/home")
-		}
+
     }
 </script>
 
 <Paper square >
     
-    <Title>Sign up</Title>
-    <form class="signup-card" on:submit={handleSubmit}>
+    <Title>Sign in</Title>
+    <form class="signin-card" on:submit={handleSubmit}>
         <FormField>
             <Textfield bind:value={username} label="username">
                 <!-- <HelperText slot="helper">username</HelperText> -->
@@ -57,14 +59,14 @@
         </FormField>
         <br>
         <br>
-        <Button variant="raised">Sign in</Button>
+        <Button variant="raised" disabled={clicked}>Sign in</Button>
         <br>
     </form>
     <span>Don't have an account? <a href="/signup">Sign up</a></span>
     {#if showInvalidForm}
         <h4 class="color:red">Form data is not valid!</h4>
     {/if}
-    {#if signinSuccess && !signinError}
+    {#if signinSuccess}
         <h4 class="color: green">Sign up successful!</h4>
         <p>Go to <a href="/home">home</a>. </p>
     {/if}

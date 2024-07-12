@@ -9,17 +9,16 @@ export const QuizStore = writable({
             correct_answers: ["69", "42"],
         },
         {
-            question: "Kill count",
-            options: ["0 :smileyface:", "39 buried 1 found", "none wtf", "NO"],
-            correct_answers: ["39 buried 1 found"],
+            question: "But for real, which is the right one?",
+            options: ["this one!!!!", "NO, IT'S ME", "None", "The third one"],
+            correct_answers: ["this one!!!!"],
         }
     ]
 })
 
 export const TextStore = writable(["test title", "test text"])
-export const SummaryStore = writable({summary: ["test summary tewxt"]})
+export const SummaryStore = writable({summary: ["test summary text"]})
 
-export const AuthStore = writable({
-})
+export const AuthStore = writable("no-token")
 
 
