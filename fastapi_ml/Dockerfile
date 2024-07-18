@@ -1,26 +1,28 @@
-# syntax = docker/dockerfile:1.4
+# syntax=docker/dockerfile:1
 
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11-slim AS builder
+ARG PYTHON_VERSION=3.11
+FROM python:${PYTHON_VERSION}-slim as base
+
+
+RUN apt-get update && \
+    apt-get -y install build-essential && \
+    apt-get -y install gcc-11 g++-11 mono-mcs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements_fastapi.txt ./
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements_fastapi.txt
+    --mount=type=bind,source=./app/requirements_fastapi.txt,target=./rag_backend/requirements_fastapi.txt \
+    python -m pip install -r ./rag_backend/requirements_fastapi.txt
 
-COPY ./app ./app
+COPY . .
 
-FROM builder as dev-envs
-
-RUN <<EOF
-apt-get update
-apt-get install -y --no-install-recommends git
-EOF
-
-RUN <<EOF
-useradd -s /bin/bash -m vscode
-groupadd docker
-usermod -aG docker vscode
-EOF
-# install Docker tools (cli, buildx, compose)
-COPY --from=gloursdocker/docker / /
+EXPOSE 8000
+ENTRYPOINT ["uvicorn", "app.main:app", "--host" , "0.0.0.0", "--port", "8000"]
