@@ -5,14 +5,18 @@ from typing import List
 from fastapi import Depends, FastAPI, HTTPException, WebSocket, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from .lang_graph.ValidationModels import Question
-from .lang_graph.router import Router
+from lang_graph.ValidationModels import Question
+from lang_graph.router import Router
 from langchain.text_splitter import (CharacterTextSplitter,
                                      RecursiveCharacterTextSplitter,
                                      TextSplitter)
 from langchain_community.document_loaders import TextLoader
 from langchain_core.documents import Document
 from pydantic import BaseModel
+from lang_graph.QuizGenerator import QuizGenerator
+from lang_graph.SummaryGenerator import SummaryGenerator
+summary_generator = SummaryGenerator()
+# quiz_generator = QuizGenerator()
 
 router = Router()
 app = FastAPI()
@@ -33,7 +37,7 @@ class QuizModel(BaseModel):
 
 
 class SummaryRequest(BaseModel):
-    query: str
+    query: List
 
 
 @app.post("/summary")
@@ -41,10 +45,10 @@ async def summary(request: SummaryRequest):
     # if not request.user.is_authenticated:
     #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You are not logged in")
 
-    text_splitter = RecursiveCharacterTextSplitter()
-    texts = text_splitter.create_documents([request.query])
-    summary = router.generate_summary(texts)
+    # text_splitter = RecursiveCharacterTextSplitter()
+    # texts = text_splitter.create_documents([request.query])
 
+    summary = summary_generator.generate_summary(request.query)
     response_data = {
         'summary': summary,
     }

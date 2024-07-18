@@ -6,6 +6,7 @@ from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
 
 from typing import List
 
+
 class SummaryGenerator:
     def __init__(self) -> None:
         self.system_msg = """
@@ -57,7 +58,7 @@ class SummaryGenerator:
         self,
         chunks: List,  # choose a data format
     ) -> BaseMessage:
-        return "\n".join([self.llm.invoke(chunk.splits) for chunk in chunks])
+        return "\n".join([self.llm.invoke(chunk) for chunk in chunks])
 
 
 if __name__ == "__main__":

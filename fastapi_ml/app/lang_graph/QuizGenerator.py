@@ -58,7 +58,7 @@ class QuizGenerator:
         questions = []
 
         for chunk in chunks:
-            response = self.llm_chain.invoke({"text": " ".join(chunk.splits)})
+            response = self.llm_chain.invoke({"text": chunk})
             questions.extend(response.questions)
 
         return Quiz(questions=questions)

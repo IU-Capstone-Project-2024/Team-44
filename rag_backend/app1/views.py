@@ -1,10 +1,11 @@
 from .serializers import SummarySerializer, QuizSerializer, TextSerializer
 from rest_framework import status
+import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
 from django.http import JsonResponse
-from fastapi_ml.app.lang_graph.router import Router
+# from fastapi_ml.app.lang_graph.router import Router
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_exempt
 from time import sleep
@@ -26,21 +27,35 @@ from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import TextSplitter
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from lang_graph.agents.ValidationModels import Question
-router = Router()
+from semantic_chunkers import StatisticalChunker
+from VectorSpace.Embedder import Embedder
+import json
+
+text_splitter = StatisticalChunker(
+    encoder=Embedder(),
+    name="statistical_chunker",
+    threshold_adjustment=0.01,
+    dynamic_threshold=True,
+    window_size=5,
+    min_split_tokens=100,
+    max_split_tokens=500,
+    split_tokens_tolerance=10,
+    plot_chunks=False,
+    enable_statistics=False,
+)
 
 
 class SummaryView(APIView):
     def post(self, request, format=None):
         serializer = SummarySerializer(data=request.data)
-        if not request.user.is_authenticated:
-            return Response({'detail': 'You are not logged in'}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             query = serializer.validated_data['query']
 
-            text_splitter = RecursiveCharacterTextSplitter()
+            chunks = text_splitter(docs=[query])[0]
 
-            texts = text_splitter.create_documents([query])
+            # text_splitter = RecursiveCharacterTextSplitter()
+
+            # texts = text_splitter.create_documents([query])
 
             # print(document)
             # print(type(document))
@@ -48,33 +63,55 @@ class SummaryView(APIView):
             # document = document_loader.create_documents([query])
             # loader = TextLoader("test_txt.txt")
             # documents = loader.load()
-            summary = router.generate_summary(texts)
+            summaries = []
+            for chunk in chunks:
+                data = {'query': chunk.splits}
+                summary = requests.post(
+                    'http://localhost:8080/summary', json=data)
+                print(json.dumps(chunk.splits))
+                print(summary)
+                print(summary.json())
+                summaries.append(summary.json())
             # router.add_docs(documents)
             # result = router.retrieve(query)
-            response_data = {
-                'summary': summary,
-                # 'retrieved_results': [doc.page_content for doc in result]
-            }
-            return Response(response_data)
+            # response_data = {
+            #     'summary': summary,
+            #     # 'retrieved_results': [doc.page_content for doc in result]
+            # }
+            return Response(summaries)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QuizView(APIView):
-    def post(self, request, format=None):
+    async def post(self, request, format=None):
         serializer = TextSerializer(data=request.data)
         if not request.user.is_authenticated:
             return Response({'detail': 'You are not logged in'}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             query = serializer.validated_data['text']
 
-            text_splitter = RecursiveCharacterTextSplitter()
+            chunks = text_splitter(docs=[query])[0]
 
-            text = text_splitter.create_documents([query])
+            quizzes = []
+            for i in range(0, len(chunks), 2):
+                batch_chunks = chunks[i: i + 2]
+                for batch_chunk in batch_chunks:
+                    data = {'query': batch_chunk.splits}
+                    quiz = requests.post(
+                        'http://localhost:8080/summary', json=data)
+                    print(json.dumps(batch_chunk.splits))
+                    print(quiz)
+                    print(quiz.json())
+                    quizzes.append(quiz.json())
 
-            # Working with real model
-            quiz_json = router.generate_quiz(text)
-            quiz_serializer = QuizSerializer(quiz_json)
+            # text_splitter = RecursiveCharacterTextSplitter()
+
+            # text = text_splitter.create_documents([query])
+
+            # # Working with real model
+            # quiz_json = router.generate_quiz(text)
+            # quiz_serializer = QuizSerializer(quiz_json)
 
             # For testing:
             # quiz_serializer = QuizSerializer({
@@ -89,7 +126,7 @@ class QuizView(APIView):
             # })
             # print(quiz_serializer.data)
             # print(quiz_serializer)
-            return Response(quiz_serializer.data)
+            return Response(quizzes)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
