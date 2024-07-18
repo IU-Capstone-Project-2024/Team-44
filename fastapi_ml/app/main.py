@@ -1,19 +1,18 @@
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import JSONResponse
 import asyncio
 import json
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from typing import List
-from langchain_core.documents import Document
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import TextSplitter
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, status
+from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from lang_graph.agents.ValidationModels import Question
 from lang_graph.router import Router
+from langchain.text_splitter import (CharacterTextSplitter,
+                                     RecursiveCharacterTextSplitter,
+                                     TextSplitter)
+from langchain_community.document_loaders import TextLoader
+from langchain_core.documents import Document
+from pydantic import BaseModel
 
 router = Router()
 app = FastAPI()

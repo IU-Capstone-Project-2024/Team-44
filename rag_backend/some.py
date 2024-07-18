@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from lang_graph.router import Router
+from fastapi_ml.app.lang_graph.router import Router
 
 router = Router()
 

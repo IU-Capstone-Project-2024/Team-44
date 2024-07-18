@@ -1,22 +1,18 @@
-from langchain_text_splitters import (
-    RecursiveCharacterTextSplitter,
-    TextSplitter,
-    CharacterTextSplitter,
-)
+# TODO: FULL REFACTOR OF THE COMPONENT
+
+
+from typing import Callable, List
+
+from langchain_core.documents import Document
+from langchain_text_splitters import (CharacterTextSplitter,
+                                      RecursiveCharacterTextSplitter,
+                                      TextSplitter)
 from numpy import ndarray
 from torch import Tensor
 
-from .agents.SummaryGenerator import SummaryGenerator
-from .agents.QuizGenerator import QuizGenerator
-from .agents.ValidationModels import Quiz, Question
-
-from .VectorSpace.Embedder import Embedder
-
-from .VectorSpace.VectorDB import VectorStore
-
-from langchain_core.documents import Document
-
-from typing import Callable, List
+from .QuizGenerator import QuizGenerator
+from .SummaryGenerator import SummaryGenerator
+from .ValidationModels import Question, Quiz
 
 
 class Router:
@@ -39,10 +35,6 @@ class Router:
         """
         self.text_splitter = text_splitter
 
-        self.embedder = Embedder(embedding_size=embedding_size)
-        self.vector_store = VectorStore(
-            text_splitter=self.text_splitter, embedder=self.embedder
-        )
         self.text_splitter = text_splitter
         self.summary_generator = SummaryGenerator()
         self.quiz_generator = QuizGenerator(model_name=quiz_model_name)
