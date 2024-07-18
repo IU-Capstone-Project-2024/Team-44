@@ -5,8 +5,8 @@ from typing import List
 from fastapi import Depends, FastAPI, HTTPException, WebSocket, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from lang_graph.agents.ValidationModels import Question
-from lang_graph.router import Router
+from .lang_graph.ValidationModels import Question
+from .lang_graph.router import Router
 from langchain.text_splitter import (CharacterTextSplitter,
                                      RecursiveCharacterTextSplitter,
                                      TextSplitter)

@@ -57,7 +57,7 @@ class SummaryGenerator:
         self,
         chunks: List,  # choose a data format
     ) -> BaseMessage:
-        return "\n".join([self.llm.invoke(chunk.splits) for chunk in chunks)
+        return "\n".join([self.llm.invoke(chunk.splits) for chunk in chunks])
 
 
 if __name__ == "__main__":

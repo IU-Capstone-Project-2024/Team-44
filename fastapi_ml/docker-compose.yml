@@ -8,4 +8,47 @@ services:
       PORT: 8000
     ports:
       - '8000:8000'
-    restart: "yes"
+    restart: "no"
+    volumes:
+      # still need changes in CreateSummary
+      - ~/.cache/huggingface/hub/:/root/.cache/huggingface/hub
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 6G
+    networks:
+      - llm
+
+  ollama:
+    image: ollama/ollama
+    expose:
+      - 11434/tcp
+    ports:
+      - 11434:11434/tcp
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      - ~/.ollama:/root/.ollama
+    networks:
+      - llm
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 6G
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           device_ids: ['all']
+    #           capabilities: [gpu]
+
+volumes:
+  ollama:
+  transformers:
+
+
+networks:
+  llm:
+    driver: bridge
