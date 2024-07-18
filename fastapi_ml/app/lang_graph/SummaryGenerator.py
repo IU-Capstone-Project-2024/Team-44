@@ -1,12 +1,10 @@
 # from langchain_community.chat_models import ChatOllama
 from langchain_core.messages.base import BaseMessage
 from langchain_huggingface import HuggingFacePipeline
-from semantic_chunkers import StatisticalChunker
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
                           T5ForConditionalGeneration, pipeline)
 
-from ..VectorSpace.Embedder import Embedder
-
+from typing import List
 
 class SummaryGenerator:
     def __init__(self) -> None:
@@ -32,18 +30,18 @@ class SummaryGenerator:
 
         self.llm = HuggingFacePipeline(pipeline=pipe)
 
-        self.text_splitter = StatisticalChunker(
-            encoder=Embedder(),
-            name="statistical_chunker",
-            threshold_adjustment=0.01,
-            dynamic_threshold=True,
-            window_size=5,
-            min_split_tokens=100,
-            max_split_tokens=500,
-            split_tokens_tolerance=10,
-            plot_chunks=False,
-            enable_statistics=False,
-        )
+        # self.text_splitter = StatisticalChunker(
+        #     encoder=Embedder(),
+        #     name="statistical_chunker",
+        #     threshold_adjustment=0.01,
+        #     dynamic_threshold=True,
+        #     window_size=5,
+        #     min_split_tokens=100,
+        #     max_split_tokens=500,
+        #     split_tokens_tolerance=10,
+        #     plot_chunks=False,
+        #     enable_statistics=False,
+        # )
 
         # self.llm = ChatOllama( # High quality, but need more computation power
         #     model="llama3:8b",
@@ -57,9 +55,9 @@ class SummaryGenerator:
 
     def generate_summary(
         self,
-        text: str,  # choose a data format
+        chunks: List,  # choose a data format
     ) -> BaseMessage:
-        return "\n".join([self.llm.invoke(chunk.splits) for chunk in self.text_splitter(docs=[text])[0]])
+        return "\n".join([self.llm.invoke(chunk.splits) for chunk in chunks])
 
 
 if __name__ == "__main__":

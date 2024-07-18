@@ -1,8 +1,6 @@
 from .QuizGenerator import QuizGenerator
 from .SummaryGenerator import SummaryGenerator
-
-from .ValidationModels import Quiz
-from .ValidationModels import Question
+from .ValidationModels import Question, Quiz
 
 # from pydanic_models import models
 

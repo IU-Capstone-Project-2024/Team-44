@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
 from django.http import JsonResponse
-from lang_graph.router import Router
+from fastapi_ml.app.lang_graph.router import Router
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_exempt
 from time import sleep

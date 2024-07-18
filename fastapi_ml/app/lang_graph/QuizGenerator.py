@@ -5,9 +5,6 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_community.chat_models import ChatOllama
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
-from semantic_chunkers import StatisticalChunker
-
-from ..VectorSpace.Embedder import Embedder
 
 from .ValidationModels import Question, Quiz
 
@@ -23,18 +20,18 @@ class QuizGenerator:
             },
         )
 
-        self.text_splitter = StatisticalChunker(
-            encoder=Embedder(),
-            name="statistical_chunker",
-            threshold_adjustment=0.01,
-            dynamic_threshold=True,
-            window_size=5,
-            min_split_tokens=100,
-            max_split_tokens=500,
-            split_tokens_tolerance=10,
-            plot_chunks=False,
-            enable_statistics=False,
-        )
+        # self.text_splitter = StatisticalChunker(
+        #     encoder=Embedder(),
+        #     name="statistical_chunker",
+        #     threshold_adjustment=0.01,
+        #     dynamic_threshold=True,
+        #     window_size=5,
+        #     min_split_tokens=100,
+        #     max_split_tokens=500,
+        #     split_tokens_tolerance=10,
+        #     plot_chunks=False,
+        #     enable_statistics=False,
+        # )
 
         self.llm = ChatOllama(
             model=model_name,
@@ -56,8 +53,8 @@ class QuizGenerator:
             | self.parser
         )
 
-    def generate_quiz(self, notes: str) -> Quiz:
-        chunks = self.text_splitter(docs=[notes])[0]
+    def generate_quiz(self, chunks: List) -> Quiz:
+        # chunks = self.text_splitter(docs=[notes])[0]
         questions = []
 
         for chunk in chunks:
@@ -66,8 +63,8 @@ class QuizGenerator:
 
         return Quiz(questions=questions)
 
-    async def agenerate_quiz(self, notes: str) -> Quiz:
-        chunks = self.text_splitter(docs=[notes])[0]
+    async def agenerate_quiz(self, chunks: List) -> Quiz:
+        # chunks = self.text_splitter(docs=[notes])[0]
         questions = []
 
         async def async_invoke(chunk):
@@ -80,8 +77,8 @@ class QuizGenerator:
 
         return Quiz(questions=questions)
 
-    def generate_quiz_batch(self, notes: str, batch_size: int = 2) -> Quiz:
-        chunks = self.text_splitter(docs=[notes])[0]
+    def generate_quiz_batch(self, chunks: List, batch_size: int = 2) -> Quiz:
+        # chunks = self.text_splitter(docs=[notes])[0]
         questions = []
 
         for i in range(0, len(chunks), batch_size):
@@ -95,8 +92,8 @@ class QuizGenerator:
 
         return Quiz(questions=questions)
 
-    async def generate_quiz_abatch(self, notes: str, batch_size: int = 2) -> Quiz:
-        chunks = self.text_splitter(docs=[notes])[0]
+    async def generate_quiz_abatch(self, chunks: List, batch_size: int = 2) -> Quiz:
+        # chunks = self.text_splitter(docs=[notes])[0]
         questions = []
 
         async def async_batch_invoke(batch_chunks):
@@ -117,8 +114,8 @@ class QuizGenerator:
 
         return Quiz(questions=questions)
 
-    def generate_pquiz(self, notes: str, batch_size: int = 2) -> Quiz:
-        chunks = self.text_splitter(docs=[notes])[0]
+    def generate_pquiz(self, chunks: List, batch_size: int = 2) -> Quiz:
+        # chunks = self.text_splitter(docs=[notes])[0]
         questions = []
 
         for chunk_split in range(0, len(chunks), batch_size):
