@@ -5,7 +5,7 @@ from semantic_chunkers import StatisticalChunker
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
                           T5ForConditionalGeneration, pipeline)
 
-from rag_backend.lang_graph.VectorSpace.Embedder import Embedder
+from ..VectorSpace.Embedder import Embedder
 
 
 class SummaryGenerator:
@@ -59,7 +59,8 @@ class SummaryGenerator:
         self,
         text: str,  # choose a data format
     ) -> BaseMessage:
-        return "\n".join([self.llm.invoke(chunk) for chunk in self.text_splitter(docs=[text])[0]])
+        return "\n".join([self.llm.invoke(chunk.splits) for chunk in self.text_splitter(docs=[text])[0]])
+
 
 if __name__ == "__main__":
     text = """

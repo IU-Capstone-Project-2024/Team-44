@@ -7,13 +7,13 @@ from langchain_community.chat_models import ChatOllama
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from semantic_chunkers import StatisticalChunker
 
-from rag_backend.lang_graph.VectorSpace.Embedder import Embedder
+from ..VectorSpace.Embedder import Embedder
 
 from .ValidationModels import Question, Quiz
 
 
 class QuizGenerator:
-    def __init__(self):
+    def __init__(self, model_name):
         self.parser = PydanticOutputParser(pydantic_object=Quiz)
         self.prompt_template = PromptTemplate(
             template="Generate a quiz from the following notes. Use only material from notes.\nEach question should have four options, and one correct answer which must be included in the options.\n{format_instructions}\nNotes:\n{text}\n",
@@ -37,7 +37,7 @@ class QuizGenerator:
         )
 
         self.llm = ChatOllama(
-            model="llama3:instruct",
+            model=model_name,
             keep_alive="5m",
             temperature=0.2,
             mirostat=2,
@@ -46,7 +46,7 @@ class QuizGenerator:
             top_p=0.9,  # Use top-p sampling to control variability
             verbose=True,
             format="json",
-            #base_url="http://ollama:11434",
+            # base_url="http://ollama:11434",
         )
 
         self.llm_chain = (
@@ -75,7 +75,8 @@ class QuizGenerator:
             return response.questions
 
         responses = await asyncio.gather(*[async_invoke(chunk) for chunk in chunks])
-        questions = [question for response in responses for question in response]
+        questions = [
+            question for response in responses for question in response]
 
         return Quiz(questions=questions)
 
@@ -84,7 +85,7 @@ class QuizGenerator:
         questions = []
 
         for i in range(0, len(chunks), batch_size):
-            batch_chunks = chunks[i : i + batch_size]
+            batch_chunks = chunks[i: i + batch_size]
             responses = self.llm_chain.batch(
                 [{"text": " ".join(chunk.splits)} for chunk in batch_chunks],
                 config={"max_concurrency": batch_size},
@@ -108,7 +109,7 @@ class QuizGenerator:
             ]
 
         tasks = [
-            async_batch_invoke(chunks[i : i + batch_size])
+            async_batch_invoke(chunks[i: i + batch_size])
             for i in range(0, len(chunks), batch_size)
         ]
         results = await asyncio.gather(*tasks)
@@ -121,9 +122,10 @@ class QuizGenerator:
         questions = []
 
         for chunk_split in range(0, len(chunks), batch_size):
-            batch_chunks = chunks[chunk_split : chunk_split + batch_size]
+            batch_chunks = chunks[chunk_split: chunk_split + batch_size]
             par_chain = RunnableParallel(
-                {f"chain_{i}": self.llm_chain for i in range(len(batch_chunks))}
+                {f"chain_{i}": self.llm_chain for i in range(
+                    len(batch_chunks))}
             )
 
             response = par_chain.invoke(
@@ -134,7 +136,8 @@ class QuizGenerator:
             )
 
             questions.extend(
-                [response[f"chain_{i}"].questions for i in range(len(batch_chunks))]
+                [response[f"chain_{i}"].questions for i in range(
+                    len(batch_chunks))]
             )
 
         return Quiz(
