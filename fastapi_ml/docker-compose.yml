@@ -2,12 +2,10 @@ services:
   api:
     build:
       context: .
-      target: builder
     container_name: fastapi-server
-    environment:
-      PORT: 8000
+   # command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port 8000"]
     ports:
-      - '8000:8000'
+      - 8000:8000
     restart: "no"
     volumes:
       # still need changes in CreateSummary
@@ -17,6 +15,8 @@ services:
         limits:
           cpus: '4'
           memory: 6G
+    depends_on:
+      - ollama
     networks:
       - llm
 

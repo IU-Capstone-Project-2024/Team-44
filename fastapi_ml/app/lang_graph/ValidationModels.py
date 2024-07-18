@@ -23,3 +23,6 @@ class Question(BaseModel):
 
 class Quiz(BaseModel):
     questions: List[Question] = Field(description="List of quiz questions")
+
+class Summary(BaseModel):
+    summary: str
