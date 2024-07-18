@@ -11,8 +11,6 @@ services:
     env_file:
       - ./rag_backend/.env
     depends_on:
-      ollama:
-        condition: service_healthy
       postgres:
         condition: service_healthy
     volumes:
@@ -25,32 +23,15 @@ services:
           memory: 10G
     networks:
       - postgres
-      - llm
 
-  ollama:
-    image: ollama/ollama
-    expose:
-      - 11434/tcp
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:v1.7.3
     ports:
-      - 11434:11434/tcp
-    healthcheck:
-      test: ollama --version || exit 1
-    command: serve
+      - "6333:6333"
+      - "6334:6334"
     volumes:
-      - ~/.ollama:/root/.ollama
-    networks:
-      - llm
-    deploy:
-      resources:
-        limits:
-          cpus: '4'
-          memory: 10G
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           device_ids: ['all']
-    #           capabilities: [gpu]
-
+      - ./data/qdrant_storage:/qdrant/storage
 
   postgres:
     container_name: postgres_container
@@ -154,12 +135,9 @@ services:
 volumes:
   db-data:
   pgadmin-data:
-  ollama:
   transformers:
 
 
 networks:
   postgres:
-    driver: bridge
-  llm:
     driver: bridge
