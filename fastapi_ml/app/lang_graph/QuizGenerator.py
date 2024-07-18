@@ -68,7 +68,7 @@ class QuizGenerator:
         questions = []
 
         async def async_invoke(chunk):
-            response = await self.llm_chain.ainvoke({"text": " ".join(chunk.splits)})
+            response = await self.llm_chain.ainvoke({"text": chunk})
             return response.questions
 
         responses = await asyncio.gather(*[async_invoke(chunk) for chunk in chunks])
@@ -84,7 +84,7 @@ class QuizGenerator:
         for i in range(0, len(chunks), batch_size):
             batch_chunks = chunks[i: i + batch_size]
             responses = self.llm_chain.batch(
-                [{"text": " ".join(chunk.splits)} for chunk in batch_chunks],
+                [{"text": chunk} for chunk in batch_chunks],
                 config={"max_concurrency": batch_size},
             )
             for response in responses:
@@ -98,7 +98,7 @@ class QuizGenerator:
 
         async def async_batch_invoke(batch_chunks):
             responses = await self.llm_chain.abatch(
-                [{"text": " ".join(chunk.splits)} for chunk in batch_chunks],
+                [{"text": chunk} for chunk in batch_chunks],
                 config={"max_concurrency": batch_size},
             )
             return [
@@ -127,7 +127,7 @@ class QuizGenerator:
 
             response = par_chain.invoke(
                 {
-                    f"chain_{i}": {"text": " ".join(chunk.splits)}
+                    f"chain_{i}": {"text": chunk}
                     for i, chunk in enumerate(batch_chunks)
                 }
             )
