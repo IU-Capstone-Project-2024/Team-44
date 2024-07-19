@@ -39,19 +39,19 @@ MONGO_DB = os.getenv("MONGO_DB", "quiz_db")
 async def lifespan(app: FastAPI):
     try:
         logger.info(
-            "\tStarting up, attempting to connect to Quiz and Summayr generators."
+            "\n\n\tStarting up, attempting to connect to Quiz and Summary generators."
         )
         global quiz_generator, summary_generator
         quiz_generator = QuizGenerator()
         summary_generator = SummaryGenerator()
-        logger.info("\tConnected to Quiz and Summayr generators successfully.")
+        logger.info("\tConnected to Quiz and Summary generators successfully.\n")
         logger.info("\tAttempting to connect to Redis and MongoDB.")
         global redis, mongo_client, db
         redis = Redis.from_url(REDIS_URL, decode_responses=True)
         mongo_client = AsyncIOMotorClient(MONGO_URL)
         db = mongo_client[MONGO_DB]
 
-        logger.info("\tConnected to Redis and MongoDB successfully.")
+        logger.info("\tConnected to Redis and MongoDB successfully.\n\n")
 
         logger.info("Processing pending requests in the queue.")
         while await redis.llen("request_queue") > 0:
@@ -114,7 +114,7 @@ async def quiz(
     background_tasks: BackgroundTasks,
     api_key: str = Depends(get_api_key),
 ) -> dict:
-    logger.info("Received quiz generation request.")
+    logger.info("\nReceived quiz generation request.")
     if await redis.llen("request_queue") >= MAX_QUEUE_SIZE:
         logger.warning("Service is busy. Rejecting request.")
         raise HTTPException(
@@ -135,7 +135,7 @@ async def quiz(
 
 
 async def process_request(request_id: str):
-    logger.info(f"Processing request {request_id}.")
+    logger.info(f"\nProcessing request {request_id}.")
 
     request_data = await redis.get(request_id)
     if request_data is None:
@@ -153,7 +153,7 @@ async def process_request(request_id: str):
 
 @app.get("/quiz/{request_id}", response_model=Quiz)
 async def get_quiz_result(request_id: str):
-    logger.info(f"Fetching result for request {request_id}.")
+    logger.info(f"\nFetching result for request {request_id}.")
 
     result = await db.quizzes.find_one({"request_id": request_id})
     if not result:
@@ -161,7 +161,7 @@ async def get_quiz_result(request_id: str):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Result not found."
         )
-
-    await db.quizzes.delete_one({"request_id": request_id})
-    logger.info(f"Result for request {request_id} returned and deleted from database.")
-    return Quiz.model_validate_json(result["quiz"])
+    else:
+        await db.quizzes.delete_one({"request_id": request_id})
+        logger.info(f"Result for request {request_id} returned and deleted from database.")
+        return Quiz.model_validate_json(result["quiz"])
