@@ -1,3 +1,4 @@
+from django.http import StreamingHttpResponse
 from .serializers import SummarySerializer, QuizSerializer, TextSerializer
 from rest_framework import status
 import requests
@@ -31,6 +32,21 @@ from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
 import json
 
+import asyncio
+import aiohttp
+
+
+async def generate_summary(query):
+    async with aiohttp.ClientSession() as session:
+        async with session.post('http://localhost:8080/summary', json={'query': query}) as response:
+            data = await response.json()
+            return data
+
+
+# async def generate_quiz(session, query):
+#     async with session.post('http://localhost:8080/quiz', json={'query': query}) as response:
+#         return await response.json()
+
 text_splitter = StatisticalChunker(
     encoder=Embedder(),
     name="statistical_chunker",
@@ -43,6 +59,21 @@ text_splitter = StatisticalChunker(
     plot_chunks=False,
     enable_statistics=False,
 )
+
+
+class SSEView(APIView):
+    def get(self, request):
+        def event_stream():
+            for i in range(10):
+                # Simulate generating a quiz question
+                sleep(1)
+                question = {"question": "What is 2 + 2?",
+                            "choices": ["3", "4", "5"]}
+                yield f"data: {json.dumps(question)}\n\n"
+
+        response = StreamingHttpResponse(
+            event_stream(), content_type='text/event-stream')
+        return response
 
 
 class SummaryView(APIView):
@@ -64,14 +95,21 @@ class SummaryView(APIView):
             # loader = TextLoader("test_txt.txt")
             # documents = loader.load()
             summaries = []
-            for chunk in chunks:
-                data = {'query': chunk.splits}
-                summary = requests.post(
-                    'http://localhost:8080/summary', json=data)
-                print(json.dumps(chunk.splits))
-                print(summary)
-                print(summary.json())
-                summaries.append(summary.json())
+            for i in range(0, len(chunks), 2):
+                print(len(chunks))
+                batch_chunks = chunks[i: i + 2]
+                for batch_chunk in batch_chunks:
+                    # data = {'query': batch_chunk.splits}
+                    print([" ".join(batch_chunk.splits)])
+                    summary = asyncio.run(generate_summary(
+                        [" ".join(batch_chunk.splits)]))
+                    # summary = requests.post(
+                    #     'http://localhost:8080/summary', json=data)
+                    # print(json.dumps(batch_chunk.splits))
+                    # print(summary)
+                    # print(summary.json())
+                    print(summary)
+                    summaries.append(summary)
             # router.add_docs(documents)
             # result = router.retrieve(query)
             # response_data = {
@@ -82,12 +120,40 @@ class SummaryView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class SummaryView(APIView):
+#     async def post(self, request, format=None):
+#         serializer = SummarySerializer(data=request.data)
+#         if serializer.is_valid():
+#             query = serializer.validated_data['query']
+
+#             async with aiohttp.ClientSession() as session:
+#                 print(2)
+#                 tasks = []
+#                 for chunk in text_splitter(docs=[query])[0]:
+#                     print(2)
+#                     tasks.append(generate_summary(session, chunk.splits))
+#                 summaries = await asyncio.gather(*tasks)
+#             return Response(summaries)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TimerView(APIView):
+    def post(self, request, format=None):
+        serializer = TextSerializer(data=request.data)
+        if serializer.is_valid():
+            query = serializer.validated_data['text']
+            for i in range(10):
+                print(i, query)
+
+            return Response(query)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class QuizView(APIView):
     async def post(self, request, format=None):
         serializer = TextSerializer(data=request.data)
-        if not request.user.is_authenticated:
-            return Response({'detail': 'You are not logged in'}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             query = serializer.validated_data['text']
 
@@ -99,7 +165,7 @@ class QuizView(APIView):
                 for batch_chunk in batch_chunks:
                     data = {'query': batch_chunk.splits}
                     quiz = requests.post(
-                        'http://localhost:8080/summary', json=data)
+                        'http://localhost:8080/quiz', json=data)
                     print(json.dumps(batch_chunk.splits))
                     print(quiz)
                     print(quiz.json())
@@ -131,7 +197,7 @@ class QuizView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
+# @csrf_exempt
 def ml_view(request):
     if request.method == "POST":
         query = request.POST.get('query')
