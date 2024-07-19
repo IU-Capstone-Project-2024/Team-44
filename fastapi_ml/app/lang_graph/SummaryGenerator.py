@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from langchain_huggingface import HuggingFacePipeline
@@ -25,6 +26,9 @@ class SummaryGenerator:
 
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger.info(f"\t\t\tInitializing SummaryGenerator with model {model_id}")
+
         return HuggingFacePipeline(
             pipeline=pipeline(
                 task="summarization",
@@ -44,6 +48,7 @@ class SummaryGenerator:
         self,
         chunks: List[str],  # choose a data format
     ) -> Summary:
+        self.logger.info(f"Starting summary generation using.\n\tChunks: {chunks}")
         summary = "\n".join([self.llm.invoke(chunk) for chunk in chunks])
         return Summary(summary=summary)
 
