@@ -59,7 +59,7 @@ class QuizGenerator:
                 self.logger.error(f"Error generating quiz for chunk {chunk}: {e}")
 
         self.logger.info(
-            f"\tQuiz generation completed with {len(questions)} questions."
+            f"\tQuiz generation completed with {len(questions)} questions.\n"
         )
         return Quiz(questions=questions)
 
@@ -81,7 +81,7 @@ class QuizGenerator:
         questions = [question for response in responses for question in response]
 
         self.logger.info(
-            f"\tQuiz generation completed with {len(questions)} questions."
+            f"\tQuiz generation completed with {len(questions)} questions.\n"
         )
         return Quiz(questions=questions)
 
@@ -106,7 +106,7 @@ class QuizGenerator:
                 )
 
         self.logger.info(
-            f"\tQuiz generation completed with {len(questions)} questions."
+            f"\tQuiz generation completed with {len(questions)} questions.\n"
         )
         return Quiz(questions=questions)
 
@@ -144,7 +144,7 @@ class QuizGenerator:
         questions = [question for batch in results for question in batch]
 
         self.logger.info(
-            f"\tQuiz generation completed with {len(questions)} questions."
+            f"\tQuiz generation completed with {len(questions)} questions.\n"
         )
         return Quiz(questions=questions)
 
@@ -181,6 +181,6 @@ class QuizGenerator:
             for question in question_sub_array
         ]
         self.logger.info(
-            f"\tQuiz generation completed with {len(questions)} questions."
+            f"\tQuiz generation completed with {len(questions)} questions.\n"
         )
         return Quiz(questions=questions)
