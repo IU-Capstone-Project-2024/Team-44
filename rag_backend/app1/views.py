@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 # from fastapi_ml.app.lang_graph.router import Router
 from django.views.decorators.csrf import csrf_exempt
+from requests.exceptions import RequestException
 from django.views.decorators.csrf import csrf_exempt
 from time import sleep
 from django.shortcuts import redirect, render
@@ -36,9 +37,9 @@ import asyncio
 import aiohttp
 
 
-async def generate_summary(query):
+async def generate_summary(text):
     async with aiohttp.ClientSession() as session:
-        async with session.post('http://localhost:8080/summary', json={'query': query}) as response:
+        async with session.post('http://localhost:8080/summary', json={'text': text}, headers={'api_key': 'api_key'}) as response:
             data = await response.json()
             return data
 
@@ -65,7 +66,6 @@ class SSEView(APIView):
     def get(self, request):
         def event_stream():
             for i in range(10):
-                # Simulate generating a quiz question
                 sleep(1)
                 question = {"question": "What is 2 + 2?",
                             "choices": ["3", "4", "5"]}
@@ -83,59 +83,19 @@ class SummaryView(APIView):
             query = serializer.validated_data['query']
 
             chunks = text_splitter(docs=[query])[0]
-
-            # text_splitter = RecursiveCharacterTextSplitter()
-
-            # texts = text_splitter.create_documents([query])
-
-            # print(document)
-            # print(type(document))
-            # document_loader = TextSplitter()
-            # document = document_loader.create_documents([query])
-            # loader = TextLoader("test_txt.txt")
-            # documents = loader.load()
             summaries = []
             for i in range(0, len(chunks), 2):
                 print(len(chunks))
                 batch_chunks = chunks[i: i + 2]
                 for batch_chunk in batch_chunks:
-                    # data = {'query': batch_chunk.splits}
                     print([" ".join(batch_chunk.splits)])
                     summary = asyncio.run(generate_summary(
                         [" ".join(batch_chunk.splits)]))
-                    # summary = requests.post(
-                    #     'http://localhost:8080/summary', json=data)
-                    # print(json.dumps(batch_chunk.splits))
-                    # print(summary)
-                    # print(summary.json())
                     print(summary)
                     summaries.append(summary)
-            # router.add_docs(documents)
-            # result = router.retrieve(query)
-            # response_data = {
-            #     'summary': summary,
-            #     # 'retrieved_results': [doc.page_content for doc in result]
-            # }
             return Response(summaries)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class SummaryView(APIView):
-#     async def post(self, request, format=None):
-#         serializer = SummarySerializer(data=request.data)
-#         if serializer.is_valid():
-#             query = serializer.validated_data['query']
-
-#             async with aiohttp.ClientSession() as session:
-#                 print(2)
-#                 tasks = []
-#                 for chunk in text_splitter(docs=[query])[0]:
-#                     print(2)
-#                     tasks.append(generate_summary(session, chunk.splits))
-#                 summaries = await asyncio.gather(*tasks)
-#             return Response(summaries)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TimerView(APIView):
@@ -152,82 +112,37 @@ class TimerView(APIView):
 
 
 class QuizView(APIView):
-    async def post(self, request, format=None):
-        serializer = TextSerializer(data=request.data)
-        if serializer.is_valid():
-            query = serializer.validated_data['text']
-
-            chunks = text_splitter(docs=[query])[0]
-
+    def post(self, request, format=None):
+        def event_stream(chunks):
             quizzes = []
             for i in range(0, len(chunks), 2):
                 batch_chunks = chunks[i: i + 2]
                 for batch_chunk in batch_chunks:
-                    data = {'query': batch_chunk.splits}
-                    quiz = requests.post(
-                        'http://localhost:8080/quiz', json=data)
-                    print(json.dumps(batch_chunk.splits))
-                    print(quiz)
-                    print(quiz.json())
-                    quizzes.append(quiz.json())
+                    data = {'text': batch_chunk.splits}
+                    quiz_token = requests.post(
+                        'http://localhost:8080/quiz', json=data, headers={'api_key': 'api_key'})
 
-            # text_splitter = RecursiveCharacterTextSplitter()
+                    for j in range(10):
+                        try:
+                            quiz = requests.get(
+                                f'http://localhost:8080/quiz/{quiz_token}', headers={'api_key': 'api_key'})
+                            quiz.raise_for_status()
+                            yield quiz.json()
+                        except RequestException as e:
+                            pass
+                        sleep(2)
+        serializer = TextSerializer(data=request.data)
+        if serializer.is_valid():
+            text = serializer.validated_data['text']
 
-            # text = text_splitter.create_documents([query])
+            chunks = text_splitter(docs=[text])[0]
 
-            # # Working with real model
-            # quiz_json = router.generate_quiz(text)
-            # quiz_serializer = QuizSerializer(quiz_json)
+            response = StreamingHttpResponse(
+                event_stream(chunks), content_type='text/event-stream')
+            return response
 
-            # For testing:
-            # quiz_serializer = QuizSerializer({
-            #     "questions": [
-            #         Question(
-            #             question="What is the process used by plants to convert light energy into chemical energy?",
-            #             options=["Respiration", "Photosynthesis",
-            #                      "Decomposition", "Evaporation"],
-            #             correct_answers=["Photosynthesis"],
-            #         )
-            #     ]
-            # })
-            # print(quiz_serializer.data)
-            # print(quiz_serializer)
-            return Response(quizzes)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @csrf_exempt
-def ml_view(request):
-    if request.method == "POST":
-        query = request.POST.get('query')
-
-        print(query)
-        loader = TextLoader("test_txt.txt")
-        documents = loader.load()
-        print(documents)
-        summary = router.generate_summary(documents)
-        verdict = router.add_docs(documents)
-        result = router.retrieve(query)
-        print(result)
-        print('summary:', summary)
-        results = {
-            'result-1': result[0].page_content,
-            'result-2': result[1].page_content,
-            'result-3': result[2].page_content,
-            'result-4': result[3].page_content,
-            'document_isAdded': verdict,
-        }
-        return JsonResponse(results)
-
-# @csrf_exempt
-# def add_docs(request):
-#     router = Router()
-#     doc = Document(page_content="This is the content of the document.", metadata={"source": "example.com"})
-#     documents = [doc]
-#     verdict = router.add_docs(documents)
-#     result = [{'result': verdict}]
-#     return JsonResponse(result)
 
 
 def main(request):
