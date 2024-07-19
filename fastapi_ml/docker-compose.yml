@@ -3,12 +3,10 @@ services:
     build:
       context: .
     container_name: fastapi-server
-   # command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port 8000"]
     ports:
       - 8000:8000
     restart: "no"
     volumes:
-      # still need changes in CreateSummary
       - ~/.cache/huggingface/hub/:/root/.cache/huggingface/hub
     deploy:
       resources:
@@ -17,8 +15,20 @@ services:
           memory: 6G
     depends_on:
       - ollama
+      - redis
+      - mongo
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://mongo:27017
+      - MONGO_DB=quiz_db
+      - API_KEY=your_api_key
+      - API_KEY_NAME=access_token
+      - MAX_QUEUE_SIZE=200
+      - RATE_LIMIT=100/minute
     networks:
       - llm
+      - mongo
+      - redis
 
   ollama:
     image: ollama/ollama
@@ -43,12 +53,36 @@ services:
     #         - driver: nvidia
     #           device_ids: ['all']
     #           capabilities: [gpu]
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - redis
+    volumes:
+      - redis-data:/data/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    networks:
+      - mongo
+    volumes:
+      - mongo-data:/data/mongo
 
 volumes:
   ollama:
   transformers:
+  redis-data:
+  mongo-data:
 
 
 networks:
   llm:
+    driver: bridge
+  mongo:
+    driver: bridge
+  redis:
     driver: bridge
