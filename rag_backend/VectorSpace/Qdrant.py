@@ -1,22 +1,29 @@
 from fastembed import SparseTextEmbedding
 from typing import List, Dict, Any
 
-from Embedder import Embedder
+from .Embedder import Embedder
 
 from qdrant_client import QdrantClient, models
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+base_collection_name = os.getenv("COLLECTION")
 
 
 class VectorStore:
-    def __init__(self, host: str = "localhost", port: int = 6333) -> None:
+    def __init__(self, url: str = "http://qdrant:6333") -> None:
         self.client = QdrantClient(
-            host=host,
-            port=port,
+            url=url,
+            prefer_grpc=True,
         )
 
         self.model_bm42 = SparseTextEmbedding(
             model_name="Qdrant/bm42-all-minilm-l6-v2-attentions"
         )
         self.model_nomic = Embedder()
+
+        self.create_collection(collection_name=base_collection_name, dist="eucliad")
 
     def __initialize_collection(self, collection_name: str, dist: str = "cosine"):
         if not self.client.collection_exists(collection_name=collection_name):
@@ -236,7 +243,6 @@ Very little is known about the Old Magic, a set of powers exclusive to the godde
     idx = [
         i for i in range(len(chunks))
     ]  # SHOULD BE UNIQUE OR DATABASE RECREATE NEW POINT INSTEAD OF OLD ONES
-
 
     database = VectorStore()
     cool_name = "Some+cool_collection"
