@@ -33,12 +33,15 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
 import json
+from dotenv import load_dotenv
+import os
+
 
 import asyncio
 import aiohttp
 
-headers = {"your_api_key": "your_api_key"}
-ip_server = "87.228.8.77"
+headers = {os.getenv("API_KEY_NAME"): os.getenv("API_KEY")}
+ip_server = os.getenv('IP_SERVER')
 
 
 async def generate_summary(data):
@@ -74,7 +77,8 @@ class SSEView(APIView):
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?",
+                            "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -90,7 +94,8 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            data = {"text": [" ".join(batch_chunk.splits) for batch_chunk in chunks]}
+            data = {"text": [" ".join(batch_chunk.splits)
+                             for batch_chunk in chunks]}
 
             summary = asyncio.run(generate_summary(data=data))
 
@@ -117,7 +122,7 @@ class QuizView(APIView):
         def event_stream(chunks: list[str]):
             global headers, ip_server
             for i in range(0, len(chunks), 2):
-                batch_chunks = chunks[i : i + 2]
+                batch_chunks = chunks[i: i + 2]
                 data = {
                     "text": [
                         " ".join(batch_chunk.splits) for batch_chunk in batch_chunks
@@ -132,7 +137,8 @@ class QuizView(APIView):
                 waiting_for_gen = True
                 while waiting_for_gen:
                     quiz = requests.get(
-                        f'http://{ip_server}:8080/quiz/{quiz_token.json()["request_id"]}',
+                        f'http://{ip_server}:8080/quiz/{quiz_token.json()
+                                                        ["request_id"]}',
                         headers=headers,
                     )
                     if quiz.status_code == 404:
