@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Long Polling Quiz</title>
+</head>
+
+<body>
+    <div id="quizContainer"></div>
+
+    <script>
+        var quizContainer = document.getElementById('quizContainer');
+
+        function fetchQuizQuestion() {
+            fetch('http://localhost:8000/quiz/sse')
+                .then(response => response.json())
+                .then(data => {
+                    var questionElement = document.createElement('div');
+                    questionElement.innerHTML = `
+                        <p>${data.question}</p>
+                        <ul>
+                            ${data.choices.map(choice => `<li>${choice}</li>`).join('')}
+                        </ul>
+                    `;
+                    quizContainer.appendChild(questionElement);
+                    fetchQuizQuestion(); // Fetch the next question
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        fetchQuizQuestion(); // Start the long polling
+    </script>
+</body>
+
+</html>

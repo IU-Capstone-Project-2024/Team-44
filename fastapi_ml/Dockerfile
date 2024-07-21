@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG PYTHON_VERSION=3.11.7
+ARG PYTHON_VERSION=3.11
 FROM python:${PYTHON_VERSION}-slim as base
-
 
 
 RUN apt-get update && \
@@ -17,12 +16,13 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /rag_backend
+WORKDIR /app
 
 RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=./rag_backend/requirements.txt,target=./rag_backend/requirements.txt \
-    python -m pip install -r ./rag_backend/requirements.txt
+    --mount=type=bind,source=./app/requirements_fastapi.txt,target=./rag_backend/requirements_fastapi.txt \
+    python -m pip install -r ./rag_backend/requirements_fastapi.txt
 
 COPY . .
 
 EXPOSE 8000
+ENTRYPOINT ["uvicorn", "app.main:app", "--host" , "0.0.0.0", "--port", "8080"]

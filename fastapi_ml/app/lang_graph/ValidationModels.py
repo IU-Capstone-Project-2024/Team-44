@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, field_validator
 from typing import List
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class Question(BaseModel):
@@ -22,3 +23,6 @@ class Question(BaseModel):
 
 class Quiz(BaseModel):
     questions: List[Question] = Field(description="List of quiz questions")
+
+class Summary(BaseModel):
+    summary: str
