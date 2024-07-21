@@ -1,10 +1,10 @@
-from ast import Dict
 import asyncio
+import logging
 import os
 import uuid
+from ast import Dict
 from contextlib import asynccontextmanager
 from typing import List
-import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,18 +15,20 @@ from fastapi.security.api_key import APIKeyHeader
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 from redis.asyncio import Redis
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.middleware import SlowAPIMiddleware
-from slowapi.util import get_remote_address
 
 from .lang_graph.QuizGenerator import QuizGenerator
 from .lang_graph.SummaryGenerator import SummaryGenerator
 from .lang_graph.ValidationModels import Question, Quiz, Summary
 
+# from slowapi import Limiter, _rate_limit_exceeded_handler
+# from slowapi.middleware import SlowAPIMiddleware
+# from slowapi.util import get_remote_address
+
+
 # Configuration
 load_dotenv()
 
-API_KEY_NAME = os.getenv("API_KEY", "api_key")
+API_KEY_NAME = os.getenv("API_KEY_NAME", "api_key")
 API_KEY = os.getenv("API_KEY", "api_key")
 MAX_QUEUE_SIZE = int(os.getenv("MAX_QUEUE_SIZE", 20))
 RATE_LIMIT = os.getenv("RATE_LIMIT", 100)
