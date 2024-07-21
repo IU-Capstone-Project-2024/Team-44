@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 class SummarySerializer(serializers.Serializer):
-    query = serializers.CharField()
+    text = serializers.CharField()
 
 
 class QuestionSerializer(serializers.Serializer):

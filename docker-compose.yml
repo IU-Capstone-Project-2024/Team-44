@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: ./rag_backend/Dockerfile
     container_name: server_container
-    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py test app1 authentication && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
 
     ports:
       - 8000:8000

@@ -1,4 +1,4 @@
-from django.http import StreamingHttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from .serializers import SummarySerializer, QuizSerializer, TextSerializer
 from rest_framework import status
 import requests
@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import render
 from django.http import JsonResponse
+
 # from fastapi_ml.app.lang_graph.router import Router
 from django.views.decorators.csrf import csrf_exempt
 from requests.exceptions import RequestException
@@ -36,10 +37,16 @@ import json
 import asyncio
 import aiohttp
 
+headers = {"your_api_key": "your_api_key"}
+ip_server = "87.228.8.77"
 
-async def generate_summary(text):
+
+async def generate_summary(data):
     async with aiohttp.ClientSession() as session:
-        async with session.post('http://localhost:8080/summary', json={'text': text}, headers={'api_key': 'api_key'}) as response:
+        global headers, ip_server
+        async with session.post(
+            f"http://{ip_server}:8080/summary", json=data, headers=headers
+        ) as response:
             data = await response.json()
             return data
 
@@ -54,8 +61,8 @@ text_splitter = StatisticalChunker(
     threshold_adjustment=0.01,
     dynamic_threshold=True,
     window_size=5,
-    min_split_tokens=100,
-    max_split_tokens=500,
+    min_split_tokens=200,
+    max_split_tokens=800,
     split_tokens_tolerance=10,
     plot_chunks=False,
     enable_statistics=False,
@@ -63,46 +70,40 @@ text_splitter = StatisticalChunker(
 
 
 class SSEView(APIView):
-    def get(self, request):
+    def get(self, request) -> StreamingHttpResponse:
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?",
-                            "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
-            event_stream(), content_type='text/event-stream')
+            event_stream(), content_type="text/event-stream"
+        )
         return response
 
 
 class SummaryView(APIView):
-    def post(self, request, format=None):
+    def post(self, request, format=None) -> Response:
         serializer = SummarySerializer(data=request.data)
         if serializer.is_valid():
-            query = serializer.validated_data['query']
+            text = serializer.validated_data["text"]
 
-            chunks = text_splitter(docs=[query])[0]
-            summaries = []
-            for i in range(0, len(chunks), 2):
-                print(len(chunks))
-                batch_chunks = chunks[i: i + 2]
-                for batch_chunk in batch_chunks:
-                    print([" ".join(batch_chunk.splits)])
-                    summary = asyncio.run(generate_summary(
-                        [" ".join(batch_chunk.splits)]))
-                    print(summary)
-                    summaries.append(summary)
-            return Response(summaries)
+            chunks = text_splitter(docs=[text])[0]
+            data = {"text": [" ".join(batch_chunk.splits) for batch_chunk in chunks]}
+
+            summary = asyncio.run(generate_summary(data=data))
+
+            return Response(summary)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TimerView(APIView):
-    def post(self, request, format=None):
+    def post(self, request, format=None) -> Response:
         serializer = TextSerializer(data=request.data)
         if serializer.is_valid():
-            query = serializer.validated_data['text']
+            query = serializer.validated_data["text"]
             for i in range(10):
                 print(i, query)
 
@@ -113,37 +114,45 @@ class TimerView(APIView):
 
 class QuizView(APIView):
     def post(self, request, format=None):
-        def event_stream(chunks):
-            quizzes = []
+        def event_stream(chunks: list[str]):
+            global headers, ip_server
             for i in range(0, len(chunks), 2):
-                batch_chunks = chunks[i: i + 2]
-                for batch_chunk in batch_chunks:
-                    data = {'text': batch_chunk.splits}
-                    quiz_token = requests.post(
-                        'http://localhost:8080/quiz', json=data, headers={'api_key': 'api_key'})
+                batch_chunks = chunks[i : i + 2]
+                data = {
+                    "text": [
+                        " ".join(batch_chunk.splits) for batch_chunk in batch_chunks
+                    ]
+                }
+                quiz_token = requests.post(
+                    f"http://{ip_server}:8080/quiz/",
+                    json=data,
+                    headers=headers,
+                )
+                sleep(4)
+                waiting_for_gen = True
+                while waiting_for_gen:
+                    quiz = requests.get(
+                        f'http://{ip_server}:8080/quiz/{quiz_token.json()["request_id"]}',
+                        headers=headers,
+                    )
+                    if quiz.status_code == 404:
+                        sleep(4)
+                    else:
+                        print(quiz, quiz.json())
+                        waiting_for_gen = False
+                        yield f"data: {quiz.json()}\n\n"
 
-                    for j in range(10):
-                        try:
-                            quiz = requests.get(
-                                f'http://localhost:8080/quiz/{quiz_token}', headers={'api_key': 'api_key'})
-                            quiz.raise_for_status()
-                            yield f"data: {quiz.json()}\n\n"
-                        except RequestException as e:
-                            pass
-                        sleep(2)
         serializer = TextSerializer(data=request.data)
         if serializer.is_valid():
-            text = serializer.validated_data['text']
+            text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
 
             response = StreamingHttpResponse(
-                event_stream(chunks), content_type='text/event-stream')
+                event_stream(chunks), content_type="text/event-stream"
+            )
             return response
 
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-def main(request):
-    return render(request, 'main.html')
+def main(request) -> HttpResponse:
+    return render(request, "main.html")
