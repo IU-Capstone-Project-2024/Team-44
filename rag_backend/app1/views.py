@@ -27,6 +27,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
+from fastapi_ml.app.lang_graph.ValidationModels import Question
 import json
 
 import asyncio
@@ -69,7 +70,8 @@ class SSEView(APIView):
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?",
+                            "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -88,7 +90,7 @@ class SummaryView(APIView):
             summaries = []
             for i in range(0, len(chunks), 2):
                 print(len(chunks))
-                batch_chunks = chunks[i : i + 2]
+                batch_chunks = chunks[i: i + 2]
                 for batch_chunk in batch_chunks:
                     print([" ".join(batch_chunk.splits)])
                     summary = asyncio.run(
@@ -115,47 +117,34 @@ class TimerView(APIView):
 
 
 class QuizView(APIView):
-    def post(self, request, format=None):
-        def event_stream(chunks: List[str]):
-            for i in range(0, len(chunks), 2):
-                batch_chunks = chunks[i : i + 2]
-                data = {
-                    "text": [
-                        " ".join(batch_chunk.splits) for batch_chunk in batch_chunks
+    def get(self, request, format=None):
+        def event_stream():
+            for i in range(0, 10, 2):
+                sleep(20)
+                quiz_serializer = QuizSerializer({
+                    "questions": [
+                        Question(
+                            question="What is the process used by plants to convert light energy into chemical energy?",
+                            options=["Respiration", "Photosynthesis",
+                                     "Decomposition", "Evaporation"],
+                            correct_answers=["Photosynthesis"],
+                        )
                     ]
-                }
-                quiz_token = requests.post(
-                    "http://localhost:8080/quiz/",
-                    json=data,
-                    headers={"api_key": "api_key"},
-                )
-                sleep(4)
-                waiting_for_gen = True
-                while waiting_for_gen:
-                    quiz = requests.get(
-                        f'http://localhost:8080/quiz/{quiz_token.json()["request_id"]}',
-                        headers={"api_key": "api_key"},
-                    )
-                    if quiz.status_code == 404:
-                        sleep(4)
-                    else:
-                        print(quiz, quiz.json())
-                        waiting_for_gen = False
-                        yield quiz
+                })
+                yield quiz_serializer.data
 
-        serializer = TextSerializer(data=request.data)
-        if serializer.is_valid():
-            text = serializer.validated_data["text"]
+        # serializer = TextSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     text = serializer.validated_data["text"]
 
-            chunks = text_splitter(docs=[text])[0]
+        #     chunks = text_splitter(docs=[text])[0]
 
-            response = StreamingHttpResponse(
-                event_stream(chunks), content_type="text/event-stream"
-            )
-            return response
-
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        response = StreamingHttpResponse(
+            event_stream(), content_type="text/event-stream"
+        )
+        return response
+        # else:
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 def main(request):
