@@ -175,7 +175,7 @@ class QuizView(APIView):
     def post(self, request, format=None):
         def event_stream(batch: list[str], topics: list[str] = None):
             global headers, ip_server
-            batch_size = 2
+            batch_size = min(2, len(batch))
             for i in range(0, len(batch), batch_size):
                 data = {"text": batch[i : i + batch_size]}
                 quiz_token = requests.post(
@@ -187,7 +187,6 @@ class QuizView(APIView):
                 if topics:
                     vector_database.add(
                         chunks=batch[i : i + batch_size],
-                        idx=[uuid4() for _ in range(batch_size)],
                         metadata=[
                             {
                                 "user": "user",
@@ -246,6 +245,8 @@ class QuizView(APIView):
                 batch_normilized = [
                     " ".join(batch_chunk.splits) for batch_chunk in chunks
                 ]
+
+                print(type(topics), type(batch_normilized), len(topics), len(batch_normilized))
 
                 response = StreamingHttpResponse(
                     event_stream(batch=batch_normilized, topics=topics),
