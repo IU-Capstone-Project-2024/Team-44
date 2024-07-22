@@ -42,22 +42,7 @@ import asyncio
 import aiohttp
 
 headers = {os.getenv("API_KEY_NAME"): os.getenv("API_KEY")}
-ip_server = os.getenv('IP_SERVER')
-
-
-async def generate_summary(data):
-    async with aiohttp.ClientSession() as session:
-        global headers, ip_server
-        async with session.post(
-            f"http://{ip_server}:8080/summary", json=data, headers=headers
-        ) as response:
-            data = await response.json()
-            return data
-
-
-# async def generate_quiz(session, query):
-#     async with session.post('http://localhost:8080/quiz', json={'query': query}) as response:
-#         return await response.json()
+ip_server = os.getenv("IP_SERVER")
 
 text_splitter = StatisticalChunker(
     encoder=Embedder(),
@@ -73,13 +58,22 @@ text_splitter = StatisticalChunker(
 )
 
 
+async def generate_summary(data):
+    async with aiohttp.ClientSession() as session:
+        global headers, ip_server
+        async with session.post(
+            f"http://{ip_server}:8080/summary", json=data, headers=headers
+        ) as response:
+            data = await response.json()
+            return data
+
+
 class SSEView(APIView):
     def get(self, request) -> StreamingHttpResponse:
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?",
-                            "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -96,16 +90,11 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            data = {"text": [" ".join(batch_chunk.splits)
-                             for batch_chunk in chunks]}
+            data = {"text": [" ".join(batch_chunk.splits) for batch_chunk in chunks]}
 
             summary = data
 
-            UserText.objects.create(
-                user=request.user,
-                text=text,
-                summary=summary
-            )
+            UserText.objects.create(user=request.user, text=text, summary=summary)
 
             return Response(summary)
         else:
@@ -117,26 +106,15 @@ class GetData(APIView):
         user_texts = UserText.objects.filter(user=request.user)
         data = []
         for user_text in user_texts:
-            data.append({
-                'id': user_text.id,
-                'text': user_text.text,
-                'summary': user_text.summary,
-                'created_at': user_text.created_at
-            })
+            data.append(
+                {
+                    "id": user_text.id,
+                    "text": user_text.text,
+                    "summary": user_text.summary,
+                    "created_at": user_text.created_at,
+                }
+            )
         return Response(data, status=status.HTTP_200_OK)
-
-
-class TimerView(APIView):
-    def post(self, request, format=None) -> Response:
-        serializer = TextSerializer(data=request.data)
-        if serializer.is_valid():
-            query = serializer.validated_data["text"]
-            for i in range(10):
-                print(i, query)
-
-            return Response(query)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QuizView(APIView):
@@ -144,7 +122,7 @@ class QuizView(APIView):
         def event_stream(chunks: list[str]):
             global headers, ip_server
             for i in range(0, len(chunks), 2):
-                batch_chunks = chunks[i: i + 2]
+                batch_chunks = chunks[i : i + 2]
                 data = {
                     "text": [
                         " ".join(batch_chunk.splits) for batch_chunk in batch_chunks
