@@ -24,6 +24,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
+from rest_framework import status, permissions
 import json
 from dotenv import load_dotenv
 import os
@@ -34,7 +35,6 @@ from VectorSpace.Qdrant import VectorStore
 from rag_backend import settings
 
 from .serializers import QuizSerializer, SummarySerializer, TextSerializer
-
 
 
 from typing import List
@@ -63,10 +63,9 @@ class Question(BaseModel):
 class Quiz(BaseModel):
     questions: List[Question] = Field(description="List of quiz questions")
 
+
 class Summary(BaseModel):
     summary: str
-
-
 
 
 load_dotenv()
@@ -128,6 +127,8 @@ class SSEView(APIView):
 
 
 class SummaryView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, format=None) -> Response:
         print(request.user)
         serializer = SummarySerializer(data=request.data)
@@ -183,6 +184,8 @@ class GetData(APIView):
 
 
 class QuizView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, format=None):
         def event_stream(batch: list[str], topics: list[str] = None):
             global headers, ip_server
