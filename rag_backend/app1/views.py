@@ -30,9 +30,44 @@ import os
 from authentication.models import UserText
 from VectorSpace.Qdrant import VectorStore
 
+
 from rag_backend import settings
 
 from .serializers import QuizSerializer, SummarySerializer, TextSerializer
+
+
+
+from typing import List
+
+from pydantic import BaseModel, Field, field_validator
+
+
+class Question(BaseModel):
+    question: str = Field(description="The quiz question")
+    options: List[str] = Field(description="List of multiple-choice options")
+    correct_answers: List[str] = Field(description="List of correct answers")
+
+    # @field_validator("options")
+    # def check_options_length(cls, v):
+    #     if len(v) != 4:
+    #         raise ValueError("Each question must have exactly 4 options.")
+    #     return v
+
+    # @field_validator("correct_answers")
+    # def check_correct_answers_length(cls, v):
+    #     if len(v) != 1:
+    #         raise ValueError("There must be exactly one correct answer.")
+    #     return v
+
+
+class Quiz(BaseModel):
+    questions: List[Question] = Field(description="List of quiz questions")
+
+class Summary(BaseModel):
+    summary: str
+
+
+
 
 load_dotenv()
 
@@ -160,7 +195,7 @@ class QuizView(APIView):
                     headers=headers,
                 )
 
-                if topics:
+                if topics and False == True:
                     vector_database.add(
                         chunks=batch[i: i + batch_size],
                         idx=[uuid4() for _ in range(len(batch_size))],
@@ -192,7 +227,11 @@ class QuizView(APIView):
                     else:
                         print(quiz, quiz.json())
                         waiting_for_gen = False
-                        yield f"data: {quiz.json()}\n\n"
+                        questions = quiz.json()["questions"]
+                        print(questions)
+                        for question in questions:
+                            print(question)
+                            yield f"data: {Quiz(questions=[question]).model_dump_json()}\n\n"
 
         serializer = TextSerializer(data=request.data)
 
@@ -214,7 +253,7 @@ class QuizView(APIView):
 
                 chunks = text_splitter(docs=[text])[0]
 
-                topics = [chunk[0] for chunk in chunks]
+                topics = [chunk.splits[0] for chunk in chunks]
                 batch_normilized = [
                     " ".join(batch_chunk.splits) for batch_chunk in chunks
                 ]
