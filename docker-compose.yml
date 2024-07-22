@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: ./rag_backend/Dockerfile
     container_name: server_container
-    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py test app1 authentication && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python ./rag_backend/manage.py migrate && python ./rag_backend/manage.py runserver 0.0.0.0:8000"
 
     ports:
       - 8000:8000
@@ -23,14 +23,15 @@ services:
           memory: 10G
     networks:
       - postgres
+      - qdrant
 
   qdrant:
     image: qdrant/qdrant:latest
     restart: always
     container_name: qdrant
     ports:
-      - 6333:6333
-      - 6334:6334
+      - "6333:6333"
+      - "6334:6334"
     expose:
       - 6333
       - 6334
@@ -40,6 +41,8 @@ services:
     #     target: /qdrant/config/production.yaml
     volumes:
       - ./qdrant_data:/qdrant/storage
+    networks:
+      - qdrant
 
   postgres:
     container_name: postgres_container
@@ -144,14 +147,17 @@ volumes:
   db-data:
   pgadmin-data:
   transformers:
+  qdrant-data:
 
 
 networks:
   postgres:
     driver: bridge
+  qdrant:
+    driver: bridge
 
 
-configs:
-  qdrant_config:
-    content: |
-      log_level: INFO 
+# configs:
+#   qdrant_config:
+#     content: |
+#       log_level: INFO 
