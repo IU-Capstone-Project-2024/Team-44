@@ -183,8 +183,8 @@ class QuizView(APIView):
                 waiting_for_gen = True
                 while waiting_for_gen:
                     quiz = requests.get(
-                        f'http://{ip_server}:8080/quiz/{quiz_token.json()
-                                                        ["request_id"]}',
+                        f'http://{ip_server}:8080/quiz/'
+                        f'{quiz_token.json()["request_id"]}',
                         headers=headers,
                     )
                     if quiz.status_code == 404:
