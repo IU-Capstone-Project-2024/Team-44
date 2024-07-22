@@ -82,7 +82,8 @@ class SSEView(APIView):
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?",
+                            "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -99,12 +100,14 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            batch_normilized = [" ".join(batch_chunk.splits) for batch_chunk in chunks]
+            batch_normilized = [" ".join(batch_chunk.splits)
+                                for batch_chunk in chunks]
             data = {"text": batch_normilized}
 
             summary = data
 
-            UserText.objects.create(user=request.user, text=text, summary=summary)
+            UserText.objects.create(
+                user=request.user, text=text, summary=summary)
 
             vector_database.add(
                 chunks=batch_normilized,
@@ -150,7 +153,7 @@ class QuizView(APIView):
             global headers, ip_server
             batch_size = 2
             for i in range(0, len(batch), batch_size):
-                data = {"text": batch[i : i + batch_size]}
+                data = {"text": batch[i: i + batch_size]}
                 quiz_token = requests.post(
                     f"http://{ip_server}:8080/quiz/",
                     json=data,
@@ -159,7 +162,7 @@ class QuizView(APIView):
 
                 if topics:
                     vector_database.add(
-                        chunks=batch[i : i + batch_size],
+                        chunks=batch[i: i + batch_size],
                         idx=[uuid4() for _ in range(len(batch_size))],
                         metadata=[
                             {
@@ -171,7 +174,7 @@ class QuizView(APIView):
                                 }
                             }
                             for chunk, topic in zip(
-                                batch[i : i + batch_size], topics[i : i + batch_size]
+                                batch[i: i + batch_size], topics[i: i + batch_size]
                             )
                         ],
                         collection_name=collection_name,
@@ -180,7 +183,8 @@ class QuizView(APIView):
                 waiting_for_gen = True
                 while waiting_for_gen:
                     quiz = requests.get(
-                        f'http://{ip_server}:8080/quiz/{quiz_token.json()["request_id"]}',
+                        f'http://{ip_server}:8080/quiz/{quiz_token.json()
+                                                        ["request_id"]}',
                         headers=headers,
                     )
                     if quiz.status_code == 404:
@@ -219,6 +223,8 @@ class QuizView(APIView):
                     event_stream(batch=batch_normilized, topics=topics),
                     content_type="text/event-stream",
                 )
+            response["Cache-Control"] = "no-cache"
+            response["X-Accel-Buffering"] = "no"
             return response
 
 
