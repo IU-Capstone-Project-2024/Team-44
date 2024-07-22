@@ -29,7 +29,7 @@
         }
     })
 	
-    let toDo = "quiz"
+    let toDo = "quiz" 
 	let docTitle = ""
     let docText = ""
 	let sent = false
