@@ -81,7 +81,7 @@ def send_confirmation_mail(user, request):
 
 
 class SignUpView(APIView):
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     # authentication_classes = (SessionAuthentication,)
 
     def post(self, request, format=None):
@@ -95,8 +95,9 @@ class SignUpView(APIView):
 
 
 class SignInView(APIView):
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     # authentication_classes = (SessionAuthentication,)
+
     def post(self, request, format=None):
         serializer = SignInSerializer(data=request.data)
         if serializer.is_valid():
@@ -149,7 +150,7 @@ class SignOutView(APIView):
 
 
 class ConfirmEmailAPIView(APIView):
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     # authentication_classes = (SessionAuthentication,)
 
     def get(self, request, format=None):
@@ -171,4 +172,4 @@ class ConfirmEmailAPIView(APIView):
         user.save()
 
         login(request, user)
-        return Response({'detail': 'Email confirmed successfully'}, status=status.HTTP_200_OK)
+        return redirect('https://capstone-studyboost.vercel.app')
