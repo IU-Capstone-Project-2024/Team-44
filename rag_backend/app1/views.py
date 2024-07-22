@@ -107,7 +107,8 @@ class SSEView(APIView):
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?",
+                            "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -126,12 +127,14 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            batch_normilized = [" ".join(batch_chunk.splits) for batch_chunk in chunks]
+            batch_normilized = [" ".join(batch_chunk.splits)
+                                for batch_chunk in chunks]
             data = {"text": batch_normilized}
 
             summary = data
 
-            UserText.objects.create(user=request.user, text=text, summary=summary)
+            UserText.objects.create(
+                user=request.user, text=text, summary=summary)
 
             vector_database.add(
                 chunks=batch_normilized,
@@ -177,7 +180,7 @@ class QuizView(APIView):
             global headers, ip_server
             batch_size = min(2, len(batch))
             for i in range(0, len(batch), batch_size):
-                data = {"text": batch[i : i + batch_size]}
+                data = {"text": batch[i: i + batch_size]}
                 quiz_token = requests.post(
                     f"http://{ip_server}:8080/quiz/",
                     json=data,
@@ -186,7 +189,7 @@ class QuizView(APIView):
 
                 if topics:
                     vector_database.add(
-                        chunks=batch[i : i + batch_size],
+                        chunks=batch[i: i + batch_size],
                         metadata=[
                             {
                                 "user": "user",
@@ -195,7 +198,7 @@ class QuizView(APIView):
                                 "topic": topic,
                             }
                             for chunk, topic in zip(
-                                batch[i : i + batch_size], topics[i : i + batch_size]
+                                batch[i: i + batch_size], topics[i: i + batch_size]
                             )
                         ],
                         collection_name=collection_name,
@@ -224,7 +227,8 @@ class QuizView(APIView):
 
         if serializer.is_valid():
             text = serializer.validated_data["text"]
-            if False:
+            flag = serializer.validated_data["useDB"]
+            if flag:
                 from qdrant_client.http.models.models import QueryResponse
 
                 vectors: QueryResponse = vector_database.search(
@@ -246,7 +250,8 @@ class QuizView(APIView):
                     " ".join(batch_chunk.splits) for batch_chunk in chunks
                 ]
 
-                print(type(topics), type(batch_normilized), len(topics), len(batch_normilized))
+                print(type(topics), type(batch_normilized),
+                      len(topics), len(batch_normilized))
 
                 response = StreamingHttpResponse(
                     event_stream(batch=batch_normilized, topics=topics),
