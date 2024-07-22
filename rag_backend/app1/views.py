@@ -154,7 +154,7 @@ class SummaryView(APIView):
                             "user": "user",
                             "text": chunk,
                             "title": "title",
-                            "topic": orig_chunk[0],
+                            "topic": orig_chunk.splits[0],
                         }
                     }
                     for chunk, orig_chunk in zip(batch_normilized, chunks)
