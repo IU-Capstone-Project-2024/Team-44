@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { onMount } from "svelte";
 	import Paper, {Title} from "@smui/paper";
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
@@ -8,10 +9,37 @@
 	import { AuthStore, QuizStore, SummaryStore, TextStore } from "../../data-store";
 	import CircularProgress from '@smui/circular-progress'; 
 	import CharacterCounter from '@smui/textfield/character-counter';
+	import { json } from "@sveltejs/kit";
 	let token = $AuthStore
 	let myHeader = new Headers();
     myHeader.append("Authorization", `Token ${token}`)
+	const quizEndpoint = "https://study-boost.ru/quiz/"
+	const summEndpoint = "https://study-boost.ru/summary/"
 
+	let updateQuiz = (question: any) => {
+		QuizStore.update(prev => {
+				let questionList = prev.questions
+				questionList.push(question)
+				prev.questions = questionList
+				return prev
+			})
+	}
+
+	let setupAsyncQuiz = () => {
+		const eventSource = new EventSource(quizEndpoint);
+		eventSource.onmessage = function(event) {
+			const questionAppendix = JSON.parse(event.data)
+			console.log("data recieved:", questionAppendix)
+			updateQuiz(questionAppendix)
+		}
+
+		eventSource.onerror = function() {
+            console.error('Error with SSE');
+            eventSource.close();
+        };
+	}
+
+	
     let doQuiz = true
     let doSum = true
 	let docTitle = ""
@@ -19,37 +47,40 @@
 	let sent = false
 	let quizLoaded = false
 	let summLoaded = false
-	console.log(token)
+	console.log("token:", token)
+
+	async function readQuizData() {
+		let sendQuizData = new FormData()
+			sendQuizData.append("text", docText)
+			const response = await fetch(quizEndpoint, {
+				method: "POST",
+				body: sendQuizData,
+				headers: myHeader
+			})
+			.catch(error => {
+				console.log("error:", error)
+				alert(error)
+				sent = false
+			})
+			for await (const chunk of response.body){
+				let message = new TextDecoder().decode(chunk);
+				console.log("recieved a message:", message)
+			}
+			sent = false
+			console.log("done")
+	}
+
     let handleSend = (() => {
 		sent = true
 
 		TextStore.set([docTitle, docText])
 		if (doQuiz) {
-			let sendQuizData = new FormData()
-			sendQuizData.append("text", docText)
-			let endpoint = "https://study-boost.ru/quiz/"
-			fetch(endpoint, {
-				method: "POST",
-				body: sendQuizData,
-				headers: myHeader
-			})
-			.then(response => response.json())
-			.then(data => {
-				quizLoaded = true
-				console.log(data)
-				QuizStore.set(data)
-				goto("/item/1")
-			})
-			.catch(error => {
-				console.log("error:", error)
-				alert(error)
-			})
+			readQuizData()
 		}
 		if (doSum) {
 			let sendSummData = new FormData()
 			sendSummData.append("query", docText)
-			let endpoint = "https://study-boost.ru/summary/"
-			fetch(endpoint, {
+			fetch(summEndpoint, {
 				method: "POST",
 				body: sendSummData,
 				headers: myHeader
@@ -63,6 +94,7 @@
 			.catch(error => {
 				console.log("error:", error)
 				alert(error)
+				sent = false
 			})
 		}
 		
@@ -99,7 +131,7 @@
 			</Button>
 			
 			{#if quizLoaded && summLoaded}
-				<a href="/item/1"><span>Go to the item</span></a>
+				<a href="/items/1"><span>Go to the item</span></a>
 			{/if}
 		</div>
 	</Paper>

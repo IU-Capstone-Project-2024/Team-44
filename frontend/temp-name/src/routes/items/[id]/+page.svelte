@@ -53,7 +53,7 @@
             <Label>Show {inactive}</Label>
             <Icon class="material-icons">{density.get(inactive)}</Icon>
         </Fab>
-        <Fab color="primary" on:click={()=>{goto(`/item/${data.id}/quiz`)}} extended ripple={false}>
+        <Fab color="primary" on:click={()=>{goto(`/items/${data.id}/quiz`)}} extended ripple={false}>
             <Label>Go to quiz</Label>
             <Icon class="material-icons">checklist</Icon>
         </Fab>

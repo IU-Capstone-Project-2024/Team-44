@@ -18,7 +18,6 @@
             error => {
                 console.log(error)
                 alert(error)
-                goto("/home")
             }
         )
         

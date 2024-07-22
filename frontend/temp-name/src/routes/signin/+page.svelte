@@ -27,13 +27,16 @@
         sendData.append("username", username)
 		sendData.append("password", password)
         fetch(endpoint, {method: 'POST', body: sendData}).then(response => response.json()).then(data => {
+            console.log(data)
             if (data.error != null){
                 alert(data.error)
+                clicked = false
             }
-            console.log(data)
-			AuthStore.update(prev => data.token)
-            signinSuccess = true
-			goto("/home")
+            else {
+                AuthStore.update(prev => data.token)
+                signinSuccess = true
+                goto("/home")
+            }
 		}).catch(error => {
             alert(error)
 			console.log(error)
@@ -67,7 +70,7 @@
         <h4 class="color:red">Form data is not valid!</h4>
     {/if}
     {#if signinSuccess}
-        <h4 class="color: green">Sign up successful!</h4>
+        <h4 class="color: green">Sign in successful!</h4>
         <p>Go to <a href="/home">home</a>. </p>
     {/if}
 </Paper>

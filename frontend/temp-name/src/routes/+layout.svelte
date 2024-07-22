@@ -2,8 +2,17 @@
     import Navbar from "../static/Navbar.svelte";
     import { AuthStore } from "../data-store";
 	import { onMount } from "svelte";
+    import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
     onMount(() => {
-        // add checks for navbar
+        if ($AuthStore != "no-token"){
+            return
+            // add requests for user's database
+        }
+        else if ($page.url.pathname != "/signin" &&
+                 $page.url.pathname != "/signup"){
+            goto("/home")
+        }
     })
 </script>
 

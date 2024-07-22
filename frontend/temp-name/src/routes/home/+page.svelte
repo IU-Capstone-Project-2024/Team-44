@@ -11,8 +11,9 @@
     let handleAdd = (() => {
         goto("/send")
     })
-
+    let debug = true
     onMount(()=>{
+        if (debug) return
         let authdata = $AuthStore
         if (authdata == "no-token" || authdata == null){
             goto("/")
@@ -22,7 +23,7 @@
 
 <div class="mainArea" style="display: flex;">
     <Drawer>
-        <Item></Item>
+        <Item><Text>{currentTab}</Text></Item>
         <Button variant="raised" on:click={handleAdd} ripple={false}>
             <Label>Add a file</Label>
             <Icon class="material-icons">add_circle</Icon>
@@ -46,20 +47,16 @@
           </List>
         </Content>
     </Drawer>
-    <div style="height: 100%; width:100%;align-items:stretch">
-        <AppContent class="app-content" >
-            <Paper square variant="unelevated" >
-                <Title>
-                    <Text>Homepage</Text>
-                </Title>
-                <br />
-                <Content>
-                    <pre class="status">{currentTab}</pre>
-                </Content>
-
-            </Paper>
-        
-        </AppContent>
+    <div style="flex:1;display:flex;justify-content:center;">
+        <div class="drawerMain">
+            <Title>
+                <Text>Homepage</Text>
+            </Title>
+            <br />
+            <Content>
+                <pre class="status">{currentTab}</pre>
+            </Content>
+        </div>
     </div>
 </div>
 
@@ -72,6 +69,11 @@
         display: flex;
         flex-direction: row;
 
+    }
+
+    .drawerMain {
+        flex:1;
+        background-color: var(--mdc-theme-secondary, #333);
     }
    
 </style>
