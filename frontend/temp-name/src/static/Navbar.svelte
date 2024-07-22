@@ -1,10 +1,11 @@
 <script lang="ts">
-    import Textfield, { Input } from '@smui/textfield';
- 
+    import { Input } from '@smui/textfield';
     import Fab from '@smui/fab';
     import { Icon } from '@smui/common';
     import TopAppBar, {Row, Section, Title, } from "@smui/top-app-bar"
     import Paper from '@smui/paper';
+    import { AuthStore } from '../data-store';
+
     let links = [{text: "Sign up", link: "/signup"}, {text: "Sign out", link: "/signout"}]
     let prominent = false
     let dense = false
@@ -19,6 +20,12 @@
     function doSearch() {
         alert('Search for ' + value)
         value = ""
+    }
+
+    let token = $AuthStore
+    let authed = false
+    if (token != "no-token" && token != undefined){
+        authed = true
     }
 </script>
 
@@ -57,9 +64,13 @@
                     
         </Section>
         <Section align="end">
-            {#each links as {text, link}}
-            <Title><a href="{link}" style="text-decoration: none;"><p>{text}</p></a></Title>
-            {/each}
+            <Title>
+                {#if authed == false}
+                    <a href="/signin" style="text-decoration: none;"><p>Sign in</p></a>
+                {:else}
+                    <a href="/signout" style="text-decoration: none;"><p>Sign out</p></a>
+                {/if}
+            </Title>
         </Section>
     </Row>
 
@@ -70,9 +81,6 @@
         display: contents;
         width: auto;
         max-width: 15vw;
-    }
-    .solo-demo-container {
-        padding: 36px 18px;
     }
     
     .solo-container {

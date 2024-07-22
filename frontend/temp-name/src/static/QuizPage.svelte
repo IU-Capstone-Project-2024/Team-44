@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Paper, {Subtitle, Title} from "@smui/paper";
+    import {Subtitle} from "@smui/paper";
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button, { Label } from "@smui/button";
@@ -39,8 +39,18 @@
     })
 
     let nextQuest = (()=>{
+        selected = []
         checked = false
         questNum = questNum+1
+        question = quiz.questions[questNum].question
+        options = quiz.questions[questNum].options
+        answer = quiz.questions[questNum].correct_answers
+        result = ""
+    })
+    let prevQuest = (()=>{
+        selected = []
+        checked = false
+        questNum = questNum-1
         question = quiz.questions[questNum].question
         options = quiz.questions[questNum].options
         answer = quiz.questions[questNum].correct_answers
@@ -49,50 +59,103 @@
 </script>
 
 <div class="quiz-container">
-    <Paper variant="unelevated">
-        <div style="display:flex; justify-content:center; flex-direction:column; border: 1px solid black">
-            {#if question.length == 0}
-                <Text>No question was provided</Text>
-                <br>
-            {/if}
-            {#if options.length == 0}
-                <Text>No options were provided</Text>
-                <br>
-            {/if}
-            {#if answer.length == 0}
-                <Text>No answer was passed</Text>
-                <br>
-            {/if}
-            <div style="display:flex; justify-content:center">
-                <Title>{question}</Title>
-            </div>
-            {#each options as opt}
-            <div style="display:flex; justify-content:center">
-                <FormField>
-                    <Checkbox bind:group={selected} value={opt} />
-                    <Subtitle>  
-                        {opt}
-                    </Subtitle>
-                </FormField>
-            </div>
-            <br />
-            {/each}
+
+    <div class="question-container">
+        {#if question.length == 0}
+            <Text>No question was provided</Text>
             <br>
+        {/if}
+        {#if options.length == 0}
+            <Text>No options were provided</Text>
+            <br>
+        {/if}
+        {#if answer.length == 0}
+            <Text>No answer was passed</Text>
+            <br>
+        {/if}
+        <div class="question">
+            <div class="mdc-typography--headline4">{question}</div>
         </div>
-        <div style="display:flex; justify-content:center; flex-direction:row">
-            <Button disabled={checked} on:click={checkAnswers} >
-                <Label>Check</Label>
+        {#each options as opt, i}
+        <div class="option" style={i%2==1?"background-color:#444":"background-color:#333"}>
+            <FormField>
+                <Checkbox bind:group={selected} value={opt} />
+                <div class="mdc-typography--subtitle1">  
+                    {opt}
+                </div>
+            </FormField>
+        </div>
+        {/each}
+    </div>
+    <div class="question-container">
+        <Button disabled={checked} on:click={checkAnswers} variant="raised" ripple={false}>
+            <Label>Check</Label>
+        </Button>
+        <div class="split-button">
+        {#if questNum != 0}
+            <Button on:click={prevQuest} ripple={false}>
+                <Label >Previous Question</Label>
             </Button>
-            {#if questNum < quiz.questions.length - 1}
-            <Button on:click={nextQuest} >
+        {:else}
+            <Button on:click={prevQuest} ripple={false} disabled>
+                <Label >Previous Question</Label>
+            </Button>
+        {/if}
+        {#if questNum < quiz.questions.length - 1}
+            <Button on:click={nextQuest} ripple={false}>
                 <Label >Next Question</Label>
             </Button>
-            <br>
-            {/if}
-            <Text>
-                {result}
-            </Text>
+        {:else}
+            <Button on:click={nextQuest} ripple={false} disabled>
+                <Label >Next Question</Label>
+            </Button>
+        {/if}
         </div>
-    </Paper>
+        
+    </div>
+    <div class="mdc-typography--overline">
+        {result}
+    </div>
+
 </div>
 
+<style>
+    .quiz-container {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-evenly;
+        height: min(max(80%, 300px), 500px);
+        width: min(max(80%, 500px), 800px);
+    }
+
+    .question-container {
+        padding: 10px;
+        background-color: #333;
+        display:flex;
+        justify-content:center;
+        flex-direction:column;
+        border: 1px solid #ff3e00;
+        border-radius: 10px;
+
+    }
+
+    .question {
+        display: flex;
+        justify-content: center;
+        padding: 10px 7%;
+    }
+
+    .option {
+        display:flex;
+        justify-content:start;
+        border-radius: 5px;
+        padding: 0% 7%;
+    }
+    .split-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex: 1;
+
+    }
+</style>

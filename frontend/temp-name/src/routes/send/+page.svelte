@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
 	import { onMount } from "svelte";
 	import Paper, {Title} from "@smui/paper";
 	import Checkbox from '@smui/checkbox';
@@ -16,6 +17,19 @@
 	const quizEndpoint = "https://study-boost.ru/quiz/"
 	const summEndpoint = "https://study-boost.ru/summary/"
 
+    // onMount(() => {
+    //     let token = $AuthStore
+    //     console.log("token:", token)
+    //     console.log("currently in:", $page.url.pathname)
+    //     if (token != "no-token" && token != undefined){
+    //         return
+    //         // add requests for user's database
+    //     }
+    //     else {
+    //         goto("/")
+    //     }
+    // })
+
 	let updateQuiz = (question: any) => {
 		QuizStore.update(prev => {
 				let questionList = prev.questions
@@ -23,20 +37,7 @@
 				prev.questions = questionList
 				return prev
 			})
-	}
-
-	let setupAsyncQuiz = () => {
-		const eventSource = new EventSource(quizEndpoint);
-		eventSource.onmessage = function(event) {
-			const questionAppendix = JSON.parse(event.data)
-			console.log("data recieved:", questionAppendix)
-			updateQuiz(questionAppendix)
-		}
-
-		eventSource.onerror = function() {
-            console.error('Error with SSE');
-            eventSource.close();
-        };
+		console.log("QuizStore state:", $QuizStore);	
 	}
 
 	
@@ -47,7 +48,6 @@
 	let sent = false
 	let quizLoaded = false
 	let summLoaded = false
-	console.log("token:", token)
 
 	async function readQuizData() {
 		let sendQuizData = new FormData()
@@ -64,14 +64,22 @@
 			})
 			for await (const chunk of response.body){
 				let message = new TextDecoder().decode(chunk);
+				message = message.slice(6)
+				message = message.replace(/'/g, '"')
 				console.log("recieved a message:", message)
+				let appendix = JSON.parse(message)
+				appendix = appendix.questions[0]
+				console.log("to be appended:", appendix)
+				updateQuiz(appendix)
 			}
 			sent = false
 			console.log("done")
+			goto("/items/1/quiz")
 	}
 
     let handleSend = (() => {
 		sent = true
+		
 
 		TextStore.set([docTitle, docText])
 		if (doQuiz) {

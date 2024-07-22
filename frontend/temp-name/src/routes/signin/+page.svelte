@@ -33,9 +33,15 @@
                 clicked = false
             }
             else {
-                AuthStore.update(prev => data.token)
-                signinSuccess = true
-                goto("/home")
+                if (data.token){
+                    AuthStore.update(prev => data.token)
+                    signinSuccess = true
+                    goto("/home")
+                }
+                else{
+                    alert("Got no token from backend")
+                    AuthStore.update(prev => "no-token")
+                }
             }
 		}).catch(error => {
             alert(error)

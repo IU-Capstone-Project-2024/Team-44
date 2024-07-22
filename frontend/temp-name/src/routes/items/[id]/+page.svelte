@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { page } from '$app/stores';
     import { goto } from '$app/navigation';
     import { AuthStore } from '../../../data-store.js';
     import Paper, { Content, Subtitle, Title } from '@smui/paper';
@@ -27,10 +28,16 @@
             
     })
 
-    onMount(()=>{
-        let authdata = $AuthStore
-        if (authdata != "no-token" && authdata != null){
-            goto("/home")
+    onMount(() => {
+        let token = $AuthStore
+        console.log("token:", token)
+        console.log("currently in:", $page.url.pathname)
+        if (token != "no-token" && token != undefined){
+            return
+            // add requests for user's database
+        }
+        else {
+            goto("/")
         }
     })
 </script>

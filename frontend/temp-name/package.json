@@ -15,6 +15,7 @@
 		"smui-theme-dark": "smui-theme compile static/smui-dark.css -i src/theme/dark"
 	},
 	"devDependencies": {
+		"@material/typography": "^14.0.0",
 		"@smui/button": "^7.0.0",
 		"@smui/checkbox": "^7.0.0",
 		"@smui/circular-progress": "^7.0.0",
