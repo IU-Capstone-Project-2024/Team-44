@@ -160,7 +160,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 AUTH_USER_MODEL = 'authentication.User'
 
-FRONTEND_URL = 'http://localhost:8000/'
+FRONTEND_URL = 'http://study-boost.ru'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

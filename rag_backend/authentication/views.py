@@ -117,7 +117,7 @@ class SignInView(APIView):
 
 
 class SignOutView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    # permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
         if request.user.is_authenticated:
