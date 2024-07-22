@@ -1,48 +1,57 @@
-from django.http import HttpResponse, StreamingHttpResponse
-from .serializers import SummarySerializer, QuizSerializer, TextSerializer
-from rest_framework import status
-import requests
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.shortcuts import render
-from django.http import JsonResponse
-
-# from fastapi_ml.app.lang_graph.router import Router
-from django.views.decorators.csrf import csrf_exempt
-from requests.exceptions import RequestException
-from django.views.decorators.csrf import csrf_exempt
+import asyncio
+import json
+import os
+from base64 import urlsafe_b64encode
 from time import sleep
-from django.shortcuts import redirect, render
+from uuid import uuid4
+
+import aiohttp
+import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.hashers import make_password, check_password
-from rag_backend import settings
-from django.core.mail import send_mail
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from base64 import urlsafe_b64encode
-from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage, send_mail
+from django.http import HttpResponse, StreamingHttpResponse
+from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
-from langchain_core.documents import Document
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import TextSplitter
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from django.views.decorators.csrf import csrf_exempt
+from dotenv import load_dotenv
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
 import json
 from dotenv import load_dotenv
 import os
 from authentication.models import UserText
+from VectorSpace.Qdrant import VectorStore
 
+from rag_backend import settings
 
-import asyncio
-import aiohttp
+from .serializers import QuizSerializer, SummarySerializer, TextSerializer
+
+load_dotenv()
+
+vector_database = VectorStore()
+
 
 headers = {os.getenv("API_KEY_NAME"): os.getenv("API_KEY")}
 ip_server = os.getenv("IP_SERVER")
+collection_name = os.getenv("COLLECTION")
+
+
+async def generate_summary(data):
+    async with aiohttp.ClientSession() as session:
+        global headers, ip_server
+        async with session.post(
+            f"http://{ip_server}:8080/summary", json=data, headers=headers
+        ) as response:
+            data = await response.json()
+            return data
 
 text_splitter = StatisticalChunker(
     encoder=Embedder(),
@@ -90,11 +99,29 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            data = {"text": [" ".join(batch_chunk.splits) for batch_chunk in chunks]}
+            batch_normilized = [" ".join(batch_chunk.splits) for batch_chunk in chunks]
+            data = {"text": batch_normilized}
 
             summary = data
 
             UserText.objects.create(user=request.user, text=text, summary=summary)
+
+            vector_database.add(
+                chunks=batch_normilized,
+                idx=[uuid4() for _ in range(len(chunks))],
+                metadata=[
+                    {
+                        "Payload": {
+                            "user": "user",
+                            "text": chunk,
+                            "title": "title",
+                            "topic": orig_chunk[0],
+                        }
+                    }
+                    for chunk, orig_chunk in zip(batch_normilized, chunks)
+                ],
+                collection_name=collection_name,
+            )
 
             return Response(summary)
         else:
@@ -119,26 +146,41 @@ class GetData(APIView):
 
 class QuizView(APIView):
     def post(self, request, format=None):
-        def event_stream(chunks: list[str]):
+        def event_stream(batch: list[str], topics: list[str] = None):
             global headers, ip_server
-            for i in range(0, len(chunks), 2):
-                batch_chunks = chunks[i : i + 2]
-                data = {
-                    "text": [
-                        " ".join(batch_chunk.splits) for batch_chunk in batch_chunks
-                    ]
-                }
+            batch_size = 2
+            for i in range(0, len(batch), batch_size):
+                data = {"text": batch[i : i + batch_size]}
                 quiz_token = requests.post(
                     f"http://{ip_server}:8080/quiz/",
                     json=data,
                     headers=headers,
                 )
-                sleep(4)
+
+                if topics:
+                    vector_database.add(
+                        chunks=batch[i : i + batch_size],
+                        idx=[uuid4() for _ in range(len(batch_size))],
+                        metadata=[
+                            {
+                                "Payload": {
+                                    "user": "user",
+                                    "text": chunk,
+                                    "title": "title",
+                                    "topic": topic,
+                                }
+                            }
+                            for chunk, topic in zip(
+                                batch[i : i + batch_size], topics[i : i + batch_size]
+                            )
+                        ],
+                        collection_name=collection_name,
+                    )
+                sleep(3)
                 waiting_for_gen = True
                 while waiting_for_gen:
                     quiz = requests.get(
-                        f'http://{ip_server}:8080/quiz/{quiz_token.json()
-                                                        ["request_id"]}',
+                        f'http://{ip_server}:8080/quiz/{quiz_token.json()["request_id"]}',
                         headers=headers,
                     )
                     if quiz.status_code == 404:
@@ -149,14 +191,34 @@ class QuizView(APIView):
                         yield f"data: {quiz.json()}\n\n"
 
         serializer = TextSerializer(data=request.data)
+
         if serializer.is_valid():
-            text = serializer.validated_data["text"]
+            if False:
+                data_batch = [
+                    result.payload["text"]
+                    for result in vector_database.search(
+                        collection_name=collection_name,
+                        query=text,
+                        top=10,
+                    )
+                ]
+                response = StreamingHttpResponse(
+                    event_stream(batch=data_batch), content_type="text/event-stream"
+                )
+            else:
+                text = serializer.validated_data["text"]
 
-            chunks = text_splitter(docs=[text])[0]
+                chunks = text_splitter(docs=[text])[0]
 
-            response = StreamingHttpResponse(
-                event_stream(chunks), content_type="text/event-stream"
-            )
+                topics = [chunk[0] for chunk in chunks]
+                batch_normilized = [
+                    " ".join(batch_chunk.splits) for batch_chunk in chunks
+                ]
+
+                response = StreamingHttpResponse(
+                    event_stream(batch=batch_normilized, topics=topics),
+                    content_type="text/event-stream",
+                )
             return response
 
 
