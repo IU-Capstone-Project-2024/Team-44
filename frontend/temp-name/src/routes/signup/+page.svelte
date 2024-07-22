@@ -76,12 +76,12 @@
         </FormField>
         <br>
         <FormField>
-            <Textfield bind:value={password} label="password">
+            <Textfield bind:value={password} type="password" label="password">
             </Textfield>
         </FormField>
         <br>
         <FormField>
-            <Textfield bind:value={repeat_password} label="repeat password">
+            <Textfield bind:value={repeat_password} type="password" label="repeat password">
             </Textfield>
         </FormField>
         <br>

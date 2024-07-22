@@ -34,6 +34,7 @@
             }
             else {
                 if (data.token){
+                    console.log(data.token)
                     AuthStore.update(prev => data.token)
                     signinSuccess = true
                     goto("/home")
@@ -66,7 +67,7 @@
         </FormField>
         <br>
         <FormField>
-            <Textfield bind:value={password} label="password">
+            <Textfield bind:value={password} type="password" label="password">
             </Textfield>
         </FormField>
         <br>

@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 	import Radio from "@smui/radio";
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button, { Label } from "@smui/button";
 	import Textfield from "@smui/textfield";
-	import { AuthStore, QuizStore, SummaryStore, TextStore } from "../../data-store";
+	import { AuthStore, SummaryStore, TextStore } from "../../data-store";
 	import CircularProgress from '@smui/circular-progress'; 
 	import CharacterCounter from '@smui/textfield/character-counter';
 	let token = $AuthStore
@@ -14,29 +16,18 @@
 	const quizEndpoint = "https://study-boost.ru/quiz/"
 	const summEndpoint = "https://study-boost.ru/summary/"
 
-    // onMount(() => {
-    //     let token = $AuthStore
-    //     console.log("token:", token)
-    //     console.log("currently in:", $page.url.pathname)
-    //     if (token != "no-token" && token != undefined){
-    //         return
-    //         // add requests for user's database
-    //     }
-    //     else {
-    //         goto("/")
-    //     }
-    // })
-
-	let updateQuiz = (question) => {
-		QuizStore.update(prev => {
-				let questionList = prev.questions
-				questionList.push(question)
-				prev.questions = questionList
-				return prev
-			})
-		console.log("QuizStore state:", $QuizStore);	
-	}
-
+    onMount(() => {
+        let token = $AuthStore
+        console.log("token:", token)
+        console.log("currently in:", $page.url.pathname)
+        if (token != "no-token" && token != undefined){
+            return
+            // add requests for user's database
+        }
+        else {
+            goto("/")
+        }
+    })
 	
     let toDo = "quiz"
 	let docTitle = ""
@@ -45,47 +36,15 @@
 	let quizLoaded = false
 	let summLoaded = false
 
-	async function readQuizData() {
-		let sendQuizData = new FormData()
-		sendQuizData.append("text", docText)
-		const response = await fetch(quizEndpoint, {
-			method: "POST",
-			body: sendQuizData,
-			headers: myHeader
-		})
-		.catch(error => {
-			console.log("error:", error)
-			alert(error)
-			sent = false
-			return new Response()
-		})
-
-		for await (const chunk of response.body){
-			let message = new TextDecoder().decode(chunk);
-			message = message.replace(/data: /g, "")
-			message = message.replace(/'/g, '"')
-			console.log("recieved a message:", message)
-			if (message != "done"){
-				let appendix = JSON.parse(message)
-				appendix = appendix.questions[0]
-				console.log("to be appended:", appendix)
-				updateQuiz(appendix)
-			}
-		}
-		sent = false
-		console.log("done")
-		goto("/items/1/")
-	}
-
     let handleSend = (() => {
 		sent = true
 		TextStore.set([docTitle, docText])
 		if (toDo == "quiz") {
-			readQuizData()
+			goto("/items/1/quiz")
 		}
 		else {
 			let sendSummData = new FormData()
-			sendSummData.append("query", docText)
+			sendSummData.append("text", docText)
 			fetch(summEndpoint, {
 				method: "POST",
 				body: sendSummData,
@@ -93,6 +52,7 @@
 			})
 			.then(response => response.json())
 			.then(data => {
+				if (data.summary==0)
 				summLoaded = true
 				console.log(data)
 				SummaryStore.set(data)
@@ -121,7 +81,8 @@
 			<Textfield textarea
 			label="Enter your text..." 
 			input$maxlength={10000}
-			bind:value={docText}>
+			bind:value={docText}
+			input$rows={10}>
 			<CharacterCounter slot="helper">0 / 10000</CharacterCounter>
 			</Textfield>
 			<FormField>

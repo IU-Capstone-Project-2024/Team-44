@@ -10,13 +10,7 @@
     let prominent = false
     let dense = false
     let value = ""
-    
-    function handleKeyDown(event: CustomEvent | KeyboardEvent) {
-        event = event as KeyboardEvent;
-        if (event.key === 'Enter') {
-            doSearch();
-        }
-    }
+
     function doSearch() {
         alert('Search for ' + value)
         value = ""
@@ -36,12 +30,15 @@
         <Row>
             <Section>
                 <div class="title">
-                    <Section>
-                        <Title><a href="/home" style="text-decoration: none;">StudyBoost ⚡</a></Title>
-                    </Section>
-        
+
+                    <Title><a href="/home" style="text-decoration: none;">StudyBoost ⚡</a></Title>
                 </div>
-    
+                <div class="title">
+                        <Title><a href="/send" style="text-decoration: none;">Send...</a></Title>
+        
+                
+                </div>
+
             </Section>
 
             <Section align="end">
