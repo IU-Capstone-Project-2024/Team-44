@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'rag_backend.wsgi.application'
 load_dotenv()
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
@@ -160,7 +160,7 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
 AUTH_USER_MODEL = 'authentication.User'
 
-FRONTEND_URL = 'https://study-boost.ru:8000/'
+FRONTEND_URL = 'http://localhost:8000/'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

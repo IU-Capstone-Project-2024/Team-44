@@ -35,6 +35,7 @@ from VectorSpace.Embedder import Embedder
 import json
 from dotenv import load_dotenv
 import os
+from authentication.models import UserText
 
 
 import asyncio
@@ -89,6 +90,7 @@ class SSEView(APIView):
 
 class SummaryView(APIView):
     def post(self, request, format=None) -> Response:
+        print(request.user)
         serializer = SummarySerializer(data=request.data)
         if serializer.is_valid():
             text = serializer.validated_data["text"]
@@ -97,11 +99,31 @@ class SummaryView(APIView):
             data = {"text": [" ".join(batch_chunk.splits)
                              for batch_chunk in chunks]}
 
-            summary = asyncio.run(generate_summary(data=data))
+            summary = data
+
+            UserText.objects.create(
+                user=request.user,
+                text=text,
+                summary=summary
+            )
 
             return Response(summary)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetData(APIView):
+    def get(self, request, format=None):
+        user_texts = UserText.objects.filter(user=request.user)
+        data = []
+        for user_text in user_texts:
+            data.append({
+                'id': user_text.id,
+                'text': user_text.text,
+                'summary': user_text.summary,
+                'created_at': user_text.created_at
+            })
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class TimerView(APIView):
