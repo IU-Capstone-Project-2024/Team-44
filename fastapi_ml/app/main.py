@@ -6,6 +6,8 @@ from ast import Dict
 from contextlib import asynccontextmanager
 from typing import List
 
+import aiohttp
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -35,6 +37,7 @@ RATE_LIMIT = os.getenv("RATE_LIMIT", 100)
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
 MONGO_DB = os.getenv("MONGO_DB", "quiz_db")
+SERVER_IP = os.getenv("SERVER_IP")
 
 
 @asynccontextmanager
@@ -88,6 +91,7 @@ request_queue = asyncio.Queue(maxsize=MAX_QUEUE_SIZE)
 # API Key Header
 api_key_header = APIKeyHeader(name=API_KEY_NAME)
 
+
 class TextRequest(BaseModel):
     text: List[str]
 
@@ -108,6 +112,7 @@ async def summary(
     api_key: str = Depends(get_api_key),
 ) -> Summary:
     return summary_generator.generate_summary(request.text)
+
 
 @app.post("/quiz")
 # @limiter.limit(RATE_LIMIT)
@@ -143,14 +148,49 @@ async def process_request(request_id: str):
     if request_data is None:
         logger.warning(f"Request {request_id} not found in Redis.")
         return
-    
+
     request = TextRequest.model_validate_json(request_data)
-    #quiz = quiz_generator.generate_pquiz(chunks=request.text)
+    # quiz = quiz_generator.generate_pquiz(chunks=request.text)
     quiz = await quiz_generator.generate_quiz_abatch(chunks=request.text)
-    await db.quizzes.insert_one({"request_id": request_id, "quiz": quiz.model_dump_json()})
+    await db.quizzes.insert_one(
+        {"request_id": request_id, "quiz": quiz.model_dump_json()}
+    )
     await redis.delete(request_id)
 
     logger.info(f"Request {request_id} processed and saved to database.")
+
+
+async def process_request_v2(request_id: str):
+    logger.info(f"\nProcessing request {request_id}.")
+
+    request_data = await redis.get(request_id)
+    if request_data is None:
+        logger.warning(f"Request {request_id} not found in Redis.")
+        return
+
+    request = TextRequest.model_validate_json(request_data)
+    quiz = await quiz_generator.generate_quiz_abatch(chunks=request.text)
+    quiz_json = quiz.model_dump_json()
+
+    headers = {
+        "token": request_id,
+        API_KEY_NAME: API_KEY,
+    }
+    url = f"https://study-boost.ru/api/quiz"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            url, json={"quiz": quiz_json}, headers=headers
+        ) as response:
+            if response.status == 200:
+                logger.info(
+                    f"Request {request_id} processed and sent to server successfully."
+                )
+                await redis.delete(request_id)
+            else:
+                logger.error(
+                    f"Failed to send request {request_id} to server. Status code: {response.status}"
+                )
 
 
 @app.get("/quiz/{request_id}", response_model=Quiz)
@@ -165,5 +205,7 @@ async def get_quiz_result(request_id: str):
         )
     else:
         await db.quizzes.delete_one({"request_id": request_id})
-        logger.info(f"Result for request {request_id} returned and deleted from database.")
+        logger.info(
+            f"Result for request {request_id} returned and deleted from database."
+        )
         return Quiz.model_validate_json(result["quiz"])
