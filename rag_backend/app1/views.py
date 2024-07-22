@@ -101,6 +101,7 @@ text_splitter = StatisticalChunker(
     enable_statistics=False,
 )
 
+
 class SSEView(APIView):
     def get(self, request) -> StreamingHttpResponse:
         def event_stream():
@@ -137,12 +138,10 @@ class SummaryView(APIView):
                 idx=[uuid4() for _ in range(len(chunks))],
                 metadata=[
                     {
-                        "Payload": {
-                            "user": "user",
-                            "text": chunk,
-                            "title": "title",
-                            "topic": orig_chunk.splits[0],
-                        }
+                        "user": "user",
+                        "text": chunk,
+                        "title": "title",
+                        "topic": orig_chunk.splits[0],
                     }
                     for chunk, orig_chunk in zip(batch_normilized, chunks)
                 ],
@@ -227,15 +226,14 @@ class QuizView(APIView):
         if serializer.is_valid():
             text = serializer.validated_data["text"]
             if False:
-                from  qdrant_client.http.models.models import QueryResponse
-                vectors: QueryResponse  = vector_database.search(
-                        collection_name=collection_name,
-                        query=text,
-                        top=10,
-                    )
-                data_batch = [
-                    p.payload["text"] for p in vectors.points
-                ]
+                from qdrant_client.http.models.models import QueryResponse
+
+                vectors: QueryResponse = vector_database.search(
+                    collection_name=collection_name,
+                    query=text,
+                    top=10,
+                )
+                data_batch = [p.payload["text"] for p in vectors.points]
                 print(len(data_batch), data_batch)
                 # result
                 response = StreamingHttpResponse(
