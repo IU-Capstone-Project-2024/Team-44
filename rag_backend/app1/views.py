@@ -87,6 +87,7 @@ async def generate_summary(data):
             data = await response.json()
             return data
 
+
 text_splitter = StatisticalChunker(
     encoder=Embedder(),
     name="statistical_chunker",
@@ -100,24 +101,12 @@ text_splitter = StatisticalChunker(
     enable_statistics=False,
 )
 
-
-async def generate_summary(data):
-    async with aiohttp.ClientSession() as session:
-        global headers, ip_server
-        async with session.post(
-            f"http://{ip_server}:8080/summary", json=data, headers=headers
-        ) as response:
-            data = await response.json()
-            return data
-
-
 class SSEView(APIView):
     def get(self, request) -> StreamingHttpResponse:
         def event_stream():
             for i in range(10):
                 sleep(1)
-                question = {"question": "What is 2 + 2?",
-                            "choices": ["3", "4", "5"]}
+                question = {"question": "What is 2 + 2?", "choices": ["3", "4", "5"]}
                 yield f"data: {json.dumps(question)}\n\n"
 
         response = StreamingHttpResponse(
@@ -136,14 +125,12 @@ class SummaryView(APIView):
             text = serializer.validated_data["text"]
 
             chunks = text_splitter(docs=[text])[0]
-            batch_normilized = [" ".join(batch_chunk.splits)
-                                for batch_chunk in chunks]
+            batch_normilized = [" ".join(batch_chunk.splits) for batch_chunk in chunks]
             data = {"text": batch_normilized}
 
             summary = data
 
-            UserText.objects.create(
-                user=request.user, text=text, summary=summary)
+            UserText.objects.create(user=request.user, text=text, summary=summary)
 
             vector_database.add(
                 chunks=batch_normilized,
@@ -191,7 +178,7 @@ class QuizView(APIView):
             global headers, ip_server
             batch_size = 2
             for i in range(0, len(batch), batch_size):
-                data = {"text": batch[i: i + batch_size]}
+                data = {"text": batch[i : i + batch_size]}
                 quiz_token = requests.post(
                     f"http://{ip_server}:8080/quiz/",
                     json=data,
@@ -200,19 +187,17 @@ class QuizView(APIView):
 
                 if topics:
                     vector_database.add(
-                        chunks=batch[i: i + batch_size],
+                        chunks=batch[i : i + batch_size],
                         idx=[uuid4() for _ in range(batch_size)],
                         metadata=[
                             {
-                                "Payload": {
-                                    "user": "user",
-                                    "text": chunk,
-                                    "title": "title",
-                                    "topic": topic,
-                                }
+                                "user": "user",
+                                "text": chunk,
+                                "title": "title",
+                                "topic": topic,
                             }
                             for chunk, topic in zip(
-                                batch[i: i + batch_size], topics[i: i + batch_size]
+                                batch[i : i + batch_size], topics[i : i + batch_size]
                             )
                         ],
                         collection_name=collection_name,
@@ -234,26 +219,29 @@ class QuizView(APIView):
                         print(questions)
                         for question in questions:
                             print(question)
+                            sleep(0.5)
                             yield f"data: {Quiz(questions=[question]).model_dump_json()}\n\n"
 
         serializer = TextSerializer(data=request.data)
 
         if serializer.is_valid():
+            text = serializer.validated_data["text"]
             if False:
-                data_batch = [
-                    result.payload["text"]
-                    for result in vector_database.search(
+                from  qdrant_client.http.models.models import QueryResponse
+                vectors: QueryResponse  = vector_database.search(
                         collection_name=collection_name,
                         query=text,
                         top=10,
                     )
+                data_batch = [
+                    p.payload["text"] for p in vectors.points
                 ]
+                print(len(data_batch), data_batch)
+                # result
                 response = StreamingHttpResponse(
                     event_stream(batch=data_batch), content_type="text/event-stream"
                 )
             else:
-                text = serializer.validated_data["text"]
-
                 chunks = text_splitter(docs=[text])[0]
 
                 topics = [chunk.splits[0] for chunk in chunks]
