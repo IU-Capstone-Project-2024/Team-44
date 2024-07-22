@@ -131,7 +131,7 @@ class SummaryView(APIView):
                                 for batch_chunk in chunks]
             data = {"text": batch_normilized}
 
-            summary = data
+            summary = asyncio.run(generate_summary(data=data))
 
             UserText.objects.create(
                 user=request.user, text=text, summary=summary)
