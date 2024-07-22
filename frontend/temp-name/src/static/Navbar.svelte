@@ -32,47 +32,29 @@
 
 
 <TopAppBar variant="static" {prominent} {dense} color="primary">
-    <Row>
-        <div class="title">
+    <div class="bg-gradient">
+        <Row>
             <Section>
-                <Title><a href="/home" style="text-decoration: none;">StudyBoost ⚡</a></Title>
+                <div class="title">
+                    <Section>
+                        <Title><a href="/home" style="text-decoration: none;">StudyBoost ⚡</a></Title>
+                    </Section>
+        
+                </div>
+    
             </Section>
 
-        </div>
-        <Section>
-
-        <div class="solo-demo-container solo-container">
-            <Paper class="solo-paper" elevation={6}>
-                <Icon class="material-icons">search</Icon>
-                <Input
-                  bind:value
-                  on:keydown={handleKeyDown}
-                  placeholder="Search"
-                  class="solo-input"
-                />
-            </Paper>
-            <Fab
-                on:click={doSearch}
-                disabled={value === ''}
-                color="primary"
-                mini
-                class="solo-fab"
-                >
-                <Icon class="material-icons">arrow_forward</Icon>
-            </Fab>
-        </div>
-                    
-        </Section>
-        <Section align="end">
-            <Title>
-                {#if authed == false}
-                    <a href="/signin" style="text-decoration: none;"><p>Sign in</p></a>
-                {:else}
-                    <a href="/signout" style="text-decoration: none;"><p>Sign out</p></a>
-                {/if}
-            </Title>
-        </Section>
-    </Row>
+            <Section align="end">
+                <Title>
+                    {#if authed == false}
+                        <a href="/signin" style="text-decoration: none;"><p>Sign in</p></a>
+                    {:else}
+                        <a href="/signout" style="text-decoration: none;"><p>Sign out</p></a>
+                    {/if}
+                </Title>
+            </Section>
+        </Row>
+    </div>
 
 </TopAppBar>
 
@@ -82,12 +64,9 @@
         width: auto;
         max-width: 15vw;
     }
-    
-    .solo-container {
-        flex: 1;
+    .bg-gradient{
         display: flex;
-        justify-content: center;
-        align-items: center;
+        background: linear-gradient(270deg, rgba(22,22,22,1) 0%, rgba(255,62,0,1) 100%);
     }
     * :global(.solo-paper) {
         display: flex;

@@ -41,6 +41,9 @@
                 else{
                     alert("Got no token from backend")
                     AuthStore.update(prev => "no-token")
+                    if (data.message == "You are logged in"){
+                        goto("/send")
+                    }
                 }
             }
 		}).catch(error => {

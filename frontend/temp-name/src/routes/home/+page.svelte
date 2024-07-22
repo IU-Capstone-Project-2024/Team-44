@@ -12,7 +12,6 @@
     let handleAdd = (() => {
         goto("/send")
     })
-    let debug = true
 
     onMount(() => {
         let token = $AuthStore

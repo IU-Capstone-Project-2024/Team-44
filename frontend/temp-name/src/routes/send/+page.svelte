@@ -1,16 +1,13 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { page } from "$app/stores";
-	import { onMount } from "svelte";
-	import Paper, {Title} from "@smui/paper";
+	import Radio from "@smui/radio";
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button, { Label } from "@smui/button";
-	import Textfield, { Textarea } from "@smui/textfield";
+	import Textfield from "@smui/textfield";
 	import { AuthStore, QuizStore, SummaryStore, TextStore } from "../../data-store";
 	import CircularProgress from '@smui/circular-progress'; 
 	import CharacterCounter from '@smui/textfield/character-counter';
-	import { json } from "@sveltejs/kit";
 	let token = $AuthStore
 	let myHeader = new Headers();
     myHeader.append("Authorization", `Token ${token}`)
@@ -30,7 +27,7 @@
     //     }
     // })
 
-	let updateQuiz = (question: any) => {
+	let updateQuiz = (question) => {
 		QuizStore.update(prev => {
 				let questionList = prev.questions
 				questionList.push(question)
@@ -41,8 +38,7 @@
 	}
 
 	
-    let doQuiz = true
-    let doSum = true
+    let toDo = "quiz"
 	let docTitle = ""
     let docText = ""
 	let sent = false
@@ -51,41 +47,43 @@
 
 	async function readQuizData() {
 		let sendQuizData = new FormData()
-			sendQuizData.append("text", docText)
-			const response = await fetch(quizEndpoint, {
-				method: "POST",
-				body: sendQuizData,
-				headers: myHeader
-			})
-			.catch(error => {
-				console.log("error:", error)
-				alert(error)
-				sent = false
-			})
-			for await (const chunk of response.body){
-				let message = new TextDecoder().decode(chunk);
-				message = message.slice(6)
-				message = message.replace(/'/g, '"')
-				console.log("recieved a message:", message)
+		sendQuizData.append("text", docText)
+		const response = await fetch(quizEndpoint, {
+			method: "POST",
+			body: sendQuizData,
+			headers: myHeader
+		})
+		.catch(error => {
+			console.log("error:", error)
+			alert(error)
+			sent = false
+			return new Response()
+		})
+
+		for await (const chunk of response.body){
+			let message = new TextDecoder().decode(chunk);
+			message = message.replace(/data: /g, "")
+			message = message.replace(/'/g, '"')
+			console.log("recieved a message:", message)
+			if (message != "done"){
 				let appendix = JSON.parse(message)
 				appendix = appendix.questions[0]
 				console.log("to be appended:", appendix)
 				updateQuiz(appendix)
 			}
-			sent = false
-			console.log("done")
-			goto("/items/1/quiz")
+		}
+		sent = false
+		console.log("done")
+		goto("/items/1/")
 	}
 
     let handleSend = (() => {
 		sent = true
-		
-
 		TextStore.set([docTitle, docText])
-		if (doQuiz) {
+		if (toDo == "quiz") {
 			readQuizData()
 		}
-		if (doSum) {
+		else {
 			let sendSummData = new FormData()
 			sendSummData.append("query", docText)
 			fetch(summEndpoint, {
@@ -98,49 +96,94 @@
 				summLoaded = true
 				console.log(data)
 				SummaryStore.set(data)
+				goto("/items/1/")
 			})
 			.catch(error => {
 				console.log("error:", error)
 				alert(error)
 				sent = false
 			})
-		}
-		
-		
+		}	
     })
 
 </script>
 
-<form>
-	<Paper square variant="unelevated">
-		<div style="display:flex; flex-direction:column; justify-content:center">
-			<Title>Add a text to summarize:</Title>
-			<Textfield textarea
-			label="Enter the title..." 
-			bind:value={docTitle} />
+<div class="send-container">
+	<div class="form-container">
+		<div class="form-title">
+			<div class="mdc-typography--headline4">
+				Add a text to process:
+			</div>
+		</div>
+		<div class="fields">
+			<Textfield label="Enter the title..." bind:value={docTitle} />
+			<hr >
 			<Textfield textarea
 			label="Enter your text..." 
 			input$maxlength={10000}
 			bind:value={docText}>
 			<CharacterCounter slot="helper">0 / 10000</CharacterCounter>
 			</Textfield>
-			<br />
 			<FormField>
-				<Checkbox bind:checked={doQuiz} /><span>quiz</span>
+				<Radio bind:group={toDo} value="quiz" color="secondary"/>
+				<div class="mdc-typography--subtitle1">quiz</div>
 			</FormField>
 			<FormField>
-				<Checkbox bind:checked={doSum} /><span>summary</span> 
+				<Radio bind:group={toDo} value="summ" color="secondary"/>
+				<div class="mdc-typography--subtitle1">summary</div>
 			</FormField>
-			<br />	
-			<Button variant="raised" disabled={sent} on:click={handleSend}>
-				<Label>
-					Send to summarize!{#if sent}<CircularProgress style="height: 10px; width: 10px;" indeterminate />{/if}
-				</Label>
-			</Button>
-			
-			{#if quizLoaded && summLoaded}
-				<a href="/items/1"><span>Go to the item</span></a>
-			{/if}
 		</div>
-	</Paper>
-</form>
+	
+	</div>
+	<Button variant="raised" disabled={sent} on:click={handleSend}>
+		<Label>
+			{#if toDo == "quiz"}
+				Make a quiz!
+			{:else}
+				Summarize!
+			{/if}
+			{#if sent}<CircularProgress style="height: 10px; width: 10px;" indeterminate />{/if}
+		</Label>
+	</Button>
+	
+	{#if quizLoaded && summLoaded}
+		<a href="/items/1"><span>Go to the item</span></a>
+	{/if}
+</div>
+<style>
+	hr {
+		width: 100%;
+		color: rgba(0, 0, 0, 0);
+	}
+	.send-container {
+		display: flex;
+		flex-direction: column;
+		justify-content:space-evenly;
+		height: min(max(80%, 300px), 600px);
+		width: min(max(80%, 500px), 1500px);
+	}
+
+	.form-container{
+		padding: 10px;
+        background-color: #333;
+        display:flex;
+        justify-content:space-between;
+        flex-direction:column;
+        border: 1px solid #ff3e00;
+        border-radius: 10px;
+
+	}
+	.form-title {
+		display: flex;
+        justify-content: center;
+        padding: 10px 7%;
+		flex:1;
+	}
+	.fields {
+		flex:1;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+</style>

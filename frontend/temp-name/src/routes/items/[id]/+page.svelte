@@ -11,7 +11,7 @@
     let inactive: string = "Summary";
     let title = $TextStore[0]
     let text = $TextStore[1]
-    let summary = $SummaryStore.summary[0]
+    let summary = $SummaryStore.summary
     let density = new Map ([["Text", "auto_stories"], ["Summary", "article"]])
     let quiz = $QuizStore
     console.log("Stored object:", $QuizStore)
@@ -28,18 +28,18 @@
             
     })
 
-    onMount(() => {
-        let token = $AuthStore
-        console.log("token:", token)
-        console.log("currently in:", $page.url.pathname)
-        if (token != "no-token" && token != undefined){
-            return
-            // add requests for user's database
-        }
-        else {
-            goto("/")
-        }
-    })
+    // onMount(() => {
+    //     let token = $AuthStore
+    //     console.log("token:", token)
+    //     console.log("currently in:", $page.url.pathname)
+    //     if (token != "no-token" && token != undefined){
+    //         return
+    //         // add requests for user's database
+    //     }
+    //     else {
+    //         goto("/")
+    //     }
+    // })
 </script>
 <div class="flexy">
     <Paper variant="unelevated">

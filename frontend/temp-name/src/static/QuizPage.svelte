@@ -74,7 +74,9 @@
             <br>
         {/if}
         <div class="question">
-            <div class="mdc-typography--headline4">{question}</div>
+            <div class="mdc-typography--headline4">
+                {question}
+            </div>
         </div>
         {#each options as opt, i}
         <div class="option" style={i%2==1?"background-color:#444":"background-color:#333"}>
@@ -124,8 +126,8 @@
         display: flex;
         flex-direction: column;
         justify-content:space-evenly;
-        height: min(max(80%, 300px), 500px);
-        width: min(max(80%, 500px), 800px);
+        height: min(max(80%, 300px), 600px);
+        width: min(max(80%, 500px), 1500px);
     }
 
     .question-container {
