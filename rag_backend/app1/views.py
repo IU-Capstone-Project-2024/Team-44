@@ -24,6 +24,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from semantic_chunkers import StatisticalChunker
 from VectorSpace.Embedder import Embedder
+import json
+from dotenv import load_dotenv
+import os
+from authentication.models import UserText
 from VectorSpace.Qdrant import VectorStore
 
 from rag_backend import settings
@@ -49,7 +53,6 @@ async def generate_summary(data):
             data = await response.json()
             return data
 
-
 text_splitter = StatisticalChunker(
     encoder=Embedder(),
     name="statistical_chunker",
@@ -62,6 +65,16 @@ text_splitter = StatisticalChunker(
     plot_chunks=False,
     enable_statistics=False,
 )
+
+
+async def generate_summary(data):
+    async with aiohttp.ClientSession() as session:
+        global headers, ip_server
+        async with session.post(
+            f"http://{ip_server}:8080/summary", json=data, headers=headers
+        ) as response:
+            data = await response.json()
+            return data
 
 
 class SSEView(APIView):
@@ -80,6 +93,7 @@ class SSEView(APIView):
 
 class SummaryView(APIView):
     def post(self, request, format=None) -> Response:
+        print(request.user)
         serializer = SummarySerializer(data=request.data)
         if serializer.is_valid():
             text = serializer.validated_data["text"]
@@ -88,7 +102,9 @@ class SummaryView(APIView):
             batch_normilized = [" ".join(batch_chunk.splits) for batch_chunk in chunks]
             data = {"text": batch_normilized}
 
-            summary = asyncio.run(generate_summary(data=data))
+            summary = data
+
+            UserText.objects.create(user=request.user, text=text, summary=summary)
 
             vector_database.add(
                 chunks=batch_normilized,
@@ -112,17 +128,20 @@ class SummaryView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TimerView(APIView):
-    def post(self, request, format=None) -> Response:
-        serializer = TextSerializer(data=request.data)
-        if serializer.is_valid():
-            query = serializer.validated_data["text"]
-            for i in range(10):
-                print(i, query)
-
-            return Response(query)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class GetData(APIView):
+    def get(self, request, format=None):
+        user_texts = UserText.objects.filter(user=request.user)
+        data = []
+        for user_text in user_texts:
+            data.append(
+                {
+                    "id": user_text.id,
+                    "text": user_text.text,
+                    "summary": user_text.summary,
+                    "created_at": user_text.created_at,
+                }
+            )
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class QuizView(APIView):
@@ -132,7 +151,6 @@ class QuizView(APIView):
             batch_size = 2
             for i in range(0, len(batch), batch_size):
                 data = {"text": batch[i : i + batch_size]}
-
                 quiz_token = requests.post(
                     f"http://{ip_server}:8080/quiz/",
                     json=data,
