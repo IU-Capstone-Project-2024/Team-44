@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import SummaryView, QuizView, TimerView
+from .views import SummaryView, QuizView, TimerView, ReceiveQuizView
 
 from django.urls import path
 from .views import SSEView
@@ -13,5 +13,6 @@ urlpatterns = [
     path('authentication/', include('authentication.urls')),
     path('timer/', TimerView.as_view(), name='timer'),
     path('quiz/sse/', SSEView.as_view(), name='quiz_sse'),
+    path('recievequiz/', ReceiveQuizView.asview(), name='recievequiz')
 
 ]

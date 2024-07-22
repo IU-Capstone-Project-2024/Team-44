@@ -32,6 +32,10 @@ import json
 import asyncio
 import aiohttp
 
+import logging 
+from pymongo import MongoClient 
+import redis 
+
 from typing import List
 
 
@@ -77,6 +81,42 @@ class SSEView(APIView):
         )
         return response
 
+logger = logging.getLogger(__name__)
+
+# MongoDB setup
+mongo_client = MongoClient('mongodb://localhost:27017/')
+db = mongo_client.quiz_database
+collection = db.quizzes
+
+# Redis setup
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
+
+class ReceiveQuizView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.data
+            quiz = data.get('quiz')
+            token = request.headers.get('token')
+            api_key = request.headers.get('api_key')
+            
+            # Validate token_id and api_key
+            if not token or not api_key:
+                logger.error("Missing token_id or api_key in headers.")
+                return Response({"error": "Missing token_id or api_key in headers."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Save to MongoDB
+            collection.insert_one({"token": token, "quiz": quiz})
+            
+            # Save to Redis
+            redis_client.set(token, quiz)
+
+            # Respond with a success message
+            logger.info(f"Received quiz: {quiz}")
+            return Response({"message": "Quiz received successfully."}, status=status.HTTP_200_OK)
+        except json.JSONDecodeError:
+            logger.error("Invalid JSON received.")
+            return Response({"error": "Invalid JSON received."}, status=status.HTTP_400_BAD_REQUEST)
 
 class SummaryView(APIView):
     def post(self, request, format=None):
