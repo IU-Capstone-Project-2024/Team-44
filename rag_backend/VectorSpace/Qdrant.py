@@ -1,3 +1,4 @@
+from uuid import uuid4
 from fastembed import SparseTextEmbedding
 from typing import List, Dict, Any
 
@@ -83,7 +84,7 @@ class VectorStore:
             collection_name=collection_name,
             points=[
                 models.PointStruct(
-                    id=id,
+                    id=str(uuid4()),
                     payload=payload,
                     vector={
                         "nomic": dense,

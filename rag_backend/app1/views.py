@@ -195,10 +195,10 @@ class QuizView(APIView):
                     headers=headers,
                 )
 
-                if topics and False == True:
+                if topics:
                     vector_database.add(
                         chunks=batch[i: i + batch_size],
-                        idx=[uuid4() for _ in range(len(batch_size))],
+                        idx=[uuid4() for _ in range(batch_size)],
                         metadata=[
                             {
                                 "Payload": {
