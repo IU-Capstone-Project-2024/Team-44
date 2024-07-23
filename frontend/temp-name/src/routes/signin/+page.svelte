@@ -37,7 +37,7 @@
                     console.log(data.token)
                     AuthStore.update(prev => data.token)
                     signinSuccess = true
-                    goto("/home")
+                    goto("/send")
                 }
                 else{
                     alert("Got no token from backend")

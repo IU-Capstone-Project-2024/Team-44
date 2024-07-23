@@ -1,12 +1,12 @@
 <script lang="ts">
-    import {Subtitle} from "@smui/paper";
+    import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import Checkbox from '@smui/checkbox';
 	import FormField from '@smui/form-field';
 	import Button, { Label } from "@smui/button";
     import { Text } from "@smui/list";
+	import { goto } from '$app/navigation';
     export let quiz : any = {}
     console.log(quiz)
-    
     let questNum : number = 0
     let question : string = quiz.questions[questNum].question
     let options : Array<string> = quiz.questions[questNum].options
@@ -19,14 +19,18 @@
     let selected : Array<string> = []
     let result : string = ""
     let checked = false
+    let size = quiz.questions.length
+    let answeredCorrect = 0
+    let open = false
+    let clicked = "none"
 
     let checkAnswers = (() => {
+        const ans = answer.concat().sort()
+        checked = true
         if (answer.length != selected.length){
-            result = "Incorrect amount of answers!"
+            result = `The answer is not correct, the correct answer is: ${ans}`
             return
         }
-        checked = true
-        const ans = answer.concat().sort()
         const sel = selected.concat().sort()
         for (let i = 0; i < ans.length; i++){
             if (ans[i] != sel[i]) {
@@ -36,6 +40,7 @@
         }
         selected = []
         result = "The answer is correct!"
+        answeredCorrect+=1
     })
 
     let nextQuest = (()=>{
@@ -57,7 +62,23 @@
         result = ""
     })
 </script>
-
+{#if open}
+<div class="dialog-container">
+    <Dialog
+    bind:open
+    aria-labelledby="simple-title"
+    aria-describedby="simple-content"
+    >
+    <div class="mdc-typography--headline3">Results:</div>
+    <div class="mdc-typography--headline5">You have got {answeredCorrect} questions out of {size}.</div>
+    <Actions>
+        <Button on:click={() => (goto("/send"))}>
+        <Label>Ok</Label>
+        </Button>
+    </Actions>
+    </Dialog>
+</div>
+{:else}
 <div class="quiz-container">
 
     <div class="question-container">
@@ -108,8 +129,8 @@
                 <Label >Next Question</Label>
             </Button>
         {:else}
-            <Button on:click={nextQuest} ripple={false} disabled>
-                <Label >Next Question</Label>
+            <Button on:click={()=>{open=true}} ripple={false}>
+                <Label>Finish quiz</Label>
             </Button>
         {/if}
         </div>
@@ -120,6 +141,7 @@
     </div>
 
 </div>
+{/if}
 
 <style>
     .quiz-container {
@@ -139,6 +161,16 @@
         border: 1px solid #ff3e00;
         border-radius: 10px;
 
+    }
+    .dialog-container {
+        padding: 10px;
+        background-color: #333;
+        display:flex;
+        width: 30%;
+        height: min(30%, 300);
+        flex-direction:column;
+        border: 1px solid #ff3e00;
+        border-radius: 10px;
     }
 
     .question {
