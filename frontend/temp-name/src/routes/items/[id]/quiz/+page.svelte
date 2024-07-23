@@ -22,6 +22,7 @@
             options: ["ans1", "ans2", "ans3", "ans4"],
             correct_answers: ["ans1"],
     }
+    let quizRequested = false
 
     onMount(() => {
         QuizStore.set({questions: [sample]})
@@ -65,6 +66,7 @@
     
     
     async function readQuizData() {
+        quizRequested = true
 		let sendQuizData = new FormData()
 		sendQuizData.append("text", text)
         sendQuizData.append("useDB", useDB.toString())
@@ -93,27 +95,27 @@
 		// }
 
         if (response.ok && response.body) {
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
 
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
 
-            let message = decoder.decode(value);
-            message = message.replace(/data: /g, '');
-            message = message.replace(/'/g, '"');
-            console.log('received a message:', message);
+                let message = decoder.decode(value);
+                message = message.replace(/data: /g, '');
+                message = message.replace(/'/g, '"');
+                console.log('received a message:', message);
 
-            if (message !== 'done') {
-                let appendix = JSON.parse(message);
-                appendix = appendix.questions[0];
-                console.log('to be appended:', appendix);
-                updateQuiz(appendix);
+                if (message !== 'done') {
+                    let appendix = JSON.parse(message);
+                    appendix = appendix.questions[0];
+                    console.log('to be appended:', appendix);
+                    updateQuiz(appendix);
+                }
             }
         }
-    }
-
+        quizRequested=false
 		console.log("done")
         removesample();
         quizLoaded = true
@@ -126,7 +128,7 @@
     <div style="display: flex; flex-direction:column; ">
 
         
-        <Button on:click={readQuizData} variant="unelevated"><Label>
+        <Button on:click={readQuizData} variant="unelevated" disabled={quizRequested}><Label>
             <div class="mdc-typography--headline4">
             generate the quiz!
             </div>
