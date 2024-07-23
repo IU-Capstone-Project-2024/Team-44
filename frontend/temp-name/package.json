@@ -20,6 +20,7 @@
 		"@smui/checkbox": "^7.0.0",
 		"@smui/circular-progress": "^7.0.0",
 		"@smui/common": "^7.0.0",
+		"@smui/dialog": "^7.0.0",
 		"@smui/drawer": "^7.0.0",
 		"@smui/fab": "^7.0.0",
 		"@smui/form-field": "^7.0.0",

@@ -1,9 +1,7 @@
 <script lang="ts">
-    import { AuthStore } from "../../data-store";
-    import Paper, {Title} from "@smui/paper";
 	import FormField from '@smui/form-field';
 	import Button from "@smui/button";
-    import HelperText from "@smui/textfield/helper-text";
+    import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import Textfield from "@smui/textfield";
     let username = ""
     let email = ""
@@ -44,60 +42,103 @@
         if (!signupError) signupSuccess = true
     }
 </script>
-<Paper square >
+<div class="signup-container">
+    {#if !signupSuccess || signupError}
+        
     
-    <Title>Sign up</Title>
-    <form class="signup-card" on:submit={handleSubmit}>
-        <FormField>
-            <Textfield bind:value={username} label="username">
-                <!-- <HelperText slot="helper">username</HelperText> -->
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={email} label="e-mail">
-                <!-- <HelperText slot="helper">e-mail</HelperText> -->
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={telegram_id} label="telegram id">
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={first_name} label="first name">
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={last_name} label="last name">
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={password} type="password" label="password">
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={repeat_password} type="password" label="repeat password">
-            </Textfield>
-        </FormField>
-        <br>
-        <br>
-        <Button variant="raised">Sign up</Button>
-        <br>
-    </form>
-    <span>Already have an account? <a href="/signin">Sign in</a></span>
+    <div class="signup">
+        <div class="mdc-typography--headline4">Sign up</div>
+    </div>
+    <div class="main-container">
+        <form class="signup-card" on:submit={handleSubmit}>
+            <FormField>
+                <Textfield bind:value={username} label="username" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={email} label="e-mail" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={telegram_id} label="telegram id" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={first_name} label="first name" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={last_name} label="last name" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={password} type="password" label="password" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={repeat_password} type="password" label="repeat password" />
+            </FormField>
+            <br>
+            <br>
+            <Button variant="raised">Sign up</Button>
+            <br>
+        </form>
+    </div>
+    <div style="display:flex; justify-content:center">
+        <div class="mdc-typography--subtitle1">Already have an account? <a href="/signin">Sign in</a></div> 
+    </div>
     {#if showInvalidForm}
-        <h4 class="color:red">Form data is not valid!</h4>
+        <div class="mdc-typography--headline6">Form data is not valid!</div>
     {/if}
     {#if signupError}
-        <h4 class="color:red">Server error</h4>
+    <div class="mdc-typography--headline6">Server error</div>
     {/if}
-    {#if signupSuccess && !signupError}
-    <h4 class="color: green">Sign up successful!</h4>
-    <p>Go to <a href="/signin">sign in</a>. </p>
+    {:else}
+    <div class="success-container">
+        <div class="mdc-typography--headline4">Sign up successful!</div>
+        <div class="mdc-typography--headline6">
+            We have sent you an e-mail with a verification link.<br>
+            Please click the link to verify your account.
+        </div>
+    </div>
+
 {/if}
-</Paper>
+</div>
+
+<style>
+    .signup-container {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-evenly;
+        height: min(max(80%, 300px), 600px);
+        width: min(max(80%, 150px), 300px);
+    }
+
+    .main-container {
+        padding: 10px;
+        background-color: #333;
+        display:flex;
+        justify-content:center;
+        border: 1px solid #ff3e00;
+        border-radius: 10px;
+    }
+
+    .signup {
+        display: flex;
+        justify-content: center;
+        padding: 10px 7%;
+    }
+
+    .signup-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .success-container {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-evenly;
+        height: min(max(80%, 300px), 400px);
+        width: min(max(80%, 300px), 600px);
+    }
+</style>

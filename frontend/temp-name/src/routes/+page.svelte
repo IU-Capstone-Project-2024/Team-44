@@ -4,12 +4,6 @@
     import Paper, {Subtitle, Title} from "@smui/paper";
 	import { goto } from "$app/navigation";
     import Navbar from "../static/Navbar.svelte";
-    onMount(()=>{
-        let authdata = $AuthStore
-        if (authdata != "no-token" && authdata != null){
-            goto("/home")
-        }
-    })
 </script>
 
 

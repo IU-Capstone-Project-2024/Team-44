@@ -21,8 +21,7 @@
         console.log("token:", token)
         console.log("currently in:", $page.url.pathname)
         if (token != "no-token" && token != undefined){
-            return
-            // add requests for user's database
+            console.log("You are logged in!");
         }
         else {
             goto("/")

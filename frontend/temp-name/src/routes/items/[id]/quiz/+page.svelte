@@ -24,17 +24,23 @@
     }
 
     onMount(() => {
-            QuizStore.set({questions: [sample]})
-            let token = $AuthStore
-            console.log("token:", token)
-            if (quizStore.questions.length == 1 && quizStore.questions[0] == sample){
-                goto("/send")
-            }
-            // else if (token == "no-token" || token == undefined){
-            //     goto("/")
-            // }
+        QuizStore.set({questions: [sample]})
+        let token = $AuthStore
+        console.log("token:", token)
+        console.log("currently in:", $page.url.pathname)
+        if (quizStore.questions.length == 1 && quizStore.questions[0] == sample){
+            goto("/send")
         }
-    )
+        if (token != "no-token" && token != undefined){
+            console.log("You are logged in!");
+        }
+        else {
+            goto("/")
+        }
+    })
+    onMount(() => {
+        
+    })
     
     let removesample = () =>{
         QuizStore.update(prev => {

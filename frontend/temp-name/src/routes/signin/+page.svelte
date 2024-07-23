@@ -56,31 +56,64 @@
     }
 </script>
 
-<Paper square >
-    
-    <Title>Sign in</Title>
-    <form class="signin-card" on:submit={handleSubmit}>
-        <FormField>
-            <Textfield bind:value={username} label="username">
-                <!-- <HelperText slot="helper">username</HelperText> -->
-            </Textfield>
-        </FormField>
-        <br>
-        <FormField>
-            <Textfield bind:value={password} type="password" label="password">
-            </Textfield>
-        </FormField>
-        <br>
-        <br>
-        <Button variant="raised" disabled={clicked}>Sign in</Button>
-        <br>
-    </form>
-    <span>Don't have an account? <a href="/signup">Sign up</a></span>
+<div class="signin-container">
+    <div class="signin">
+        <div class="mdc-typography--headline4">Sign in</div>
+    </div>
+    <div class="main-container">
+        <form class="signin-card" on:submit={handleSubmit}>
+            <FormField>
+                <Textfield bind:value={username} label="username" />
+            </FormField>
+            <br>
+            <FormField>
+                <Textfield bind:value={password} type="password" label="password" />
+            </FormField>
+            <br>
+            <br>
+            <Button variant="raised" disabled={clicked}>Sign in</Button>
+            <br>
+        </form>
+    </div>
+    <div style="display:flex; justify-content:center">
+        <div class="mdc-typography--subtitle1">Don't have an account? <a href="/signup">Sign up</a></div> 
+    </div>
     {#if showInvalidForm}
-        <h4 class="color:red">Form data is not valid!</h4>
+        <div class="mdc-typography--headline6">Form data is not valid!</div>
     {/if}
     {#if signinSuccess}
-        <h4 class="color: green">Sign in successful!</h4>
-        <p>Go to <a href="/home">home</a>. </p>
+        <div class="mdc-typography--headline6">Sign in successful!</div>
+        <p>Go to <a href="/send">sending</a>.</p>
     {/if}
-</Paper>
+</div>
+
+<style>
+    .signin-container {
+        display: flex;
+        flex-direction: column;
+        justify-content:space-evenly;
+        height: min(max(80%, 300px), 600px);
+        width: min(max(80%, 150px), 300px);
+    }
+
+    .main-container {
+        padding: 10px;
+        background-color: #333;
+        display:flex;
+        justify-content:center;
+        border: 1px solid #ff3e00;
+        border-radius: 10px;
+    }
+
+    .signin {
+        display: flex;
+        justify-content: center;
+        padding: 10px 7%;
+    }
+
+    .signin-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+</style>

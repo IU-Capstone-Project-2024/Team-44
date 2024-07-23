@@ -28,18 +28,18 @@
             
     })
 
-    // onMount(() => {
-    //     let token = $AuthStore
-    //     console.log("token:", token)
-    //     console.log("currently in:", $page.url.pathname)
-    //     if (token != "no-token" && token != undefined){
-    //         return
-    //         // add requests for user's database
-    //     }
-    //     else {
-    //         goto("/")
-    //     }
-    // })
+    onMount(() => {
+        let token = $AuthStore
+        console.log("token:", token)
+        console.log("currently in:", $page.url.pathname)
+        if (token != "no-token" && token != undefined){
+            console.log("You are logged in!");
+        }
+        else {
+            goto("/")
+        }
+    })
+    
 </script>
 <div class="flexy">
     <Paper variant="unelevated">

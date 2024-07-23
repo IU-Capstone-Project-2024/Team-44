@@ -6,15 +6,6 @@
 
     
     onMount(() => {
-        let token = $AuthStore
-        console.log("token:", token)
-        console.log("currently in:", $page.url.pathname)
-        if (token != "no-token" && token != undefined){
-            return
-            // add requests for user's database
-        }
-        else {
-            goto("/")
-        }
+        goto("/")
     })
 </script>
