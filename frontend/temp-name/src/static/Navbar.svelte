@@ -25,23 +25,24 @@
 
 
 
-<TopAppBar variant="static" {prominent} {dense} color="primary">
+<TopAppBar variant="fixed" {prominent} {dense} color="primary">
     <div class="bg-gradient">
         <Row>
             <Section>
                 <div class="title">
 
-                    <Title><a href="/home" style="text-decoration: none;">StudyBoost ⚡</a></Title>
+                    <Title><a href="/" style="text-decoration: none;">StudyBoost ⚡</a></Title>
                 </div>
-                <div class="title">
-                        <Title><a href="/send" style="text-decoration: none;">Send...</a></Title>
-        
                 
-                </div>
-
             </Section>
 
             <Section align="end">
+                <div class="title">
+                    <Title><a href="/send" style="text-decoration: none;">Send</a></Title>                
+                </div>
+                <div class="title">
+                    <Title><a href="/about" style="text-decoration: none;">About</a></Title>                
+                </div>
                 <Title>
                     {#if authed == false}
                         <a href="/signin" style="text-decoration: none;"><p>Sign in</p></a>
