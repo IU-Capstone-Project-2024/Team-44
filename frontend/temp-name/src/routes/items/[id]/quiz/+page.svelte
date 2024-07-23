@@ -79,18 +79,41 @@
 			return new Response()
 		})
 
-		for await (const chunk of response.body){
-			let message = new TextDecoder().decode(chunk);
-			message = message.replace(/data: /g, "")
-			message = message.replace(/'/g, '"')
-			console.log("recieved a message:", message)
-			if (message != "done"){
-				let appendix = JSON.parse(message)
-				appendix = appendix.questions[0]
-				console.log("to be appended:", appendix)
-				updateQuiz(appendix)
-			}
-		}
+		// for await (const chunk of response.body){
+		// 	let message = new TextDecoder().decode(chunk);
+		// 	message = message.replace(/data: /g, "")
+		// 	message = message.replace(/'/g, '"')
+		// 	console.log("recieved a message:", message)
+		// 	if (message != "done"){
+		// 		let appendix = JSON.parse(message)
+		// 		appendix = appendix.questions[0]
+		// 		console.log("to be appended:", appendix)
+		// 		updateQuiz(appendix)
+		// 	}
+		// }
+
+        if (response.ok && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            let message = decoder.decode(value);
+            message = message.replace(/data: /g, '');
+            message = message.replace(/'/g, '"');
+            console.log('received a message:', message);
+
+            if (message !== 'done') {
+                let appendix = JSON.parse(message);
+                appendix = appendix.questions[0];
+                console.log('to be appended:', appendix);
+                updateQuiz(appendix);
+            }
+        }
+    }
+
 		console.log("done")
         removesample();
         quizLoaded = true
