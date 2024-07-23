@@ -168,3 +168,4 @@ qdrant_storage/
 qdrant_data/
 
 !frontend/temp-name/src/lib
+frontend/temp-name/src/routes/dev

@@ -1,10 +1,19 @@
 import { writable } from "svelte/store";
 
+export const QuizStore = writable({
+    questions: [
+        {
+            question: "Sample Question",
+            options: ["ans1", "ans2", "ans3", "ans4"],
+            correct_answers: ["ans1"],
+        }
 
-export const DataStore = writable([
-    {type: "note", id: 0, content: "test", date: "01-01-1970"}
-])
-
-export const AuthStore = writable({
+    ]
 })
+
+export const TextStore = writable(["test title", "test text"])
+export const SummaryStore = writable({summary: "test summary text"})
+
+export const AuthStore = writable("no-token")
+
 

@@ -1,62 +1,100 @@
 <script lang="ts">
-    import { AuthStore } from "../data-store";
-    let links = [{text: "Home", link: "/home"}, {text: "Sign up", link: "/signup"}, {text: "Sign out", link: "/signout"}]
+    import { Input } from '@smui/textfield';
+    import Fab from '@smui/fab';
+    import { Icon } from '@smui/common';
+    import TopAppBar, {Row, Section, Title, } from "@smui/top-app-bar"
+    import Paper from '@smui/paper';
+    import { AuthStore } from '../data-store';
+
+    let links = [{text: "Sign up", link: "/signup"}, {text: "Sign out", link: "/signout"}]
+    let prominent = false
+    let dense = false
+    let value = ""
+
+    function doSearch() {
+        alert('Search for ' + value)
+        value = ""
+    }
+
+    let token = $AuthStore
+    let authed = false
+    if (token != "no-token" && token != undefined){
+        authed = true
+    }
 </script>
 
 
 
-<nav>
-    <div class="title">
-        <p class="title-text">Title</p>
+<TopAppBar variant="fixed" {prominent} {dense} color="primary">
+    <div class="bg-gradient">
+        <Row>
+            <Section>
+                <div class="title">
+
+                    <Title><a href="/" style="text-decoration: none;">StudyBoost ⚡</a></Title>
+                </div>
+                
+            </Section>
+
+            <Section align="end">
+                <div class="title">
+                    <Title><a href="/send" style="text-decoration: none;">Send</a></Title>                
+                </div>
+                <div class="title">
+                    <Title><a href="/about" style="text-decoration: none;">About</a></Title>                
+                </div>
+                <Title>
+                    {#if authed == false}
+                        <a href="/signin" style="text-decoration: none;"><p>Sign in</p></a>
+                    {:else}
+                        <a href="/signout" style="text-decoration: none;"><p>Sign out</p></a>
+                    {/if}
+                </Title>
+            </Section>
+        </Row>
     </div>
-    <div class="links">
-        {#each links as {text, link}, index(text)}
-        <a href="{link}"><p>{text}</p></a>
-        {/each}
-        <div class="sign-up">
-            <a href="/signup"><p>Sign up</p></a>
-        </div>
-    </div>
-</nav>
+
+</TopAppBar>
 
 <style>
-    nav {
-        height: min(10vh, 100);
-        display: flex;
-        flex-direction: row;
-        background-color: aquamarine;
-        padding: 0;
-        margin: 0;
-    }
-
     .title {
-        background-color: rgb(140, 140, 255);
-        min-width: 15vw;
-        text-align: center;
-        flex: 15;
+        display: contents;
+        width: auto;
+        max-width: 15vw;
     }
-
-    .title-text {
-        color: white;
-    }
-
-    .links {
-        background: azure;
+    .bg-gradient{
         display: flex;
-        flex-direction: row;
-        flex: 75;
+        background: linear-gradient(270deg, rgba(22,22,22,1) 0%, rgba(255,62,0,1) 100%);
     }
-    a {
+    * :global(.solo-paper) {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        width: auto;
+        margin: 0 12px;
+        padding: 0 12px;
+    }
+    * :global(.solo-paper > *) {
+        display: inline-block;
+        margin: 0 12px;
+    }
+    * :global(.solo-input) {
+        flex-grow: 1;
+        color: var(--mdc-theme-on-surface, #fff);
+    }
+    * :global(.solo-input::placeholder) {
+        color: var(--mdc-theme-on-surface, #fff);
+        opacity: 0.6;
+    }
+    * :global(.solo-fab) {
+        flex-shrink: 0;
+    }
+     a {
         flex: 25;
         justify-content: center;
         align-items: center;
         min-width: 10vw;
-        background-color: aquamarine;
         color: white;
-        border: 1 dotted red;
-    }
-    p {
-        text-align: center;
     }
     a:hover{
         opacity: 50%;
