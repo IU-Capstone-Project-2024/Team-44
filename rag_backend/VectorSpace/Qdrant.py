@@ -1,3 +1,4 @@
+from uuid import uuid4
 from fastembed import SparseTextEmbedding
 from typing import List, Dict, Any
 
@@ -70,34 +71,55 @@ class VectorStore:
     def __add(
         self,
         chunks: List[str],
-        idx: List[str | int],
         metadata: List[Dict],
         collection_name: str,
         **kwargs: Any,
     ) -> None:
-        vectors = {
-            "nomic": [chunk for chunk in self.model_nomic.embed_query(chunks)],
-            "bm42": list(self.model_bm42.query_embed(chunks)),
-        }
-        self.client.upsert(
-            collection_name=collection_name,
-            points=[
-                models.PointStruct(
-                    id=id,
-                    payload=payload,
-                    vector={
-                        "nomic": dense,
-                        "bm42": models.SparseVector(
-                            values=sparse.values,
-                            indices=sparse.indices,
-                        ),
-                    },
-                )
-                for id, payload, dense, sparse in zip(
-                    idx, metadata, vectors["nomic"], vectors["bm42"]
-                )
-            ],
-        )
+        if len(chunks) == 1:
+            vectors = {
+                "nomic": self.model_nomic.embed_query(chunks),
+                "bm42": list(self.model_bm42.query_embed(chunks))[0],
+            }
+            self.client.upsert(
+                collection_name=collection_name,
+                points=[
+                    models.PointStruct(
+                        id=str(uuid4()),
+                        payload=metadata[0],
+                        vector={
+                            "nomic": vectors["nomic"],
+                            "bm42": models.SparseVector(
+                                values=vectors["bm42"].values,
+                                indices=vectors["bm42"].indices,
+                            ),
+                        },
+                    )
+                ],
+            )
+        else:
+            vectors = {
+                "nomic": [chunk for chunk in self.model_nomic.embed_query(chunks)],
+                "bm42": list(self.model_bm42.query_embed(chunks)),
+            }
+            self.client.upsert(
+                collection_name=collection_name,
+                points=[
+                    models.PointStruct(
+                        id=str(uuid4()),
+                        payload=payload,
+                        vector={
+                            "nomic": dense,
+                            "bm42": models.SparseVector(
+                                values=sparse.values,
+                                indices=sparse.indices,
+                            ),
+                        },
+                    )
+                    for payload, dense, sparse in zip(
+                        metadata, vectors["nomic"], vectors["bm42"]
+                    )
+                ],
+            )
 
     def add(
         self,

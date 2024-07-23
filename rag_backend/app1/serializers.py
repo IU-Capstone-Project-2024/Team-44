@@ -17,3 +17,4 @@ class QuizSerializer(serializers.Serializer):
 
 class TextSerializer(serializers.Serializer):
     text = serializers.CharField()
+    useDB = serializers.BooleanField()

@@ -165,5 +165,6 @@ cython_debug/
 
 .VectorData/
 qdrant_storage/
+qdrant_data/
 
 !frontend/temp-name/src/lib
